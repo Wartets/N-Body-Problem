@@ -8,7 +8,7 @@ This project simulates the motion of N-bodies subject to gravitational attractio
 >
 > The project is available in English, French, Spanish, and German (with more soon).
 
-![view exemple](https://github.com/user-attachments/assets/c33cbb3d-fa87-4784-9437-18dd7efec9ed)
+![exemple](https://github.com/user-attachments/assets/d24260e7-9659-4b81-8771-bceb32ab6217)
 
 ---
 
