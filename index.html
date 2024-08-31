@@ -8,7 +8,17 @@
 </head>
 
 <body>
-    <canvas id="simulationCanvas"></canvas>
+    <canvas id="simulationCanvas"></canvas>	
+	
+	<button id="resetViewBtn" style="position: absolute; top: 20px; left: 15px;">Réinitialiser la vue</button>
+	
+	<div id="mouseCoords" style="position: absolute; top: 65px; left: 16px; color: white;">Coord : (x; y)</div>
+	
+	<button id="fullscreenBtn" style="position: absolute; bottom: 65px; left: 15px;">Plein écran</button>
+	
+	<button id="startPauseBtn">Lancer la simulation</button>
+	
+	<div id="timer" style="position: absolute; top: 95px; left: 16px; color: white;">Temps : 0.00 s</div>
 
     <div id="controls">
         <select id="languageSelect">
@@ -17,16 +27,6 @@
             <option value="es">Español</option>
             <option value="de">Deutsh</option>
         </select>
-        
-        <button id="resetViewBtn" style="position: absolute; top: 20px; left: 15px;">Réinitialiser la vue</button>
-        
-        <div id="mouseCoords" style="position: absolute; top: 65px; left: 16px; color: white;">Coord : (x; y)</div>
-        
-        <button id="fullscreenBtn" style="position: absolute; bottom: 65px; left: 15px;">Plein écran</button>
-        
-        <button id="startPauseBtn">Lancer la simulation</button>
-        
-        <div id="timer" style="position: absolute; top: 95px; left: 16px; color: white;">Temps : 0.00 s</div>
         
         <div class="control-group">
             <label for="dt" id="dtLabel">dt (Intervalle de temps) :</label>

@@ -482,8 +482,6 @@ function playImpactSound() {
 	}
 }
 
-
-
 function calculateForces() {
 	const gravityEnabled = document.getElementById('gravityToggle').checked;
 
@@ -652,7 +650,6 @@ function drawVelocityVectors() {
 			const endX = body.position.x + body.velocity.x * vectorLength;
 			const endY = body.position.y + body.velocity.y * vectorLength;
 			
-			// Draw the velocity vector
 			ctx.beginPath();
 			ctx.moveTo(body.position.x, body.position.y);
 			ctx.lineTo(endX, endY);
@@ -661,7 +658,6 @@ function drawVelocityVectors() {
 			ctx.stroke();
 			ctx.closePath();
 
-			// Draw arrowhead
 			const arrowSize = 6 / scale;
 			const angle = Math.atan2(body.velocity.y, body.velocity.x);
 			ctx.beginPath();
