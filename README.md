@@ -13,3 +13,5 @@ Image exemple :
 ![exemple](https://github.com/user-attachments/assets/d24260e7-9659-4b81-8771-bceb32ab6217)
 
 **Full Changelog**: https://github.com/Wartets/N-Body-Problem/blob/main/Changelog.md
+
+Tested on Firefox 129.0.2 (64 bits), Chromium 122.0.6250.0 (dev. Build) (64 bits)
