@@ -1,0 +1,142 @@
+body {
+	margin: 0;
+	display: flex;
+	height: 100vh;
+	overflow: hidden;
+	font-family: Arial, sans-serif;
+	background-color: #1c1c1c;
+	color: #fff;
+}
+
+#simulationCanvas {
+	flex: 1;
+	background-color: #000;
+	position: relative;
+}
+
+#controls {
+	width: 300px;
+	padding: 20px;
+	background-color: #2c2c2c;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	overflow-y: auto;
+}
+
+.control-group {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.color-indicator {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	display: inline-block;
+	margin-right: 5px;
+}
+
+label {
+	font-size: 14px;
+}
+
+input[type="number"] {
+	width: 80px;
+	padding: 5px;
+	background-color: #444;
+	border: 1px solid #666;
+	color: #fff;
+}
+
+input[type="checkbox"] {
+	margin-right: 5px;
+}
+
+button {
+	padding: 10px;
+	background-color: #444;
+	border: 1px solid #666;
+	color: #fff;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+button:hover {
+	background-color: #666;
+}
+
+.checkbox-group {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.checkbox-group input {
+	width: auto;
+}
+
+.checkbox-group label {
+	display: flex;
+	align-items: center;
+}
+
+#startPauseBtn {
+	position: absolute;
+	bottom: 20px;
+	left: 15px;
+}
+
+.icon-trash {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background-image: url('trash-icon.png'); /* Assurez-vous que ce chemin est correct */
+  background-size: cover; /* S'ajuste pour que l'image remplisse l'élément */
+  vertical-align: middle;
+}	flex: 1;
+
+.slider-container {
+	position: relative;
+	width: 100%;
+}
+
+.slider {
+	position: center;
+	-webkit-appearance: none;
+	width: 90%;
+	height: 8px;
+	background: #ddd;
+	outline: none;
+	opacity: 0.7;
+	transition: opacity .15s ease-in-out;
+}
+
+.slider:hover {
+	opacity: 1;
+}
+
+.tooltip {
+	position: absolute;
+	background: #333;
+	color: #fff;
+	padding: 5px;
+	border-radius: 5px;
+	font-size: 12px;
+	white-space: nowrap;
+	display: none;
+}
+
+.btn-group {
+	display: flex;
+}
+
+.btn {
+	flex: 1; /* Chaque bouton prend une largeur égale */
+}
+
+.mrgn-bttm-lg {
+	margin-bottom: 20px; /* Ajuste la marge inférieure selon tes besoins */
+}
