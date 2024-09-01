@@ -17,3 +17,15 @@
 - v1.0 German translation
 - v1.0 Spanish translation (thanks to Arthur Loubeau)
 - Key usage support : gravity ("g"), collisions ("c"), reset view ("r"), friction ("f"), show speed vectors ("v"), play/pause ("space bar" or "enter"), Full-screen ("F11")/
+
+## v1.0.1 - 01/09/2024
+
+### Added
+
+- Moving around object with mouse
+- Key usage support : zoom ("scroll down" and "scroll up")
+
+### Changed
+
+- Paving the way for future ui changes, especially for controls
+- Fixed minor clarity problems
