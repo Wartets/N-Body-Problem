@@ -888,7 +888,7 @@ function handleMouseDown(event) {
 		if (Math.sqrt(dx * dx + dy * dy) < (showSizeCheckbox.checked ? 10 / scale : 10)) {
 			selectedBody = body;
 			isPaused = true;
-			startPauseBtn.textContent = "Mettre en pause";
+			startPauseBtn.textContent = "Lancer la simulation";
 			break;
 		}
 	}
