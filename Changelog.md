@@ -23,6 +23,12 @@
 ### Added
 
 - Moving around object with mouse
+- Key usage support : zoom ("scroll down" and "scroll up")
+
+### Changed
+
+- Paving the way for future ui changes, especially for controls
+- Fixed minor clarity problems
 
 ## v1.1.0 - 01/08/2024
 
