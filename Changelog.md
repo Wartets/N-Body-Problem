@@ -23,6 +23,22 @@
 ### Added
 
 - Moving around object with mouse
+
+## v1.1.0 - 01/08/2024
+
+### Added
+
+- Electromagnetic force support for each object.
+- Option to set load parameters for each object, negative, neutral, or positive
+- Electromagnetic force can be activated or deactivated
+
+### Changed
+
+- Updated translations to add electromagnetic parameters :
+  - v1.1 English translation
+  - v1.1 French translation
+  - v1.1 German translation
+  - v1.1 Spanish translation (thanks to Arthur Loubeau)
 - Key usage support : zoom ("scroll down" and "scroll up")
 
 ### Changed
