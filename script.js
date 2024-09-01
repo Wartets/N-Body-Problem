@@ -26,7 +26,7 @@ const controlsToggle = document.getElementById('controlsToggle');
 controlsToggle.addEventListener('click', () => {
     const isHidden = controls.classList.toggle('hidden');
     controlsToggle.innerHTML = isHidden ? '&#x25C0;' : '&#x25B6;';
-    document.body.classList.toggle('hidden');
+    // document.body.classList.toggle('hidden');
 });
 
 const translations = {
