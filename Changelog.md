@@ -45,4 +45,3 @@
   - v1.1 French translation
   - v1.1 German translation
   - v1.1 Spanish translation (thanks to Arthur Loubeau)
-- Key usage support : zoom ("scroll down" and "scroll up")
