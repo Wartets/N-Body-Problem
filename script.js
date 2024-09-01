@@ -12,7 +12,7 @@ const showSizeCheckbox = document.getElementById('showSize');
 const focusSelect = document.getElementById('focusSelect');
 focusSelect.addEventListener('change', (e) => {
 	focusObject = e.target.value;
-	resetView();
+	// resetView();
 });
 let scale = 1;
 let scrollZoom = 1;
@@ -206,9 +206,9 @@ canvas.addEventListener('mousemove', (event) => {
 
 
 const initialBodies = [
-    { name: "Objet 1", mass: 250, charge: 0, position: { x: 0, y: 0 }, velocity: { x: 0, y: 1 }, color: "red" },
-    { name: "Objet 2", mass: 300, charge: 0, position: { x: 200, y: 200 }, velocity: { x: -1, y: 0 }, color: "green" },
-    { name: "Objet 3", mass: 100, charge: 0, position: { x: 200, y: 0 }, velocity: { x: -1, y: 1 }, color: "blue" }
+    { name: "Objet 1", mass: 250, charge: 2, position: { x: 0, y: 0 }, velocity: { x: 0, y: 1 }, color: "red" },
+    { name: "Objet 2", mass: 300, charge: 1.5, position: { x: 200, y: 200 }, velocity: { x: -1, y: 0 }, color: "green" },
+    { name: "Objet 3", mass: 100, charge: -1, position: { x: 200, y: 0 }, velocity: { x: -1, y: 1 }, color: "blue" }
 ];
 
 
@@ -777,6 +777,11 @@ function drawVelocityVectors() {
 function drawBodies(barycenter) {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    if (document.getElementById('showGravityField').checked || document.getElementById('showMagneticField').checked) {
+        drawGravityField();
+		drawMagneticField();
+    }
+
 	ctx.save();
 	ctx.translate(canvas.width / 2, canvas.height / 2);
 	ctx.scale(scale, scale);
@@ -914,11 +919,19 @@ document.getElementById('collisionToggle').addEventListener('change', (e) => {
 	collisionsEnabled = e.target.checked;
 });
 
+function getRandomSpeed() {
+    const term0 = Math.random() * 4 - 2;
+    const term1 = (term0 !== 0 ? Math.exp(-term0 * term0) : 1) * 5 * Math.sign(term0);
+	const result = Math.round(term1 * 1000) / 1000;
+    return result;
+}
+
 document.getElementById('addBodyBtn').addEventListener('click', () => {
 	const newBody = {
 		mass: 50 + Math.random() * 100,
+		charge: Math.round((Math.random() * 3 - 1.5) * 10) / 10,
 		position: getRandomPosition(),
-		velocity: { x: Math.random() * 2 - 1, y: Math.random() * 2 - 1 },
+		velocity: { x: getRandomSpeed(), y: getRandomSpeed() },
 		color: '#' + Math.floor(Math.random() * 16777215).toString(16),
 		acceleration: { x: 0, y: 0 },
 		trail: [],
@@ -997,7 +1010,7 @@ function handleMouseMove(event) {
 		clearTimeout(manualMoveTimeout);
 		manualMoveTimeout = setTimeout(() => {
 			isPaused = true;
-			startPauseBtn.textContent = "Mettre en pause";
+			startPauseBtn.textContent = "Lancer la simulation";
 		}, 200);
 	}
 }
@@ -1069,3 +1082,142 @@ function updatePresetSelect() {
 }
 
 updatePresetSelect();
+
+function drawGravityField() {
+    const showGravityField = document.getElementById('showGravityField').checked;
+
+    if (!showGravityField) return;
+
+    ctx.save();
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
+    const visibleWidth = canvasWidth / scale;
+    const visibleHeight = canvasHeight / scale;
+    const visibleCenterX = calculateBarycenter().x;
+    const visibleCenterY = calculateBarycenter().y;
+
+    const startX = visibleCenterX - (canvasWidth / 2 / scale);
+    const startY = visibleCenterY - (canvasHeight / 2 / scale);
+
+    const numVectorsX = Math.floor(canvasWidth / 15); // Espacement des vecteurs
+    const numVectorsY = Math.floor(canvasHeight / 15);
+
+    const maxMass = Math.max(...bodies.map(body => body.mass));
+
+    for (let i = 0; i < numVectorsX; i++) {
+        for (let j = 0; j < numVectorsY; j++) {
+            const x = startX + i * (visibleWidth / numVectorsX);
+            const y = startY + j * (visibleHeight / numVectorsY);
+
+            let fx = 0;
+            let fy = 0;
+
+            bodies.forEach(body => {
+                const dx = body.position.x - x;
+                const dy = body.position.y - y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance > 1) { // Éviter la division par zéro
+                    if (showGravityField) {
+                        const forceG = (G * body.mass) / (distance * distance);
+                        fx += forceG * (dx / distance);
+                        fy += forceG * (dy / distance);
+                    }
+                }
+            });
+
+            const forceMagnitude = Math.sqrt(fx * fx + fy * fy);
+
+            if (forceMagnitude > 0) {
+                const angle = Math.atan2(fy, fx);
+                const vectorLength = Math.min(Math.sqrt(forceMagnitude) / maxMass * 20000, 10) / (showSizeCheckbox.checked ? scale : 2) * 1.5 ;
+
+                ctx.beginPath();
+                ctx.moveTo(x * scale - visibleCenterX * scale + canvasWidth / 2, y * scale - visibleCenterY * scale + canvasHeight / 2);
+                ctx.lineTo(
+                    (x + (fx / forceMagnitude) * vectorLength) * scale - visibleCenterX * scale + canvasWidth / 2,
+                    (y + (fy / forceMagnitude) * vectorLength) * scale - visibleCenterY * scale + canvasHeight / 2
+                );
+                ctx.strokeStyle = `rgba(255, 100, 90, 1)`;
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+                ctx.closePath();
+            }
+        }
+    }
+
+    ctx.restore();
+}
+
+function drawMagneticField() {
+    const showMagneticField = document.getElementById('showMagneticField').checked;
+
+    if (!showMagneticField) return;
+
+    ctx.save();
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
+    const visibleWidth = canvasWidth / scale;
+    const visibleHeight = canvasHeight / scale;
+    const visibleCenterX = calculateBarycenter().x;
+    const visibleCenterY = calculateBarycenter().y;
+
+    const startX = visibleCenterX - (canvasWidth / 2 / scale);
+    const startY = visibleCenterY - (canvasHeight / 2 / scale);
+
+    const numVectorsX = Math.floor(canvasWidth / 15); // Espacement des vecteurs
+    const numVectorsY = Math.floor(canvasHeight / 15);
+
+	const maxCharge = bodies.reduce((max, body) => Math.max(max, Math.abs(body.charge)), 0) || 1;
+
+    for (let i = 0; i < numVectorsX; i++) {
+        for (let j = 0; j < numVectorsY; j++) {
+            const x = startX + i * (visibleWidth / numVectorsX);
+            const y = startY + j * (visibleHeight / numVectorsY);
+
+            let fx = 0;
+            let fy = 0;
+
+            bodies.forEach(body => {
+                const dx = body.position.x - x;
+                const dy = body.position.y - y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance > 1) {
+                    if (showMagneticField) {
+                        const forceEM = (k * body.charge) / (distance * distance);
+                        fx += forceEM * (-dx / distance);
+                        fy += forceEM * (-dy / distance);
+                    }
+                }
+            });
+
+            const forceMagnitude = Math.sqrt(fx * fx + fy * fy);
+
+            if (forceMagnitude > 0) {
+                const angle = Math.atan2(fy, fx);
+                const vectorLength = Math.min(Math.sqrt(forceMagnitude / maxCharge) * 2000, 10) / (showSizeCheckbox.checked ? scale : 2) ;
+
+                ctx.beginPath();
+                ctx.moveTo(x * scale - visibleCenterX * scale + canvasWidth / 2, y * scale - visibleCenterY * scale + canvasHeight / 2);
+                ctx.lineTo(
+                    (x + (fx / forceMagnitude) * vectorLength) * scale - visibleCenterX * scale + canvasWidth / 2,
+                    (y + (fy / forceMagnitude) * vectorLength) * scale - visibleCenterY * scale + canvasHeight / 2
+                );
+                ctx.strokeStyle = `rgba(115, 255, 205, 0.7)`;
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+                ctx.closePath();
+            }
+        }
+    }
+
+    ctx.restore();
+}
+
