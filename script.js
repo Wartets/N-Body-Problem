@@ -50,7 +50,14 @@ const translations = {
         "loadPreset": "Charger un preset :",
         "savePreset": "Sauvegarder le preset",
         "presetName": "Nom du preset (vide pour nom par défaut)",
-        "addObject": "Ajouter un objet"
+        "addObject": "Ajouter un objet",
+		"Baryenable": "Barycentre",
+		"MassValue": "Masse :",
+		"ChargeValue": "Charge :",
+		"PosXValue": "Position X :",
+		"PosYValue": "Position Y :",
+		"SpeedXValue": "Vitesse X :",
+		"SpeedYValue": "Vitesse Y :",
     },
     "en": {
         "resetView": "Reset View",
@@ -72,7 +79,14 @@ const translations = {
         "loadPreset": "Load Preset:",
         "savePreset": "Save Preset",
         "presetName": "Preset Name (empty for default)",
-        "addObject": "Add Object"
+        "addObject": "Add Object",
+		"Baryenable": "Barycenter",
+		"MassValue": "Mass:",
+		"ChargeValue": "Charge:",
+		"PosXValue": "X Position:",
+		"PosYValue": "Y Position:",
+		"SpeedXValue": "X Speed:",
+		"SpeedYValue": "Y Speed:",
     },
     "es": {
         "resetView": "Reiniciar vista",
@@ -94,7 +108,14 @@ const translations = {
         "loadPreset": "Cargar preset:",
         "savePreset": "Salvaguardar preset",
         "presetName": "Nombre del preset (vacío para predeterminado)",
-        "addObject": "Añadir objeto"
+        "addObject": "Añadir objeto",
+		"Baryenable": "",
+		"MassValue": "",
+		"ChargeValue": "",
+		"PosXValue": "",
+		"PosYValue": "",
+		"SpeedXValue": "",
+		"SpeedYValue": "",
     },
 	"de": {
         "resetView": "Ansicht zurücksetzen",
@@ -116,7 +137,14 @@ const translations = {
         "loadPreset": "Voreinstellung laden:",
         "savePreset": "Voreinstellung speichern",
         "presetName": "Name der Voreinstellung (leer für Standard)",
-        "addObject": "Objekt hinzufügen"
+        "addObject": "Objekt hinzufügen",
+		"Baryenable": "",
+		"MassValue": "",
+		"ChargeValue": "",
+		"PosXValue": "",
+		"PosYValue": "",
+		"SpeedXValue": "",
+		"SpeedYValue": "",
     }
 }
 
@@ -147,6 +175,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('savePresetBtn').textContent = trans.savePreset;
         document.getElementById('presetName').placeholder = trans.presetName;
         document.getElementById('addBodyBtn').textContent = trans.addObject;
+        document.getElementById('barycenterLabel').textContent = trans.Baryenable;
+        document.getElementById('MassEntree').textContent = trans.MassValue;
+        document.getElementById('ChargeEntree').textContent = trans.ChargeValue;
+        document.getElementById('PosXEntree').textContent = trans.PosXValue;
+        document.getElementById('PosYEntree').textContent = trans.PosYValue;
+        document.getElementById('SpeedXEntree').textContent = trans.SpeedXValue;
+        document.getElementById('SpeedYEntree').textContent = trans.SpeedYValue;
     }
 
     languageSelect.addEventListener('change', () => {
@@ -383,7 +418,7 @@ startTimer();
 function updateControlValues() {
 	controlsContainer.innerHTML = '';
 
-	focusSelect.innerHTML = '<option value="barycenter">Barycentre</option>'; // Réinitialiser
+	focusSelect.innerHTML = '<option value="barycenter" id="barycenterLabel">Barycentre</option>';
 
 	bodies.forEach((body, index) => {
 		focusSelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
@@ -393,32 +428,41 @@ function updateControlValues() {
 		group.innerHTML = `
 			<div class="checkbox-group">
 				<input type="checkbox" id="show${index + 1}" ${body.show ? 'checked' : ''}>
-				<label for="show${index + 1}">
+				
+				<label for="info${index + 1}">
 					<span class="color-indicator" id="color${index}" style="background-color: ${body.color}; cursor: pointer;"></span>
 					<input type="text" id="name${index}" value="${body.name || `Objet ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: auto;">
 					<img src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Supprimer">
 				</label>
 			</div>
-			<label for="mass${index + 1}">Masse :</label>
+			
+			<label for="mass${index + 1} id="MassEntree">Masse :</label>
 			<input type="number" id="mass${index + 1}" value="${body.mass.toFixed(2)}" step="any">
-			<label for="charge${index + 1}">Charge :</label>
+			
+			<label for="charge${index + 1} id="ChargeEntree"">Charge :</label>
 			<input type="number" id="charge${index + 1}" value="${body.charge.toFixed(1)}" step="any">
-			<label for="x${index + 1}">Position X :</label>
+			
+			<label for="x${index + 1} id="PosXEntree"">Position X :</label>
 			<input type="number" id="x${index + 1}" value="${body.position.x.toFixed(2)}" step="any">
-			<label for="y${index + 1}">Position Y :</label>
+			
+			<label for="y${index + 1} id="PosYEntree"">Position Y :</label>
 			<input type="number" id="y${index + 1}" value="${body.position.y.toFixed(2)}" step="any">
-			<label for="vx${index + 1}">Vitesse X :</label>
+			
+			<label for="vx${index + 1} id=SpeedXEntree"">Vitesse X :</label>
 			<input type="number" id="vx${index + 1}" value="${body.velocity.x.toFixed(3)}" step="any">
-			<label for="vy${index + 1}">Vitesse Y :</label>
+			
+			<label for="vy${index + 1} id="SpeedYEntree"">Vitesse Y :</label>
 			<input type="number" id="vy${index + 1}" value="${body.velocity.y.toFixed(3)}" step="any">
+			
 			<hr style="width:25%;text-align:center;color:#444">
+			
 			<br>
 		`;
 		controlsContainer.appendChild(group);
 
 		document.getElementById(`show${index + 1}`).addEventListener('change', (e) => {
 			body.show = e.target.checked;
-			resetView();
+			// resetView();
 		});
 
 		const nameInput = document.getElementById(`name${index}`);
@@ -429,13 +473,33 @@ function updateControlValues() {
 		const colorIndicator = document.getElementById(`color${index}`);
 		colorIndicator.addEventListener('click', () => {
 			if (isPaused) {
-				const newColor = prompt("Entrez la nouvelle couleur (nom ou code hexadécimal) :", body.color);
-				if (newColor) {
-					body.color = newColor;
+				const colorPicker = document.createElement('input');
+				colorPicker.type = 'color';
+				colorPicker.value = body.color;
+				colorPicker.style.position = 'absolute';
+				colorPicker.style.left = `${colorIndicator.getBoundingClientRect().left}px`;
+				colorPicker.style.top = `${colorIndicator.getBoundingClientRect().top}px`;
+				//document.body.appendChild(colorPicker);
+
+				colorPicker.addEventListener('input', (event) => {
+					body.color = event.target.value;
 					updateControlValues();
-				}
+				});
+				colorPicker.addEventListener('change', () => {
+					document.body.removeChild(colorPicker);
+				});
+
+				document.addEventListener('click', function handler(event) {
+					if (!colorPicker.contains(event.target) && event.target !== colorIndicator) {
+						document.body.removeChild(colorPicker);
+						document.removeEventListener('click', handler);
+					}
+				}, { once: true });
+
+				colorPicker.click();
 			}
 		});
+
 
 		const massInput = document.getElementById(`mass${index + 1}`);
 		const xInput = document.getElementById(`x${index + 1}`);
@@ -447,7 +511,7 @@ function updateControlValues() {
 		massInput.addEventListener('input', (e) => {
 			if (isPaused) {
 				body.mass = parseFloat(e.target.value);
-				resetView();
+				// resetView();
 			}
 		});
 
@@ -456,7 +520,7 @@ function updateControlValues() {
 				body.position.x = parseFloat(e.target.value);
 				body.trail = [];
 				body.points = [];
-				resetView();
+				// resetView();
 			}
 		});
 
@@ -465,28 +529,28 @@ function updateControlValues() {
 				body.position.y = parseFloat(e.target.value);
 				body.trail = [];
 				body.points = [];
-				resetView();
+				// resetView();
 			}
 		});
 
 		vxInput.addEventListener('input', (e) => {
 			if (isPaused) {
 				body.velocity.x = parseFloat(e.target.value);
-				resetView();
+				// resetView();
 			}
 		});
 
 		vyInput.addEventListener('input', (e) => {
 			if (isPaused) {
 				body.velocity.y = parseFloat(e.target.value);
-				resetView();
+				// resetView();
 			}
 		});
 		
 		chargeInput.addEventListener('input', (e) => {
 			if (isPaused) {
 				body.charge = parseFloat(e.target.value);
-				resetView();
+				// resetView();
 			}
 		});
 	});
