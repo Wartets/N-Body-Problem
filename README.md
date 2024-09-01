@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This project simulates the motion of multiple bodies (N-bodies) under the influence of gravitational forces, fluid friction, and collision physics. It is implemented as an HTML5 web application, using CSS for styling and JavaScript for the simulation logic.
+This project simulates the motion of multiple bodies (N-bodies) under the influence of gravitational forces, electromagnetic forces, fluid friction, and collision physics. It is implemented as an HTML5 web application, using CSS for styling and JavaScript for the simulation logic.
 
 ## Features
 
@@ -12,7 +12,7 @@ This project simulates the motion of multiple bodies (N-bodies) under the influe
 
 ## Example
 
-Here’s an example of the simulation in action:
+Here’s an example of the simulation in action: (image from v1.0.0)
 
 ![Example](https://github.com/user-attachments/assets/d24260e7-9659-4b81-8771-bceb32ab6217)
 
