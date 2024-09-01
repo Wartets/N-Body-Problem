@@ -19,8 +19,10 @@ Here’s an example of the simulation in action:
 ## Compatibility
 
 The simulation has been tested on:
-- **Firefox**: Version 129.0.2 (64-bit)
-- **Chromium**: Version 122.0.6250.0 (Dev Build, 64-bit)
+- **Firefox**: Version 129.0.2 (64-bit) (worked well)
+- **Chromium**: Version 122.0.6250.0 (Dev Build, 64-bit) (worked well)
+- **Safari**: iOS 16.4.1 (20E252) (good, could be better)
+- **Firefox Beta**: Version 130.0 44595 (Dev Build on iOS 16.4.1) (good, could be better)
 
 ## Changelog
 
