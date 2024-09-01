@@ -9,19 +9,47 @@ body {
 }
 
 #simulationCanvas {
-	flex: 1;
-	background-color: #000;
-	position: relative;
+    flex: 1;
+    background-color: #000;
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    object-fit: contain;
+    transition: transform 0.3s ease-in-out;
+}
+
+.hidden #simulationCanvas {
+	transition: transform 0.3s ease-in-out;
 }
 
 #controls {
 	width: 300px;
+    height: 100%;
 	padding: 20px;
 	background-color: #2c2c2c;
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
 	overflow-y: auto;
+    position: relative;
+    transform: translateX(0);
+    transition: transform 0.3s ease-in-out;
+}
+
+.hidden #controls {
+    transform: translateX(100%);
+}
+
+#controlsToggle {
+	right: 345px;
+    position: absolute;
+    top: 49%;
+    cursor: pointer;
+    transition: right 0.3s ease-in-out;
+}
+
+.hidden #controlsToggle {
+    right: 5px;
 }
 
 .control-group {
@@ -93,8 +121,8 @@ button:hover {
   width: 20px;
   height: 20px;
   display: inline-block;
-  background-image: url('trash-icon.png'); /* Assurez-vous que ce chemin est correct */
-  background-size: cover; /* S'ajuste pour que l'image remplisse l'élément */
+  background-image: url('image/trash-icon.png');
+  background-size: cover;
   vertical-align: middle;
 }	flex: 1;
 
@@ -134,9 +162,9 @@ button:hover {
 }
 
 .btn {
-	flex: 1; /* Chaque bouton prend une largeur égale */
+	flex: 1
 }
 
 .mrgn-bttm-lg {
-	margin-bottom: 20px; /* Ajuste la marge inférieure selon tes besoins */
+	margin-bottom: 20px;
 }

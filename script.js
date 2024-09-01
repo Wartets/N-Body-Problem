@@ -20,6 +20,15 @@ let cameraOffset = { x: 0, y: 0 };
 
 const mouseCoordsDisplay = document.getElementById('mouseCoords');
 
+const controls = document.getElementById('controls');
+const controlsToggle = document.getElementById('controlsToggle');
+
+controlsToggle.addEventListener('click', () => {
+    const isHidden = controls.classList.toggle('hidden');
+    controlsToggle.innerHTML = isHidden ? '&#x25C0;' : '&#x25B6;';
+    document.body.classList.toggle('hidden');
+});
+
 const translations = {
     "fr": {
         "resetView": "Réinitialiser la vue",
@@ -879,7 +888,7 @@ function handleMouseDown(event) {
 		if (Math.sqrt(dx * dx + dy * dy) < (showSizeCheckbox.checked ? 10 / scale : 10)) {
 			selectedBody = body;
 			isPaused = true;
-			startPauseBtn.textContent = "Lancer la simulation";
+			startPauseBtn.textContent = "Mettre en pause";
 			break;
 		}
 	}
@@ -966,5 +975,3 @@ function updatePresetSelect() {
 }
 
 updatePresetSelect();
-
-
