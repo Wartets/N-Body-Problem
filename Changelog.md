@@ -46,8 +46,3 @@
   - v1.1 German translation
   - v1.1 Spanish translation (thanks to Arthur Loubeau)
 - Key usage support : zoom ("scroll down" and "scroll up")
-
-### Changed
-
-- Paving the way for future ui changes, especially for controls
-- Fixed minor clarity problems
