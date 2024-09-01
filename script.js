@@ -40,6 +40,7 @@ const translations = {
         "adaptiveSize": "(adaptative: 1 / constante 0)",
         "enableCollisions": "Activer les collisions",
         "enableGravity": "Activer la gravité",
+        "enableMA": "Activer la force électromagnétique",
         "showVelocities": "Afficher les vecteurs de vitesse",
         "enableFriction": "Activer les frottements",
         "frictionCoefficient": "Coefficient de frottement :",
@@ -61,6 +62,7 @@ const translations = {
         "adaptiveSize": "(adaptive: 1 / constant 0)",
         "enableCollisions": "Enable Collisions",
         "enableGravity": "Enable Gravity",
+        "enableMA": "Activate the electromagnetic force",
         "showVelocities": "Show Velocity Vectors",
         "enableFriction": "Enable Friction",
         "frictionCoefficient": "Friction Coefficient:",
@@ -82,6 +84,7 @@ const translations = {
         "adaptiveSize": "(adaptatable: 1 / constante: 0)",
         "enableCollisions": "Activar colisiones",
         "enableGravity": "Activar gravedad",
+        "enableMA": "Activar la fuerza electromagnética",
         "showVelocities": "Mostrar vectores de velocidad",
         "enableFriction": "Activar fricción",
         "frictionCoefficient": "Coeficiente de fricción:",
@@ -103,6 +106,7 @@ const translations = {
         "adaptiveSize": "(adaptiv: 1 / konstant: 0)",
         "enableCollisions": "Kollisionen aktivieren",
         "enableGravity": "Schwerkraft aktivieren",
+        "enableMA": "Elektromagnetische Kraft aktivieren",
         "showVelocities": "Geschwindigkeitsvektoren anzeigen",
         "enableFriction": "Reibung aktivieren",
         "frictionCoefficient": "Reibungskoeffizient:",
@@ -131,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('displayModeLabel').textContent = trans.dotViewSetting;
         document.getElementById('collisionToggleLabel').textContent = trans.enableCollisions;
         document.getElementById('gravityToggleLabel').textContent = trans.enableGravity;
+        document.getElementById('magneticToggleLabel').textContent = trans.enableMA;
         document.getElementById('showVelocitiesLabel').textContent = trans.showVelocities;
         document.getElementById('frictionToggleLabel').textContent = trans.enableFriction;
         document.getElementById('frictionCoefficientLabel').textContent = trans.frictionCoefficient;
@@ -164,10 +169,11 @@ canvas.addEventListener('mousemove', (event) => {
 	mouseCoordsDisplay.textContent = `Coord : (${mouseX.toFixed(2)}; ${mouseY.toFixed(2)})`;
 });
 
+
 const initialBodies = [
-	{ name: "Objet 1", mass: 250, position: { x: 0, y: 0 }, velocity: { x: 0, y: 1 }, color: "red" },
-	{ name: "Objet 2", mass: 300, position: { x: 200, y: 200 }, velocity: { x: -1, y: 0 }, color: "green" },
-	{ name: "Objet 3", mass: 100, position: { x: 200, y: 0 }, velocity: { x: -1, y: 1 }, color: "blue" }
+    { name: "Objet 1", mass: 250, charge: 0, position: { x: 0, y: 0 }, velocity: { x: 0, y: 1 }, color: "red" },
+    { name: "Objet 2", mass: 300, charge: 0, position: { x: 200, y: 200 }, velocity: { x: -1, y: 0 }, color: "green" },
+    { name: "Objet 3", mass: 100, charge: 0, position: { x: 200, y: 0 }, velocity: { x: -1, y: 1 }, color: "blue" }
 ];
 
 
@@ -179,60 +185,67 @@ const bodies = initialBodies.map(body => ({
 	points: []
 }));
 
-const G = 0.1;
+const G = 0.1; // 6.67e-11; // Constante de Coulomb
+const k = 100; // 8.99e9; // Constante de Coulomb
 
 const presets = {
 	"Initial preset": { dt: 0.24,
 		bodies: [
-			{ name: "Objet 1", mass: 250, position: { x: 0, y: 0 }, velocity: { x: 0, y: 1 }, color: "red", show: true },
-			{ name: "Objet 2", mass: 300, position: { x: 200, y: 200 }, velocity: { x: -1, y: 0 }, color: "green", show: true },
-			{ name: "Objet 3", mass: 100, position: { x: 200, y: 0 }, velocity: { x: -1, y: 1 }, color: "blue", show: true }
+			{ name: "Objet 1", mass: 250, charge: 0, position: { x: 0, y: 0 }, velocity: { x: 0, y: 1 }, color: "red", show: true },
+			{ name: "Objet 2", mass: 300, charge: 0, position: { x: 200, y: 200 }, velocity: { x: -1, y: 0 }, color: "green", show: true },
+			{ name: "Objet 3", mass: 100, charge: 0, position: { x: 200, y: 0 }, velocity: { x: -1, y: 1 }, color: "blue", show: true }
 		]
 	},
 	"Tri-system 1": { dt: 0.3,
 		bodies: [
-			{ name: "Star", mass: 7500, position: { x: 0, y: 0 }, velocity: { x: 0.5, y: -0.2 }, color: "yellow", show: true },
-			{ name: "Planet 1", mass: 10, position: { x: 134, y: 0 }, velocity: { x: 0, y: -1.5 }, color: "purple", show: true },
-			{ name: "Planet 2", mass: 25, position: { x: 45, y: 0 }, velocity: { x: 0, y: -3 }, color: "cyan", show: true }
+			{ name: "Star", mass: 7500, charge: 0, position: { x: 0, y: 0 }, velocity: { x: 0.5, y: -0.2 }, color: "yellow", show: true },
+			{ name: "Planet 1", mass: 10, charge: 0, position: { x: 134, y: 0 }, velocity: { x: 0, y: -1.5 }, color: "purple", show: true },
+			{ name: "Planet 2", mass: 25, charge: 0, position: { x: 45, y: 0 }, velocity: { x: 0, y: -3 }, color: "cyan", show: true }
 		]
 	},
 	"Quadri-system": { dt: 0.24,
 		bodies: [
-			{ name: "Star", mass: 7000, position: { x: -13.245, y: 4.324 }, velocity: { x: -4.974, y: 2.992 }, color: "orange", show: true },
-			{ name: "Planet 1", mass: 1, position: { x: -0.562, y: 0.262 }, velocity: { x: -4.730, y: 8.905 }, color: "pink", show: true },
-			{ name: "Planet 2", mass: 25, position: { x: -10.249, y: 26.094 }, velocity: { x: -10.449, y: 2.762 }, color: "lime", show: true },
-			{ name: "Planet 3", mass: 1, position: { x: 5, y: 18.262 }, velocity: { x: -4.730, y: 8.905 }, color: "red", show: true }
+			{ name: "Star", mass: 7000, charge: 0, position: { x: -13.245, y: 4.324 }, velocity: { x: -4.974, y: 2.992 }, color: "orange", show: true },
+			{ name: "Planet 1", mass: 1, charge: 0, position: { x: -0.562, y: 0.262 }, velocity: { x: -4.730, y: 8.905 }, color: "pink", show: true },
+			{ name: "Planet 2", mass: 25, charge: 0, position: { x: -10.249, y: 26.094 }, velocity: { x: -10.449, y: 2.762 }, color: "lime", show: true },
+			{ name: "Planet 3", mass: 1, charge: 0, position: { x: 5, y: 18.262 }, velocity: { x: -4.730, y: 8.905 }, color: "red", show: true }
 		]
 	},
 	"Sun Earth Moon like": { dt: 0.001,
 		bodies: [
-			{ name: "Sun", mass: 100000, position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
-			{ name: "Moon", mass: 3.694e-4, position: { x: 10.02562667, y: 0 }, velocity: { x: 0, y: 31.03 }, color: "gray", show: true },
-			{ name: "Earth", mass: 3.003e-1, position: { x: 10, y: 0 }, velocity: { x: 0, y: 30 }, color: "blue", show: true }
+			{ name: "Sun", mass: 100000, charge: 0, position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
+			{ name: "Moon", mass: 3.694e-4, charge: 0, position: { x: 10.02562667, y: 0 }, velocity: { x: 0, y: 31.03 }, color: "gray", show: true },
+			{ name: "Earth", mass: 3.003e-1, charge: 0, position: { x: 10, y: 0 }, velocity: { x: 0, y: 30 }, color: "blue", show: true }
 		]
 	},
 	"Billard": { dt: 0.1,
 		bodies: [
-			{ name: "White", mass: 8.5, position: { x: 150, y: 0 }, velocity: { x: -18.75, y: 0 }, color: "white", show: true },
-			{ name: "Yellow", mass: 8.5, position: { x: 0, y: 5.11 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
-			{ name: "Brown", mass: 8.5, position: { x: 0, y: -5.11 }, velocity: { x: 0, y: 0 }, color: "brown", show: true },
-			{ name: "Red", mass: 8.5, position: { x: 8.85, y: 0 }, velocity: { x: 0, y: 0 }, color: "red", show: true },
-			{ name: "Green", mass: 8.5, position: { x: 4.43, y: 2.56 }, velocity: { x: 0, y: 0 }, color: "green", show: true },
-			{ name: "Purple", mass: 8.5, position: { x: 4.43, y: -2.56 }, velocity: { x: 0, y: 0 }, color: "purple", show: true },
-			{ name: "Blue", mass: 8.5, position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 }, color: "blue", show: true }
+			{ name: "White", mass: 8.5, charge: 0, position: { x: 150, y: 0 }, velocity: { x: -18.75, y: 0 }, color: "white", show: true },
+			{ name: "Yellow", mass: 8.5, charge: 0, position: { x: 0, y: 5.11 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
+			{ name: "Brown", mass: 8.5, charge: 0, position: { x: 0, y: -5.11 }, velocity: { x: 0, y: 0 }, color: "brown", show: true },
+			{ name: "Red", mass: 8.5, charge: 0, position: { x: 8.85, y: 0 }, velocity: { x: 0, y: 0 }, color: "red", show: true },
+			{ name: "Green", mass: 8.5, charge: 0, position: { x: 4.43, y: 2.56 }, velocity: { x: 0, y: 0 }, color: "green", show: true },
+			{ name: "Purple", mass: 8.5, charge: 0, position: { x: 4.43, y: -2.56 }, velocity: { x: 0, y: 0 }, color: "purple", show: true },
+			{ name: "Blue", mass: 8.5, charge: 0, position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 }, color: "blue", show: true }
 		]
 	},
 	"Collision test": { dt: 0.001,
 		bodies: [
-			{ name: "Ball 1", mass: 20, position: { x: 10, y: 10 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
-			{ name: "Ball 2", mass: 10, position: { x: 10.1, y: 20 }, velocity: { x: 0, y: -10 }, color: "gray", show: true },
-			{ name: "else", mass: 0.0001, position: { x: -20, y: 12.5 }, velocity: { x: 0, y: 0 }, color: "black", show: true }
+			{ name: "Ball 1", mass: 20, charge: 0, position: { x: 10, y: 10 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
+			{ name: "Ball 2", mass: 10, charge: 0, position: { x: 10.1, y: 20 }, velocity: { x: 0, y: -10 }, color: "gray", show: true },
+			{ name: "else", mass: 0.0001, charge: 0, position: { x: -20, y: 12.5 }, velocity: { x: 0, y: 0 }, color: "black", show: true }
 		]
 	},
 	"Rosace": { dt: 0.3,
 		bodies: [
-			{ name: "Object 1", mass: 8000, position: { x: 0, y: 0 }, velocity: { x: 0.009, y: 0.000 }, color: "darkgray", show: true },
-			{ name: "Object 2", mass: 10.000, position: { x: 4.825, y: 7 }, velocity: { x: 5.077, y: -9.240 }, color: "pink", show: true }
+			{ name: "Object 1", mass: 8000, charge: 0, position: { x: 0, y: 0 }, velocity: { x: 0.009, y: 0.000 }, color: "darkgray", show: true },
+			{ name: "Object 2", mass: 10.000, charge: 0, position: { x: 4.825, y: 7 }, velocity: { x: 5.077, y: -9.240 }, color: "pink", show: true }
+		]
+	},
+	"Magnetic Force Test": { dt: 0.3,
+		bodies: [
+			{ name: "Object 1", mass: 40, charge: -2, position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
+			{ name: "Object 2", mass: 10, charge: -2, position: { x: 5, y: 5 }, velocity: { x: 0, y: 0 }, color: "pink", show: true }
 		]
 	}
 };
@@ -367,7 +380,6 @@ startPauseBtn.addEventListener('click', () => {
 
 startTimer();
 
-
 function updateControlValues() {
 	controlsContainer.innerHTML = '';
 
@@ -388,11 +400,13 @@ function updateControlValues() {
 				</label>
 			</div>
 			<label for="mass${index + 1}">Masse :</label>
-			<input type="number" id="mass${index + 1}" value="${body.mass.toFixed(3)}" step="any">
+			<input type="number" id="mass${index + 1}" value="${body.mass.toFixed(2)}" step="any">
+			<label for="charge${index + 1}">Charge :</label>
+			<input type="number" id="charge${index + 1}" value="${body.charge.toFixed(1)}" step="any">
 			<label for="x${index + 1}">Position X :</label>
-			<input type="number" id="x${index + 1}" value="${body.position.x.toFixed(3)}" step="any">
+			<input type="number" id="x${index + 1}" value="${body.position.x.toFixed(2)}" step="any">
 			<label for="y${index + 1}">Position Y :</label>
-			<input type="number" id="y${index + 1}" value="${body.position.y.toFixed(3)}" step="any">
+			<input type="number" id="y${index + 1}" value="${body.position.y.toFixed(2)}" step="any">
 			<label for="vx${index + 1}">Vitesse X :</label>
 			<input type="number" id="vx${index + 1}" value="${body.velocity.x.toFixed(3)}" step="any">
 			<label for="vy${index + 1}">Vitesse Y :</label>
@@ -428,6 +442,7 @@ function updateControlValues() {
 		const yInput = document.getElementById(`y${index + 1}`);
 		const vxInput = document.getElementById(`vx${index + 1}`);
 		const vyInput = document.getElementById(`vy${index + 1}`);
+		const chargeInput = document.getElementById(`charge${index + 1}`)
 
 		massInput.addEventListener('input', (e) => {
 			if (isPaused) {
@@ -467,6 +482,13 @@ function updateControlValues() {
 				resetView();
 			}
 		});
+		
+		chargeInput.addEventListener('input', (e) => {
+			if (isPaused) {
+				body.charge = parseFloat(e.target.value);
+				resetView();
+			}
+		});
 	});
 
 	setupTrashIcons();
@@ -492,36 +514,44 @@ function playImpactSound() {
 }
 
 function calculateForces() {
-	const gravityEnabled = document.getElementById('gravityToggle').checked;
+    const gravityEnabled = document.getElementById('gravityToggle').checked;
+    const magneticEnabled = document.getElementById('magneticToggle').checked;
 
-	if (!gravityEnabled) {
-		bodies.forEach(body => {
-			body.acceleration.x = 0;
-			body.acceleration.y = 0;
-		});
-		return;
-	}
+    bodies.forEach(body => {
+        body.acceleration.x = 0;
+        body.acceleration.y = 0;
+    });
 
-	for (let i = 0; i < bodies.length; i++) {
-		let fx = 0;
-		let fy = 0;
+    for (let i = 0; i < bodies.length; i++) {
+        let fx = 0;
+        let fy = 0;
 
-		for (let j = 0; j < bodies.length; j++) {
-			if (i !== j) {
-				const dx = bodies[j].position.x - bodies[i].position.x;
-				const dy = bodies[j].position.y - bodies[i].position.y;
-				const distance = Math.sqrt(dx * dx + dy * dy);
-				const force = (G * bodies[i].mass * bodies[j].mass) / (distance * distance);
+        for (let j = 0; j < bodies.length; j++) {
+            if (i !== j) {
+                const dx = bodies[j].position.x - bodies[i].position.x;
+                const dy = bodies[j].position.y - bodies[i].position.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
 
-				fx += force * (dx / distance);
-				fy += force * (dy / distance);
-			}
-		}
+                if (gravityEnabled) {
+                    const forceG = (G * bodies[i].mass * bodies[j].mass) / (distance * distance);
+                    fx += forceG * (dx / distance);
+                    fy += forceG * (dy / distance);
+                }
 
-		bodies[i].acceleration.x = fx / bodies[i].mass;
-		bodies[i].acceleration.y = fy / bodies[i].mass;
-	}
+                if (magneticEnabled) {
+                    const forceEM = (k * bodies[i].charge * bodies[j].charge) / (distance * distance);
+                    fx += forceEM * (-dx / distance);
+                    fy += forceEM * (-dy / distance);
+                }
+            }
+        }
+
+        bodies[i].acceleration.x = fx / bodies[i].mass;
+        bodies[i].acceleration.y = fy / bodies[i].mass;
+    }
 }
+
+
 
 const frictionToggle = document.getElementById('frictionToggle');
 const frictionCoefficientContainer = document.getElementById('frictionCoefficientContainer');
@@ -549,13 +579,10 @@ function simulate() {
 	if (!isPaused) {
 		calculateForces();
 		applyFriction(); 
-
 	}
-
 	requestAnimationFrame(simulate);
 }
 simulate();
-
 
 const slider = document.getElementById('trailLimit');
 const tooltip = document.getElementById('sliderTooltip');
@@ -853,6 +880,7 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 		while (bodies.length < preset.bodies.length) {
 			bodies.push({
 				mass: 100,
+				charge: 0,
 				position: { x: 0, y: 0 },
 				velocity: { x: 0, y: 0 },
 				color: '#ffffff',
@@ -866,6 +894,7 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 		preset.bodies.forEach((presetBody, index) => {
 			if (bodies[index]) {
 				bodies[index].mass = presetBody.mass;
+				bodies[index].charge = presetBody.charge;
 				bodies[index].position = { ...presetBody.position };
 				bodies[index].velocity = { ...presetBody.velocity };
 				bodies[index].color = presetBody.color;
@@ -952,6 +981,7 @@ document.getElementById('savePresetBtn').addEventListener('click', () => {
 		dt: parseFloat(dtInput.value),
 		bodies: bodies.map(body => ({
 			mass: body.mass,
+			charge: body.charge,
 			position: { x: body.position.x, y: body.position.y },
 			velocity: { x: body.velocity.x, y: body.velocity.y },
 			color: body.color,
