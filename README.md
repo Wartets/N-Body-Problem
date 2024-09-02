@@ -10,6 +10,10 @@ This project simulates the motion of multiple bodies (N-bodies) under the influe
 - **Multi-language Support**: Available in English, French, Spanish, and German, Italian, Latin with additional languages planned for future releases.
 - **Special Thanks**: Appreciation to Arthur Loubeau for contributing the Spanish translation and to Christian Abou for the Italian translation.
 
+## Usage
+
+For more information on how to access and use the simulation, please visit the [wiki](https://github.com/Wartets/N-Body-Problem/wiki#n-body-simulation-wiki).
+
 ## Example
 
 Here’s an example of the simulation in action: (image from v1.0.0)
