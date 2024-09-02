@@ -7,7 +7,7 @@ This project simulates the motion of multiple bodies (N-bodies) under the influe
 ## Features
 
 - **Dynamic Object Addition**: You can add an unlimited number of objects, constrained only by your computer's processing power.
-- **Multi-language Support**: Available in English, French, Spanish, and German, with additional languages planned for future releases.
+- **Multi-language Support**: Available in English, French, Spanish, and German, Italian, Latin with additional languages planned for future releases.
 - **Special Thanks**: Appreciation to Arthur Loubeau for contributing the Spanish translation.
 
 ## Example
