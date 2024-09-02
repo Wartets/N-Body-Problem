@@ -422,9 +422,9 @@ const k = 100; // 8.99e9; // Constante de Coulomb
 const presets = {
 	"Initial preset": { dt: 0.24,
 		bodies: [
-			{ name: "Objet 1", mass: 250, charge: 0, position: { x: 0, y: 0 }, velocity: { x: 0, y: 1 }, color: "red", show: true },
-			{ name: "Objet 2", mass: 300, charge: 0, position: { x: 200, y: 200 }, velocity: { x: -1, y: 0 }, color: "green", show: true },
-			{ name: "Objet 3", mass: 100, charge: 0, position: { x: 200, y: 0 }, velocity: { x: -1, y: 1 }, color: "blue", show: true }
+			{ name: "Objet 1", mass: 250, charge: 2, position: { x: 0, y: 0 }, velocity: { x: 0, y: 1 }, color: "red", show: true },
+			{ name: "Objet 2", mass: 300, charge: 1.5, position: { x: 200, y: 200 }, velocity: { x: -1, y: 0 }, color: "green", show: true },
+			{ name: "Objet 3", mass: 100, charge: -1, position: { x: 200, y: 0 }, velocity: { x: -1, y: 1 }, color: "blue", show: true }
 		]
 	},
 	"Tri-system 1": { dt: 0.3,
@@ -1318,7 +1318,7 @@ function drawGravityField() {
 
                 if (distance !== 0) {
                     if (showGravityField) {
-                        const forceG = - (G * body.mass) / (distance * distance);
+                        const forceG = (G * body.mass) / (distance * distance);
                         fx += forceG * (dx / distance);
                         fy += forceG * (dy / distance);
                     }
@@ -1414,4 +1414,3 @@ function drawMagneticField() {
 
     ctx.restore();
 }
-
