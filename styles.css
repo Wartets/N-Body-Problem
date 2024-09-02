@@ -18,9 +18,9 @@ body {
     transition: transform 0.3s ease-in-out;
 }
 
-.hidden #simulationCanvas {
+/* .hidden #simulationCanvas {
 	transition: transform 0.3s ease-in-out;
-}
+} */
 
 #controls {
 	width: 260px;
