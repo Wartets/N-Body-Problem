@@ -76,7 +76,7 @@ const translations = {
         "centerView": "Center View:",
         "zoomManual": "Manual Zoom:",
         "trailLimit": "Trail Points (power of 10)",
-        "loadPreset": "Load Preset:",
+        "loadPreset": "Load Preset",
         "savePreset": "Save Preset",
         "presetName": "Preset Name (empty for default)",
         "addObject": "Add Object",
@@ -220,7 +220,7 @@ const bodies = initialBodies.map(body => ({
 	points: []
 }));
 
-const G = 0.1; // 6.67e-11; // Constante de Coulomb
+const G = 0.1; // 6.67e-11; // Constante de Gravitationel
 const k = 100; // 8.99e9; // Constante de Coulomb
 
 const presets = {
@@ -1120,9 +1120,9 @@ function drawGravityField() {
                 const dy = body.position.y - y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance > 1) { // Éviter la division par zéro
+                if (distance !== 0) {
                     if (showGravityField) {
-                        const forceG = (G * body.mass) / (distance * distance);
+                        const forceG = - (G * body.mass) / (distance * distance);
                         fx += forceG * (dx / distance);
                         fy += forceG * (dy / distance);
                     }
@@ -1131,8 +1131,7 @@ function drawGravityField() {
 
             const forceMagnitude = Math.sqrt(fx * fx + fy * fy);
 
-            if (forceMagnitude > 0) {
-                const angle = Math.atan2(fy, fx);
+            if (forceMagnitude !== 0) {
                 const vectorLength = Math.min(Math.sqrt(forceMagnitude) / maxMass * 20000, 10) / (showSizeCheckbox.checked ? scale : 2) * 1.5 ;
 
                 ctx.beginPath();
@@ -1189,7 +1188,7 @@ function drawMagneticField() {
                 const dy = body.position.y - y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance > 1) {
+                if (distance !== 0) {
                     if (showMagneticField) {
                         const forceEM = (k * body.charge) / (distance * distance);
                         fx += forceEM * (-dx / distance);
@@ -1200,10 +1199,9 @@ function drawMagneticField() {
 
             const forceMagnitude = Math.sqrt(fx * fx + fy * fy);
 
-            if (forceMagnitude > 0) {
-                const angle = Math.atan2(fy, fx);
+            if (forceMagnitude !== 0) {
                 const vectorLength = Math.min(Math.sqrt(forceMagnitude / maxCharge) * 2000, 10) / (showSizeCheckbox.checked ? scale : 2) ;
-
+				
                 ctx.beginPath();
                 ctx.moveTo(x * scale - visibleCenterX * scale + canvasWidth / 2, y * scale - visibleCenterY * scale + canvasHeight / 2);
                 ctx.lineTo(
