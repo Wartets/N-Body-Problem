@@ -26,4 +26,4 @@ The simulation has been tested on:
 
 ## Changelog
 
-For detailed updates and improvements, please refer to the [Full Changelog](https://github.com/user-attachments/assets/d24260e7-9659-4b81-8771-bceb32ab6217).
+For detailed updates and improvements, please refer to the [Full Changelog](https://github.com/Wartets/N-Body-Problem/blob/main/Changelog.md).
