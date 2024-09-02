@@ -7,7 +7,7 @@ This project simulates the motion of multiple bodies (N-bodies) under the influe
 ## Features
 
 - **Dynamic Object Addition**: You can add an unlimited number of objects, constrained only by your computer's processing power.
-- **Multi-language Support**: Available in English, French, Spanish, and German, with additional languages planned for future releases.
+- **Multi-language Support**: Available in English, French, Spanish, and German, Italian, Latin with additional languages planned for future releases.
 - **Special Thanks**: Appreciation to Arthur Loubeau for contributing the Spanish translation.
 
 ## Example
@@ -26,4 +26,4 @@ The simulation has been tested on:
 
 ## Changelog
 
-For detailed updates and improvements, please refer to the [Full Changelog](https://github.com/user-attachments/assets/d24260e7-9659-4b81-8771-bceb32ab6217).
+For detailed updates and improvements, please refer to the [Full Changelog](https://github.com/Wartets/N-Body-Problem/blob/main/Changelog.md).
