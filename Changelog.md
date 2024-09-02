@@ -30,7 +30,7 @@
 - Paving the way for future ui changes, especially for controls
 - Fixed minor clarity problems
 
-## v1.1.0 - 01/08/2024
+## v1.1.0 - 01/09/2024
 
 ### Added
 
@@ -45,3 +45,22 @@
   - v1.1 French translation
   - v1.1 German translation
   - v1.1 Spanish translation (thanks to Arthur Loubeau)
+ 
+## v1.1.1 - 02/09/2024
+
+### Added
+
+- Gravitational field display added, supports adaptive view setting
+- Added the ability to view the electromagnetic field, supports adaptive view setting
+- v1.0 Italian translation (thanks to Christian Abou)
+- v1.0 Latin translation
+
+### Changed
+
+- Minor bugs fixed in electrical charge parameters
+- Correction of object location accuracy on canvas and in parameters
+- Updated translations to add field parameters :
+  - v1.2 English translation
+  - v1.2 French translation
+  - v1.2 German translation
+  - v1.2 Spanish translation (thanks to Arthur Loubeau)
