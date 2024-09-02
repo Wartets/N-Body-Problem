@@ -603,11 +603,7 @@ document.getElementById('resetViewBtn').addEventListener('click', () => {
 	startTimer();
 });
 
-startPauseBtn.addEventListener('click', () => {
-	if (!isPaused) {
-		startTimer();
-	}
-});
+
 
 startTimer();
 
@@ -1140,6 +1136,8 @@ document.getElementById('addBodyBtn').addEventListener('click', () => {
 
 document.getElementById('loadPresetBtn').addEventListener('click', () => {
 	const selectedPresetName = document.getElementById('presetSelect').value;
+	timeElapsed = 0;
+	timerDisplay.textContent = `Temps : 0.00 s`;
 	if (selectedPresetName && presets[selectedPresetName]) {
 		const preset = presets[selectedPresetName];
 		dtInput.value = preset.dt;
