@@ -3,6 +3,15 @@ let collisionsEnabled = false;
 let focusObject = 'barycenter';
 let selectedBody = null;
 let manualMoveTimeout = null;
+let scale = 1;
+let scrollZoom = 1;
+let cameraOffset = { x: 0, y: 0 };
+let G, k;
+let timeElapsed = 0;
+let lastTime = 0;
+let isPlaying = false;
+let lastImpactTime = 0;
+
 const canvas = document.getElementById('simulationCanvas');
 const ctx = canvas.getContext('2d');
 const dtInput = document.getElementById('dt');
@@ -11,23 +20,61 @@ const startPauseImg = document.getElementById('startPauseImg');
 const controlsContainer = document.getElementById('object-controls');
 const showSizeCheckbox = document.getElementById('showSize');
 const focusSelect = document.getElementById('focusSelect');
+const mouseCoordsDisplay = document.getElementById('mouseCoords');
+const controls = document.getElementById('controls');
+const controlsToggle = document.getElementById('controlsToggle');
+const constValCheckbox = document.getElementById('ConstVal');
+const fullscreenBtn = document.getElementById('fullscreenBtn');
+const frictionToggle = document.getElementById('frictionToggle');
+const frictionCoefficientContainer = document.getElementById('frictionCoefficientContainer');
+const frictionCoefficientInput = document.getElementById('frictionCoefficient');
+const slider = document.getElementById('trailLimit');
+const tooltip = document.getElementById('sliderTooltip');
+const timerDisplay = document.getElementById('timer');
+const impactSound = new Audio('sound/impact-sound.mp3');
+const impactDelay = 1;
+const bodies = initialBodies.map(body => ({
+	...body,
+	acceleration: { x: 0, y: 0 },
+	trail: [],
+	show: true,
+	points: []
+}));
+
+canvas.addEventListener('mousedown', handleMouseDown);
+canvas.addEventListener('mousemove', handleMouseMove);
+canvas.addEventListener('mouseup', handleMouseUp);
+canvas.addEventListener('wheel', handleMouseWheel);
+
 focusSelect.addEventListener('change', (e) => {
 	focusObject = e.target.value;
 	// resetView();
 });
-let scale = 1;
-let scrollZoom = 1;
-let cameraOffset = { x: 0, y: 0 };
 
-const mouseCoordsDisplay = document.getElementById('mouseCoords');
+frictionToggle.addEventListener('change', () => {
+	if (frictionToggle.checked) {
+		frictionCoefficientContainer.style.display = 'block';
+	} else {
+		frictionCoefficientContainer.style.display = 'none';
+	}
+});
 
-const controls = document.getElementById('controls');
-const controlsToggle = document.getElementById('controlsToggle');
+constValCheckbox.addEventListener('change', updateConstants);
 
 controlsToggle.addEventListener('click', () => {
     const isHidden = controls.classList.toggle('hidden');
     controlsToggle.innerHTML = isHidden ? '&#x25C0;' : '&#x25B6;';
     // document.body.classList.toggle('hidden');
+});
+
+fullscreenBtn.addEventListener('click', () => {
+	if (!document.fullscreenElement) {
+		document.documentElement.requestFullscreen();
+	} else {
+		if (document.exitFullscreen) {
+			document.exitFullscreen();
+		}
+	}
 });
 
 canvas.addEventListener('mousemove', (event) => {
@@ -37,55 +84,17 @@ canvas.addEventListener('mousemove', (event) => {
 	mouseCoordsDisplay.textContent = `Coord : (${mouseX.toFixed(2)}; ${mouseY.toFixed(2)})`;
 });
 
-const bodies = initialBodies.map(body => ({
-	...body,
-	acceleration: { x: 0, y: 0 },
-	trail: [],
-	show: true,
-	points: []
-}));
+startPauseBtn.addEventListener('click', () => {
+	Pause();
+});
 
-const constValCheckbox = document.getElementById('ConstVal');
-let G, k;
-
-function updateConstants() {
-    if (constValCheckbox.checked) {
-        G = 6.67e-11; // Constante gravitationnelle (réelle)
-        k = 8.99e9;   // Constante de Coulomb (réelle)
-    } else {
-        G = 0.1;      // Valeurs normalisées
-        k = 100;
-    }
-    console.log('G:', G, 'k:', k);
-}
-
-updateConstants();
-
-constValCheckbox.addEventListener('change', updateConstants);
-
-function resetView() {
-	cameraOffset = { x: 0, y: 0 };
-	scrollZoom = 1;
-	scale = 1  * scrollZoom;
-}
-
-function deleteBody(index) {
-	bodies.splice(index, 1);
-	updateControlValues();
-}
-
-function setupTrashIcons() {
-	bodies.forEach((body, index) => {
-		const trashIcon = document.getElementById(`trash${index}`);
-		if (trashIcon) {
-			trashIcon.addEventListener('click', () => {
-				if (confirm('Êtes-vous sûr de vouloir supprimer cet objet ?')) {
-					deleteBody(index);
-				}
-			});
-		}
-	});
-}
+window.addEventListener('resize', () => {
+	canvas.width = window.innerWidth - 300;
+	canvas.height = window.innerHeight;
+	if (focusObject === 'barycenter') {
+		resetView();
+	}
+});
 
 document.addEventListener('keydown', (event) => {
 	switch (event.key) {
@@ -143,21 +152,149 @@ document.getElementById('zoomIn10').addEventListener('click', () => {
 	scale = scale * scrollZoom;
 });
 
-const fullscreenBtn = document.getElementById('fullscreenBtn');
+document.getElementById('resetViewBtn').addEventListener('click', () => {
+	resetView();
+});
 
-fullscreenBtn.addEventListener('click', () => {
-	if (!document.fullscreenElement) {
-		document.documentElement.requestFullscreen();
-	} else {
-		if (document.exitFullscreen) {
-			document.exitFullscreen();
+document.getElementById('resetViewBtn').addEventListener('click', () => {
+	resetView();
+});
+
+document.getElementById('collisionToggle').addEventListener('change', (e) => {
+	collisionsEnabled = e.target.checked;
+});
+
+document.getElementById('addBodyBtn').addEventListener('click', () => {
+	const newBody = {
+		mass: 50 + Math.random() * 100,
+		charge: Math.round((Math.random() * 3 - 1.5) * 10) / 10,
+		position: getRandomPosition(),
+		velocity: { x: getRandomSpeed(), y: getRandomSpeed() },
+		color: '#' + Math.floor(Math.random() * 16777215).toString(16),
+		acceleration: { x: 0, y: 0 },
+		trail: [],
+		show: true,
+		points: []
+	};
+	bodies.push(newBody);
+	updateControlValues();
+});
+
+document.getElementById('loadPresetBtn').addEventListener('click', () => {
+	const selectedPresetName = document.getElementById('presetSelect').value;
+	if (selectedPresetName && presets[selectedPresetName]) {
+		const preset = presets[selectedPresetName];
+		dtInput.value = preset.dt;
+
+		clearTrails();
+		
+		while (bodies.length > preset.bodies.length) {
+			bodies.pop();
 		}
+
+		while (bodies.length < preset.bodies.length) {
+			bodies.push({
+				mass: 1,
+				charge: 0,
+				position: { x: 0, y: 0 },
+				velocity: { x: 0, y: 0 },
+				color: '#ffffff',
+				acceleration: { x: 0, y: 0 },
+				trail: [],
+				show: true,
+				points: []
+			});
+		}
+
+		preset.bodies.forEach((presetBody, index) => {
+			if (bodies[index]) {
+				bodies[index].mass = presetBody.mass;
+				bodies[index].charge = presetBody.charge;
+				bodies[index].position = { ...presetBody.position };
+				bodies[index].velocity = { ...presetBody.velocity };
+				bodies[index].color = presetBody.color;
+				bodies[index].show = presetBody.show;
+				bodies[index].name = presetBody.name;
+			}
+		});
+
+		updateControlValues();
+		startTimer();
 	}
 });
 
-let timeElapsed = 0;
-let lastTime = 0;
-const timerDisplay = document.getElementById('timer');
+document.getElementById('savePresetBtn').addEventListener('click', () => {
+	const presetNameInput = document.getElementById('presetName');
+	let presetName = presetNameInput.value.trim();
+	if (!presetName) {
+		presetName = 'preset ' + Date.now();
+	}
+
+	presets[presetName] = {
+		dt: parseFloat(dtInput.value),
+		bodies: bodies.map(body => ({
+			mass: body.mass,
+			charge: body.charge,
+			position: { x: body.position.x, y: body.position.y },
+			velocity: { x: body.velocity.x, y: body.velocity.y },
+			color: body.color,
+			show: body.show
+		}))
+	};
+
+	updatePresetSelect();
+	presetNameInput.value = '';
+});
+
+slider.addEventListener('input', (e) => {
+	const value = e.target.value;
+	tooltip.textContent = `${value}`;
+	tooltip.style.left = `${offset + tooltipRect.width / 2}px`;
+	tooltip.style.display = 'block';
+});
+
+slider.addEventListener('mouseleave', () => {
+	tooltip.style.display = 'none';
+});
+
+slider.addEventListener('mouseover', () => {
+	tooltip.style.display = 'block';
+});
+
+function updateConstants() {
+    if (constValCheckbox.checked) {
+        G = 6.67e-11; // Constante gravitationnelle (réelle)
+        k = 8.99e9;   // Constante de Coulomb (réelle)
+    } else {
+        G = 0.1;      // Valeurs normalisées
+        k = 100;
+    }
+    console.log('G:', G, 'k:', k);
+}
+
+function resetView() {
+	cameraOffset = { x: 0, y: 0 };
+	scrollZoom = 1;
+	scale = 1  * scrollZoom;
+}
+
+function deleteBody(index) {
+	bodies.splice(index, 1);
+	updateControlValues();
+}
+
+function setupTrashIcons() {
+	bodies.forEach((body, index) => {
+		const trashIcon = document.getElementById(`trash${index}`);
+		if (trashIcon) {
+			trashIcon.addEventListener('click', () => {
+				if (confirm('Êtes-vous sûr de vouloir supprimer cet objet ?')) {
+					deleteBody(index);
+				}
+			});
+		}
+	});
+}
 
 function startTimer() {
     timeElapsed = 0;
@@ -190,13 +327,6 @@ function formatTime(seconds) {
         return `${remainingSeconds} s`;
     }
 }
-
-
-document.getElementById('resetViewBtn').addEventListener('click', () => {
-	resetView();
-});
-
-startTimer();
 
 function updateControlValues() {
 	controlsContainer.innerHTML = '';
@@ -333,16 +463,6 @@ function updateControlValues() {
 	setupTrashIcons();
 }
 
-document.getElementById('resetViewBtn').addEventListener('click', () => {
-	resetView();
-});
-
-const impactSound = new Audio('sound/impact-sound.mp3');
-let isPlaying = false;
-
-let lastImpactTime = 0;
-const impactDelay = 1;
-
 function playImpactSound() {
 	const currentTime = Date.now();
 	if (currentTime - lastImpactTime > impactDelay) {
@@ -390,18 +510,6 @@ function calculateForces() {
     }
 }
 
-const frictionToggle = document.getElementById('frictionToggle');
-const frictionCoefficientContainer = document.getElementById('frictionCoefficientContainer');
-const frictionCoefficientInput = document.getElementById('frictionCoefficient');
-
-frictionToggle.addEventListener('change', () => {
-	if (frictionToggle.checked) {
-		frictionCoefficientContainer.style.display = 'block';
-	} else {
-		frictionCoefficientContainer.style.display = 'none';
-	}
-});
-
 function applyFriction() {
 	if (frictionToggle.checked) {
 		const coefficient = parseFloat(frictionCoefficientInput.value);
@@ -419,26 +527,6 @@ function simulate() {
 	}
 	requestAnimationFrame(simulate);
 }
-simulate();
-
-const slider = document.getElementById('trailLimit');
-const tooltip = document.getElementById('sliderTooltip');
-
-slider.addEventListener('input', (e) => {
-	const value = e.target.value;
-	tooltip.textContent = `${value}`;
-	tooltip.style.left = `${offset + tooltipRect.width / 2}px`;
-	tooltip.style.display = 'block';
-});
-
-slider.addEventListener('mouseleave', () => {
-	tooltip.style.display = 'none';
-});
-
-slider.addEventListener('mouseover', () => {
-	tooltip.style.display = 'block';
-});
-
 
 function adjustTrails(trailMaxPoints) {
 	bodies.forEach(body => {
@@ -670,7 +758,6 @@ function resolveCollision(body1, body2) {
 	body2.position.y += overlap / 2 * ny;
 }
 
-
 function animate() {
 	if (!isPaused) {
 		const dt = parseFloat(dtInput.value);
@@ -688,75 +775,12 @@ function animate() {
 	requestAnimationFrame(animate);
 }
 
-document.getElementById('collisionToggle').addEventListener('change', (e) => {
-	collisionsEnabled = e.target.checked;
-});
-
 function getRandomSpeed() {
     const term0 = Math.random() * 4 - 2;
     const term1 = (term0 !== 0 ? Math.exp(-term0 * term0) : 1) * 5 * Math.sign(term0);
 	const result = Math.round(term1 * 1000) / 1000;
     return result;
 }
-
-document.getElementById('addBodyBtn').addEventListener('click', () => {
-	const newBody = {
-		mass: 50 + Math.random() * 100,
-		charge: Math.round((Math.random() * 3 - 1.5) * 10) / 10,
-		position: getRandomPosition(),
-		velocity: { x: getRandomSpeed(), y: getRandomSpeed() },
-		color: '#' + Math.floor(Math.random() * 16777215).toString(16),
-		acceleration: { x: 0, y: 0 },
-		trail: [],
-		show: true,
-		points: []
-	};
-	bodies.push(newBody);
-	updateControlValues();
-});
-
-document.getElementById('loadPresetBtn').addEventListener('click', () => {
-	const selectedPresetName = document.getElementById('presetSelect').value;
-	if (selectedPresetName && presets[selectedPresetName]) {
-		const preset = presets[selectedPresetName];
-		dtInput.value = preset.dt;
-
-		clearTrails();
-		
-		while (bodies.length > preset.bodies.length) {
-			bodies.pop();
-		}
-
-		while (bodies.length < preset.bodies.length) {
-			bodies.push({
-				mass: 1,
-				charge: 0,
-				position: { x: 0, y: 0 },
-				velocity: { x: 0, y: 0 },
-				color: '#ffffff',
-				acceleration: { x: 0, y: 0 },
-				trail: [],
-				show: true,
-				points: []
-			});
-		}
-
-		preset.bodies.forEach((presetBody, index) => {
-			if (bodies[index]) {
-				bodies[index].mass = presetBody.mass;
-				bodies[index].charge = presetBody.charge;
-				bodies[index].position = { ...presetBody.position };
-				bodies[index].velocity = { ...presetBody.velocity };
-				bodies[index].color = presetBody.color;
-				bodies[index].show = presetBody.show;
-				bodies[index].name = presetBody.name;
-			}
-		});
-
-		updateControlValues();
-		startTimer();
-	}
-});
 
 function handleMouseDown(event) {
 	const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
@@ -812,50 +836,6 @@ function updateButtonImage() {
     }
 }
 
-startPauseBtn.addEventListener('click', () => {
-	Pause();
-});
-
-canvas.addEventListener('mousedown', handleMouseDown);
-canvas.addEventListener('mousemove', handleMouseMove);
-canvas.addEventListener('mouseup', handleMouseUp);
-canvas.addEventListener('wheel', handleMouseWheel);
-
-window.addEventListener('resize', () => {
-	canvas.width = window.innerWidth - 300;
-	canvas.height = window.innerHeight;
-	if (focusObject === 'barycenter') {
-		resetView();
-	}
-});
-
-window.dispatchEvent(new Event('resize'));
-updateControlValues();
-animate();
-
-document.getElementById('savePresetBtn').addEventListener('click', () => {
-	const presetNameInput = document.getElementById('presetName');
-	let presetName = presetNameInput.value.trim();
-	if (!presetName) {
-		presetName = 'preset ' + Date.now();
-	}
-
-	presets[presetName] = {
-		dt: parseFloat(dtInput.value),
-		bodies: bodies.map(body => ({
-			mass: body.mass,
-			charge: body.charge,
-			position: { x: body.position.x, y: body.position.y },
-			velocity: { x: body.velocity.x, y: body.velocity.y },
-			color: body.color,
-			show: body.show
-		}))
-	};
-
-	updatePresetSelect();
-	presetNameInput.value = '';
-});
-
 function updatePresetSelect() {
 	const presetSelect = document.getElementById('presetSelect');
 	presetSelect.innerHTML = '<option value="">Sélectionnez un preset</option>';
@@ -866,8 +846,6 @@ function updatePresetSelect() {
 		presetSelect.appendChild(option);
 	});
 }
-
-updatePresetSelect();
 
 function drawGravityField() {
     const showGravityField = document.getElementById('showGravityField').checked;
@@ -1004,3 +982,11 @@ function drawMagneticField() {
 
     ctx.restore();
 }
+
+startTimer();
+updateConstants();
+simulate();
+window.dispatchEvent(new Event('resize'));
+updateControlValues();
+animate();
+updatePresetSelect();
