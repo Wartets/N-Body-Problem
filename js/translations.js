@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         applyTranslations(languageSelect.value);
     });
 
-    applyTranslations(languageSelect.value || 'fr');
+    applyTranslations(languageSelect.value || 'en');
 });
 
 const translations = {

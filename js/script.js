@@ -77,15 +77,30 @@ fullscreenBtn.addEventListener('click', () => {
 	}
 });
 
+startPauseBtn.addEventListener('click', () => {
+	Pause();
+});
+
+slider.addEventListener('input', (e) => {
+	const value = e.target.value;
+	tooltip.textContent = `${value}`;
+	tooltip.style.left = `${offset + tooltipRect.width / 2}px`;
+	tooltip.style.display = 'block';
+});
+
+slider.addEventListener('mouseleave', () => {
+	tooltip.style.display = 'none';
+});
+
+slider.addEventListener('mouseover', () => {
+	tooltip.style.display = 'block';
+});
+
 canvas.addEventListener('mousemove', (event) => {
 	const rect = canvas.getBoundingClientRect();
 	const mouseX = (event.clientX - rect.left) / scale + cameraOffset.x;
 	const mouseY = (event.clientY - rect.top) / scale + cameraOffset.y;
 	mouseCoordsDisplay.textContent = `Coord : (${mouseX.toFixed(2)}; ${mouseY.toFixed(2)})`;
-});
-
-startPauseBtn.addEventListener('click', () => {
-	Pause();
 });
 
 window.addEventListener('resize', () => {
@@ -95,6 +110,8 @@ window.addEventListener('resize', () => {
 		resetView();
 	}
 });
+
+window.dispatchEvent(new Event('resize'));
 
 document.addEventListener('keydown', (event) => {
 	switch (event.key) {
@@ -150,10 +167,6 @@ document.getElementById('zoomIn2').addEventListener('click', () => {
 document.getElementById('zoomIn10').addEventListener('click', () => {
 	scrollZoom *= 10;
 	scale = scale * scrollZoom;
-});
-
-document.getElementById('resetViewBtn').addEventListener('click', () => {
-	resetView();
 });
 
 document.getElementById('resetViewBtn').addEventListener('click', () => {
@@ -246,27 +259,12 @@ document.getElementById('savePresetBtn').addEventListener('click', () => {
 	presetNameInput.value = '';
 });
 
-slider.addEventListener('input', (e) => {
-	const value = e.target.value;
-	tooltip.textContent = `${value}`;
-	tooltip.style.left = `${offset + tooltipRect.width / 2}px`;
-	tooltip.style.display = 'block';
-});
-
-slider.addEventListener('mouseleave', () => {
-	tooltip.style.display = 'none';
-});
-
-slider.addEventListener('mouseover', () => {
-	tooltip.style.display = 'block';
-});
-
 function updateConstants() {
     if (constValCheckbox.checked) {
         G = 6.67e-11; // Constante gravitationnelle (réelle)
-        k = 8.99e9;   // Constante de Coulomb (réelle)
+        k = 8.99e9; // Constante de Coulomb (réelle)
     } else {
-        G = 0.1;      // Valeurs normalisées
+        G = 0.1; // Valeurs normalisées
         k = 100;
     }
     console.log('G:', G, 'k:', k);
@@ -986,7 +984,6 @@ function drawMagneticField() {
 startTimer();
 updateConstants();
 simulate();
-window.dispatchEvent(new Event('resize'));
 updateControlValues();
 animate();
 updatePresetSelect();
