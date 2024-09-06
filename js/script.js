@@ -7,6 +7,7 @@ const canvas = document.getElementById('simulationCanvas');
 const ctx = canvas.getContext('2d');
 const dtInput = document.getElementById('dt');
 const startPauseBtn = document.getElementById('startPauseBtn');
+const startPauseImg = document.getElementById('startPauseImg');
 const controlsContainer = document.getElementById('object-controls');
 const showSizeCheckbox = document.getElementById('showSize');
 const focusSelect = document.getElementById('focusSelect');
@@ -44,8 +45,23 @@ const bodies = initialBodies.map(body => ({
 	points: []
 }));
 
-const G = 0.1; // 6.67e-11; // Constante de Gravitationel
-const k = 100; // 8.99e9; // Constante de Coulomb
+const constValCheckbox = document.getElementById('ConstVal');
+let G, k;
+
+function updateConstants() {
+    if (constValCheckbox.checked) {
+        G = 6.67e-11; // Constante gravitationnelle (réelle)
+        k = 8.99e9;   // Constante de Coulomb (réelle)
+    } else {
+        G = 0.1;      // Valeurs normalisées
+        k = 100;
+    }
+    console.log('G:', G, 'k:', k);
+}
+
+updateConstants();
+
+constValCheckbox.addEventListener('change', updateConstants);
 
 function resetView() {
 	cameraOffset = { x: 0, y: 0 };
@@ -74,8 +90,7 @@ function setupTrashIcons() {
 document.addEventListener('keydown', (event) => {
 	switch (event.key) {
 		case ' ':
-			isPaused = !isPaused;
-			startPauseBtn.textContent = isPaused ? 'Lancer la simulation' : 'Pause';
+			Pause();
 			break;
 		case 'r':
 			resetView();
@@ -103,13 +118,7 @@ document.addEventListener('keydown', (event) => {
 			frictionToggle.checked = !frictionToggle.checked;
 			break;
 		case 'Enter':
-			if (isPaused) {
-				startPauseBtn.textContent = 'Pause';
-				isPaused = false;
-			} else {
-				startPauseBtn.textContent = 'Lancer la simulation';
-				isPaused = true;
-			}
+			Pause();
 			break;
 	}
 });
@@ -147,31 +156,44 @@ fullscreenBtn.addEventListener('click', () => {
 });
 
 let timeElapsed = 0;
+let lastTime = 0;
 const timerDisplay = document.getElementById('timer');
 
 function startTimer() {
-	timeElapsed = 0;
-	timerDisplay.textContent = `Temps : 0.00 s`;
+    timeElapsed = 0;
+    timerDisplay.textContent = `Time : 0.00 s`;
+    lastTime = performance.now(); 
 
-	function updateTimer() {
-		if (!isPaused) {
-			timeElapsed += parseFloat(dtInput.value);
-			timerDisplay.textContent = `Temps : ${timeElapsed.toFixed(2)} s`;
-		}
-		requestAnimationFrame(updateTimer);
-	}
-	updateTimer();
+    function updateTimer(currentTime) {
+        if (!isPaused) {
+            const deltaTime = (currentTime - lastTime) / 1000;
+            timeElapsed += deltaTime * parseFloat(dtInput.value);
+            timerDisplay.textContent = `${timerLng} ${formatTime(timeElapsed)}`;
+        }
+        lastTime = currentTime; 
+        requestAnimationFrame(updateTimer);
+    }
+
+    requestAnimationFrame(updateTimer);
 }
+
+function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = (seconds % 60).toFixed(2);
+
+    if (hours > 0) {
+        return `${hours} h ${minutes} m ${remainingSeconds} s`; 
+    } else if (minutes > 0) {
+        return `${minutes} m ${remainingSeconds} s`;
+    } else {
+        return `${remainingSeconds} s`;
+    }
+}
+
 
 document.getElementById('resetViewBtn').addEventListener('click', () => {
 	resetView();
-	startTimer();
-});
-
-startPauseBtn.addEventListener('click', () => {
-	if (!isPaused) {
-		startTimer();
-	}
 });
 
 startTimer();
@@ -192,27 +214,27 @@ function updateControlValues() {
 				
 				<label for="info${index + 1}">
 					<span class="color-indicator" id="color${index}" style="background-color: ${body.color}; cursor: pointer;"></span>
-					<input type="text" id="name${index}" value="${body.name || `Objet ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: auto;">
+					<input type="text" id="name${index}" value="${body.name || `Object ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: auto;">
 					<img src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Supprimer">
 				</label>
 			</div>
 			
-			<label for="mass${index + 1} id="MassEntree">Masse :</label>
+			<label for="mass${index + 1}" id="MassEntree">Mass:</label>
 			<input type="number" id="mass${index + 1}" value="${body.mass.toFixed(2)}" step="any">
 			
-			<label for="charge${index + 1} id="ChargeEntree"">Charge :</label>
+			<label for="charge${index + 1} id="ChargeEntree"">Charge:</label>
 			<input type="number" id="charge${index + 1}" value="${body.charge.toFixed(1)}" step="any">
 			
-			<label for="x${index + 1} id="PosXEntree"">Position X :</label>
+			<label for="x${index + 1} id="PosXEntree"">X Position:</label>
 			<input type="number" id="x${index + 1}" value="${body.position.x.toFixed(2)}" step="any">
 			
-			<label for="y${index + 1} id="PosYEntree"">Position Y :</label>
+			<label for="y${index + 1} id="PosYEntree"">Y Position:</label>
 			<input type="number" id="y${index + 1}" value="${body.position.y.toFixed(2)}" step="any">
 			
-			<label for="vx${index + 1} id=SpeedXEntree"">Vitesse X :</label>
+			<label for="vx${index + 1} id=SpeedXEntree"">X Speed:</label>
 			<input type="number" id="vx${index + 1}" value="${body.velocity.x.toFixed(3)}" step="any">
 			
-			<label for="vy${index + 1} id="SpeedYEntree"">Vitesse Y :</label>
+			<label for="vy${index + 1} id="SpeedYEntree"">Y Speed:</label>
 			<input type="number" id="vy${index + 1}" value="${body.velocity.y.toFixed(3)}" step="any">
 			
 			<hr style="width:25%;text-align:center;color:#444">
@@ -223,7 +245,6 @@ function updateControlValues() {
 
 		document.getElementById(`show${index + 1}`).addEventListener('change', (e) => {
 			body.show = e.target.checked;
-			// resetView();
 		});
 
 		const nameInput = document.getElementById(`name${index}`);
@@ -271,7 +292,6 @@ function updateControlValues() {
 		massInput.addEventListener('input', (e) => {
 			if (isPaused) {
 				body.mass = parseFloat(e.target.value);
-				// resetView();
 			}
 		});
 
@@ -280,7 +300,6 @@ function updateControlValues() {
 				body.position.x = parseFloat(e.target.value);
 				body.trail = [];
 				body.points = [];
-				// resetView();
 			}
 		});
 
@@ -289,28 +308,24 @@ function updateControlValues() {
 				body.position.y = parseFloat(e.target.value);
 				body.trail = [];
 				body.points = [];
-				// resetView();
 			}
 		});
 
 		vxInput.addEventListener('input', (e) => {
 			if (isPaused) {
 				body.velocity.x = parseFloat(e.target.value);
-				// resetView();
 			}
 		});
 
 		vyInput.addEventListener('input', (e) => {
 			if (isPaused) {
 				body.velocity.y = parseFloat(e.target.value);
-				// resetView();
 			}
 		});
 		
 		chargeInput.addEventListener('input', (e) => {
 			if (isPaused) {
 				body.charge = parseFloat(e.target.value);
-				// resetView();
 			}
 		});
 	});
@@ -714,7 +729,7 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 
 		while (bodies.length < preset.bodies.length) {
 			bodies.push({
-				mass: 100,
+				mass: 1,
 				charge: 0,
 				position: { x: 0, y: 0 },
 				velocity: { x: 0, y: 0 },
@@ -739,6 +754,7 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 		});
 
 		updateControlValues();
+		startTimer();
 	}
 });
 
@@ -752,7 +768,6 @@ function handleMouseDown(event) {
 		if (Math.sqrt(dx * dx + dy * dy) < (showSizeCheckbox.checked ? 10 / scale : 10)) {
 			selectedBody = body;
 			isPaused = true;
-			startPauseBtn.textContent = "Lancer la simulation";
 			break;
 		}
 	}
@@ -768,8 +783,7 @@ function handleMouseMove(event) {
 		clearTimeout(manualMoveTimeout);
 		manualMoveTimeout = setTimeout(() => {
 			isPaused = true;
-			startPauseBtn.textContent = "Lancer la simulation";
-		}, 200);
+		}, 0);
 	}
 }
 
@@ -783,9 +797,23 @@ function handleMouseWheel(event) {
 	scale *= scrollZoom;
 }
 
-startPauseBtn.addEventListener('click', () => {
+function Pause() {
 	isPaused = !isPaused;
-	startPauseBtn.textContent = isPaused ? "Lancer la simulation" : "Mettre en pause";
+    updateButtonImage();
+}
+
+function updateButtonImage() {
+    if (isPaused) {
+        startPauseImg.src = "image/start-button.png";
+        startPauseImg.alt = "Start";
+    } else {
+        startPauseImg.src = "image/pause-button.png";
+        startPauseImg.alt = "Pause";
+    }
+}
+
+startPauseBtn.addEventListener('click', () => {
+	Pause();
 });
 
 canvas.addEventListener('mousedown', handleMouseDown);

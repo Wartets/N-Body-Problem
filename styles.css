@@ -110,12 +110,6 @@ button:hover {
 	align-items: center;
 }
 
-#startPauseBtn {
-	position: absolute;
-	bottom: 20px;
-	left: 15px;
-}
-
 .icon-trash {
   cursor: pointer;
   width: 20px;
@@ -167,4 +161,21 @@ button:hover {
 
 .mrgn-bttm-lg {
 	margin-bottom: 20px;
+}
+
+#startPauseBtn {
+	position: absolute;
+	left: 15px;
+	bottom: 15px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+#startPauseImg {
+    width: 3vw; /* 10% de la largeur de la fenêtre */
+    height: auto; /* La hauteur s'adapte automatiquement à la largeur */
+    display: block;
 }
