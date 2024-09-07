@@ -1005,3 +1005,57 @@ simulate();
 updateControlValues();
 animate();
 updatePresetSelect();
+
+
+// TO TEST ON MOBILE :
+
+// Gestion du zoom par pincement (pour mobile)
+canvas.addEventListener('touchstart', handleTouchStart);
+canvas.addEventListener('touchmove', handleTouchMove);
+canvas.addEventListener('touchend', handleTouchEnd);
+
+function handleTouchStart(event) {
+    if (event.touches.length === 2) {
+        // Si deux doigts sont utilisés, initialise la distance de pincement
+        const touch1 = event.touches[0];
+        const touch2 = event.touches[1];
+        initialPinchDistance = getDistance(touch1, touch2);
+        lastPinchZoom = scrollZoom; // Enregistre le dernier zoom avant le pincement
+    }
+}
+
+function handleTouchMove(event) {
+    if (event.touches.length === 2) {
+        event.preventDefault();
+        
+        // Récupère les deux doigts
+        const touch1 = event.touches[0];
+        const touch2 = event.touches[1];
+        
+        // Calcule la distance actuelle entre les deux doigts
+        const currentPinchDistance = getDistance(touch1, touch2);
+        
+        if (initialPinchDistance) {
+            // Calcul du facteur de zoom relatif
+            const pinchZoomFactor = currentPinchDistance / initialPinchDistance;
+            
+            // Applique le zoom basé sur le facteur du pincement
+            scrollZoom = lastPinchZoom * pinchZoomFactor;
+            scale = scrollZoom;
+        }
+    }
+}
+
+function handleTouchEnd(event) {
+    if (event.touches.length < 2) {
+        // Réinitialise la distance de pincement quand il y a moins de deux doigts
+        initialPinchDistance = null;
+    }
+}
+
+// Fonction utilitaire pour calculer la distance entre deux points tactiles
+function getDistance(touch1, touch2) {
+    const dx = touch2.pageX - touch1.pageX;
+    const dy = touch2.pageY - touch1.pageY;
+    return Math.sqrt(dx * dx + dy * dy);
+}
