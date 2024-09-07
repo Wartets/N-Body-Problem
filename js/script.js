@@ -11,6 +11,9 @@ let timeElapsed = 0;
 let lastTime = 0;
 let isPlaying = false;
 let lastImpactTime = 0;
+let fps = 0;
+let frameCount = 0;
+let fpsTime = 0;
 
 const canvas = document.getElementById('simulationCanvas');
 const ctx = canvas.getContext('2d');
@@ -777,7 +780,22 @@ function resolveCollision(body1, body2) {
 	body2.position.y += overlap / 2 * ny;
 }
 
-function animate() {
+function displayFPS(currentTime) {
+    frameCount++;
+
+    const deltaTime = (currentTime - fpsTime) / 1000;
+    if (deltaTime >= 1) {
+        fps = Math.round(frameCount / deltaTime);
+        fpsTime = currentTime;
+        frameCount = 0;
+    }
+
+	document.getElementById('fpsDisplay').textContent = `fps: ${fps}`;
+}
+
+function animate(currentTime) {
+    const startTime = performance.now();
+    
 	if (!isPaused) {
 		const dt = parseFloat(dtInput.value);
 		calculateForces();
@@ -791,8 +809,19 @@ function animate() {
 	} else {
 		drawBodies(calculateBarycenter());
 	}
-	requestAnimationFrame(animate);
+
+    displayFPS(currentTime);
+    
+    const endTime = performance.now();
+    const frameTime = endTime - startTime;
+	
+    cpuUsage = Math.min((frameTime / 16.67 / 2) * 100, 500);
+    
+    document.getElementById('UsageDisplay').textContent = `Usage: ${cpuUsage.toFixed(0)}%`;
+
+    requestAnimationFrame(animate);
 }
+
 
 function getRandomSpeed() {
     const term0 = Math.random() * 4 - 2;
