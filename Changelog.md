@@ -64,3 +64,28 @@
   - v1.2 French translation
   - v1.2 German translation
   - v1.2 Spanish translation (thanks to Arthur Loubeau)
+
+## v1.1.2 - 07/09/2024
+
+### Added
+
+- New help tab, where you'll find all the useful links related to the site
+- It's now possible to zoom with two fingers using a pinch on mobile (doesn't work on all browsers)
+- It is possible to choose to simulate with normalized constants or their actual values
+- New translation :
+  - v1.0 Ancien Français
+  - v1.0 Pirate Français
+  - v1.0 Shakespeare English
+  - v1.0 Minion English
+
+### Changed
+
+- Fixed issue #3 
+- Major reorganization of the script for improved readability and practicality
+- Updated translations to add field parameters :
+  - v1.3 English translation
+  - v1.3 French translation
+  - v1.3 German translation
+  - v1.3 Spanish translation (thanks to Arthur Loubeau)
+  - v1.1 Italian translation (thanks to Christian Abou)
+  - v1.1 Latin translation
