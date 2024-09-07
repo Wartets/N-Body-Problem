@@ -48,6 +48,9 @@ canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mouseup', handleMouseUp);
 canvas.addEventListener('wheel', handleMouseWheel);
+canvas.addEventListener('touchstart', handleTouchStart);
+canvas.addEventListener('touchmove', handleTouchMove);
+canvas.addEventListener('touchend', handleTouchEnd);
 
 focusSelect.addEventListener('change', (e) => {
 	focusObject = e.target.value;
@@ -999,21 +1002,6 @@ function drawMagneticField() {
     ctx.restore();
 }
 
-startTimer();
-updateConstants();
-simulate();
-updateControlValues();
-animate();
-updatePresetSelect();
-
-
-// TO TEST ON MOBILE :
-
-// Gestion du zoom par pincement (pour mobile)
-canvas.addEventListener('touchstart', handleTouchStart);
-canvas.addEventListener('touchmove', handleTouchMove);
-canvas.addEventListener('touchend', handleTouchEnd);
-
 function handleTouchStart(event) {
     if (event.touches.length === 2) {
         // Si deux doigts sont utilisés, initialise la distance de pincement
@@ -1053,9 +1041,15 @@ function handleTouchEnd(event) {
     }
 }
 
-// Fonction utilitaire pour calculer la distance entre deux points tactiles
 function getDistance(touch1, touch2) {
     const dx = touch2.pageX - touch1.pageX;
     const dy = touch2.pageY - touch1.pageY;
     return Math.sqrt(dx * dx + dy * dy);
 }
+
+startTimer();
+updateConstants();
+simulate();
+updateControlValues();
+animate();
+updatePresetSelect();
