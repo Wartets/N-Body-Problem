@@ -33,6 +33,9 @@ const tooltip = document.getElementById('sliderTooltip');
 const timerDisplay = document.getElementById('timer');
 const impactSound = new Audio('sound/impact-sound.mp3');
 const impactDelay = 1;
+const helpBtn = document.getElementById('helpBtn');
+const modal = document.getElementById('helpModal');
+const closeBtn = document.querySelector('.close');
 const bodies = initialBodies.map(body => ({
 	...body,
 	acceleration: { x: 0, y: 0 },
@@ -60,6 +63,21 @@ frictionToggle.addEventListener('change', () => {
 });
 
 constValCheckbox.addEventListener('change', updateConstants);
+
+helpBtn.addEventListener('click', () => {
+	isPaused = true
+	modal.style.display = 'block';
+});
+
+closeBtn.addEventListener('click', () => {
+	modal.style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+	if (event.target === modal) {
+		modal.style.display = 'none';
+	}
+});
 
 controlsToggle.addEventListener('click', () => {
     const isHidden = controls.classList.toggle('hidden');
@@ -350,19 +368,19 @@ function updateControlValues() {
 			<label for="mass${index + 1}" id="MassEntree">Mass:</label>
 			<input type="number" id="mass${index + 1}" value="${body.mass.toFixed(2)}" step="any">
 			
-			<label for="charge${index + 1} id="ChargeEntree"">Charge:</label>
+			<label for="charge${index + 1}" id="ChargeEntree">Charge:</label>
 			<input type="number" id="charge${index + 1}" value="${body.charge.toFixed(1)}" step="any">
 			
-			<label for="x${index + 1} id="PosXEntree"">X Position:</label>
+			<label for="x${index + 1}" id="PosXEntree">X Position:</label>
 			<input type="number" id="x${index + 1}" value="${body.position.x.toFixed(2)}" step="any">
 			
-			<label for="y${index + 1} id="PosYEntree"">Y Position:</label>
+			<label for="y${index + 1}" id="PosYEntree">Y Position:</label>
 			<input type="number" id="y${index + 1}" value="${body.position.y.toFixed(2)}" step="any">
 			
-			<label for="vx${index + 1} id=SpeedXEntree"">X Speed:</label>
+			<label for="vx${index + 1}" id="SpeedXEntree">X Speed:</label>
 			<input type="number" id="vx${index + 1}" value="${body.velocity.x.toFixed(3)}" step="any">
 			
-			<label for="vy${index + 1} id="SpeedYEntree"">Y Speed:</label>
+			<label for="vy${index + 1}" id="SpeedYEntree">Y Speed:</label>
 			<input type="number" id="vy${index + 1}" value="${body.velocity.y.toFixed(3)}" step="any">
 			
 			<hr style="width:25%;text-align:center;color:#444">
@@ -987,3 +1005,42 @@ simulate();
 updateControlValues();
 animate();
 updatePresetSelect();
+
+
+// TO TEST ON MOBILE :
+
+let initialPinchDistance = null;
+let pinchZoom = 1;
+
+// Ajoute l'écouteur pour le geste de pincement
+canvas.addEventListener('touchmove', handleTouchMove);
+
+function handleTouchMove(event) {
+    if (event.touches.length === 2) { // Assure que deux doigts sont sur l'écran
+        event.preventDefault();
+        
+        const touch1 = event.touches[0];
+        const touch2 = event.touches[1];
+
+        const currentPinchDistance = Math.hypot(
+            touch2.pageX - touch1.pageX,
+            touch2.pageY - touch1.pageY
+        );
+
+        if (initialPinchDistance === null) {
+            initialPinchDistance = currentPinchDistance; // Enregistre la distance initiale
+        } else {
+            pinchZoom = currentPinchDistance / initialPinchDistance; // Calcul du facteur de zoom
+            scale *= pinchZoom; // Applique le zoom
+
+            // Réinitialise la distance initiale pour continuer à suivre le geste
+            initialPinchDistance = currentPinchDistance;
+        }
+    }
+}
+
+canvas.addEventListener('touchend', function(event) {
+    if (event.touches.length < 2) { // Réinitialise quand moins de 2 doigts touchent l'écran
+        initialPinchDistance = null;
+    }
+});

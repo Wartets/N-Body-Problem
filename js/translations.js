@@ -8,8 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		
         document.getElementById('resetViewBtn').textContent = trans.resetView;
         document.getElementById('fullscreenBtn').textContent = trans.fullscreen;
-        document.getElementById('timer').textContent = trans.time;
-        document.getElementById('timerLabel').textContent = trans.timeLabel;
         document.getElementById('dtLabel').textContent = trans.dt;
         document.getElementById('showSizeLabel').textContent = trans.adaptiveSize;
         document.getElementById('displayModeLabel').textContent = trans.dotViewSetting;
@@ -31,6 +29,26 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('savePresetBtn').textContent = trans.savePreset;
         document.getElementById('presetName').placeholder = trans.presetName;
         document.getElementById('addBodyBtn').textContent = trans.addObject;
+		
+        document.getElementById('HelpModalTitle').textContent = trans.HelpModalTitleValue;
+        document.getElementById('HelpModalIntro').textContent = trans.HelpModalIntroValue;
+		
+        document.getElementById('HelpModalGitPageTitle').textContent = trans.HelpModalGitPageTitleValue;
+        document.getElementById('HelpModalGitPageText').textContent = trans.HelpModalGitPageTextValue;
+        document.getElementById('HelpModalGitPageLink').textContent = trans.HelpModalGitPageLinkValue;
+		
+        document.getElementById('HelpModalDocTitle').textContent = trans.HelpModalDocTitleValue;
+        document.getElementById('HelpModalDocText').textContent = trans.HelpModalDocTextValue;
+        document.getElementById('HelpModalDocLink').textContent = trans.HelpModalDocLinkValue;
+		
+        document.getElementById('HelpModalBugTitle').textContent = trans.HelpModalBugTitleValue;
+        document.getElementById('HelpModalBugText').textContent = trans.HelpModalBugTextValue;
+        document.getElementById('HelpModalBugLink').textContent = trans.HelpModalBugLinkValue;
+		
+        document.getElementById('HelpModalAutorTitle').textContent = trans.HelpModalAutorTitleValue;
+        document.getElementById('HelpModalAutorText').textContent = trans.HelpModalAutorTextValue;
+        document.getElementById('HelpModalAutorLink').textContent = trans.HelpModalAutorLinkValue;
+		
         document.getElementById('barycenterLabel').textContent = trans.Baryenable;
         document.getElementById('MassEntree').textContent = trans.MassValue;
         document.getElementById('ChargeEntree').textContent = trans.ChargeValue;
@@ -38,13 +56,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('PosYEntree').textContent = trans.PosYValue;
         document.getElementById('SpeedXEntree').textContent = trans.SpeedXValue;
         document.getElementById('SpeedYEntree').textContent = trans.SpeedYValue;
+		
+        document.getElementById('timer').textContent = trans.time;
+        document.getElementById('timerLabel').textContent = trans.timeLabel;
     }
 
     languageSelect.addEventListener('change', () => {
         applyTranslations(languageSelect.value);
     });
 
-    applyTranslations(languageSelect.value || 'en');
+    applyTranslations(languageSelect.value || 'fr');
 });
 
 const translations = {
@@ -81,6 +102,20 @@ const translations = {
 		"PosYValue": "Position Y :",
 		"SpeedXValue": "Vitesse X :",
 		"SpeedYValue": "Vitesse Y :",
+		"HelpModalTitleValue": "Simulation d'un Système à N-Corps",
+		"HelpModalIntroValue": "Dans cette simulation interactive, vous pourrez explorer les forces d'électromagnétisme, de gravité, les collisions et les effets de la friction dans un système à N-corps. Ajustez la vitesse, la masse, la charge, et la position de chaque objet et observez les interactions en temps réel, visualisez également les champs gravitationnel et électromagnétique en direct.",
+		"HelpModalGitPageTitleValue": "Page GitHub du Projet",
+		"HelpModalGitPageTextValue": "Découvrez le code source et contribuez au projet sur GitHub :",
+		"HelpModalGitPageLinkValue": "Voir le projet sur GitHub",
+		"HelpModalDocTitleValue": "Documentation",
+		"HelpModalDocTextValue": "Pour une meilleure compréhension des fonctionnalités du simulateur, explorez le Wiki :",
+		"HelpModalDocLinkValue": "Consulter le Wiki",
+		"HelpModalBugTitleValue": "Bugs et Suggestions",
+		"HelpModalBugTextValue": "Si vous rencontrez un problème ou avez des suggestions, vous pouvez les partager sur la page suivante :",
+		"HelpModalBugLinkValue": "Signaler un Problème",
+		"HelpModalAutorTitleValue": "Créateur",
+		"HelpModalAutorTextValue": "Ce projet a été créé par Wartets. Consultez son profil GitHub pour en découvrir d'autres projets :",
+		"HelpModalAutorLinkValue": "@Wartets",
     },
     "en": {
         "resetView": "Reset View",
@@ -115,6 +150,20 @@ const translations = {
 		"PosYValue": "Y Position:",
 		"SpeedXValue": "X Speed:",
 		"SpeedYValue": "Y Speed:",
+		"HelpModalTitleValue": "N-Body Simulation",
+		"HelpModalIntroValue": "In this interactive simulation, you can explore the forces of gravity, electromagnetism, collisions, and the effects of friction in an N-body system. Adjust the speed, mass, charge, and position of each object and observe the interactions in real time, as well as visualizing the gravitational and electromagnetic fields live.",
+		"HelpModalGitPageTitleValue": "GitHub project page",
+		"HelpModalGitPageTextValue": "Discover the source code and contribute to the project on GitHub:",
+		"HelpModalGitPageLinkValue": "See the project on GitHub",
+		"HelpModalDocTitleValue": "Documentation",
+		"HelpModalDocTextValue": "For a better understanding of the simulator's features, explore the Wiki:",
+		"HelpModalDocLinkValue": "View Wiki",
+		"HelpModalBugTitleValue": "Bugs & Suggestions",
+		"HelpModalBugTextValue": "If you encounter a problem or have any suggestions, you can share them on the following page:",
+		"HelpModalBugLinkValue": "Report a problem",
+		"HelpModalAutorTitleValue": "Author",
+		"HelpModalAutorTextValue": "This project was created by Wartets. Check out his GitHub profile for more projects:",
+		"HelpModalAutorLinkValue": "@Wartets",
     },
     "es": {
         "resetView": "Reiniciar vista",
@@ -149,6 +198,20 @@ const translations = {
 		"PosYValue": "Posición Y:",
 		"SpeedXValue": "Velocidad X:",
 		"SpeedYValue": "Velocidad Y:",
+		"HelpModalTitleValue": "Simulación de N-cuerpos",
+		"HelpModalIntroValue": "En esta simulación interactiva puedes explorar las fuerzas de la gravedad, el electromagnetismo, las colisiones y los efectos de la fricción en un sistema de N cuerpos. Ajusta la velocidad, la masa, la carga y la posición de cada objeto y observa las interacciones en tiempo real, además de visualizar los campos gravitatorio y electromagnético en directo.",
+		"HelpModalGitPageTitleValue": "Página del proyecto en GitHub",
+		"HelpModalGitPageTextValue": "Descubre el código fuente y contribuye al proyecto en GitHub:",
+		"HelpModalGitPageLinkValue": "Ver el proyecto en GitHub",
+		"HelpModalDocTitleValue": "Documentación",
+		"HelpModalDocTextValue": "Para comprender mejor las características del simulador, explore la Wiki:",
+		"HelpModalDocLinkValue": "Ver Wiki",
+		"HelpModalBugTitleValue": "Errores y sugerencias",
+		"HelpModalBugTextValue": "Si encuentra algún problema o tiene alguna sugerencia, puede compartirla en la siguiente página:",
+		"HelpModalBugLinkValue": "Informar de un problema",
+		"HelpModalAutorTitleValue": "Autor",
+		"HelpModalAutorTextValue": "Este proyecto fue creado por Wartets. Echa un vistazo a su perfil de GitHub para ver más proyectos:",
+		"HelpModalAutorLinkValue": "@Wartets",
     },
 	"de": {
         "resetView": "Ansicht zurücksetzen",
@@ -183,6 +246,20 @@ const translations = {
 		"PosYValue": "Y-Position:",
 		"SpeedXValue": "Geschwindigkeit X:",
 		"SpeedYValue": "Geschwindigkeit Y:",
+		"HelpModalTitleValue": "N-Körper-Simulation",
+		"HelpModalIntroValue": "In dieser interaktiven Simulation können Sie die Kräfte der Schwerkraft, des Elektromagnetismus, der Kollisionen und die Auswirkungen der Reibung in einem N-Körper-System erkunden. Stellen Sie die Geschwindigkeit, Masse, Ladung und Position jedes Objekts ein und beobachten Sie die Wechselwirkungen in Echtzeit, sowie die Visualisierung der Gravitations- und elektromagnetischen Felder live.",
+		"HelpModalGitPageTitleValue": "GitHub-Projektseite",
+		"HelpModalGitPageTextValue": "Entdecken Sie den Quellcode und tragen Sie zum Projekt auf GitHub bei:",
+		"HelpModalGitPageLinkValue": "Siehe das Projekt auf GitHub",
+		"HelpModalDocTitleValue": "Dokumentation",
+		"HelpModalDocTextValue": "Um ein besseres Verständnis der Funktionen des Simulators zu erlangen, besuchen Sie das Wiki:",
+		"HelpModalDocLinkValue": "Wiki ansehen",
+		"HelpModalBugTitleValue": "Bugs & Vorschläge",
+		"HelpModalBugTextValue": "Wenn Sie auf ein Problem stoßen oder Vorschläge haben, können Sie diese auf der folgenden Seite mitteilen:",
+		"HelpModalBugLinkValue": "Ein Problem melden",
+		"HelpModalAutorTitleValue": "Autor",
+		"HelpModalAutorTextValue": "Dieses Projekt wurde von Wartets erstellt. Auf seinem GitHub-Profil finden Sie weitere Projekte:",
+		"HelpModalAutorLinkValue": "@Wartets",
     },
 	"it": {
 		"resetView": "Reimposta vista",
@@ -217,6 +294,20 @@ const translations = {
 		"PosYValue": "Posizione Y:",
 		"SpeedXValue": "Velocità X:",
 		"SpeedYValue": "Velocità Y:",
+		"HelpModalTitleValue": "Simulazione di un corpo N",
+		"HelpModalIntroValue": "In questa simulazione interattiva è possibile esplorare le forze di gravità, l'elettromagnetismo, le collisioni e gli effetti dell'attrito in un sistema di N-corpi. Regolate la velocità, la massa, la carica e la posizione di ciascun oggetto e osservate le interazioni in tempo reale, oltre a visualizzare in diretta i campi gravitazionali ed elettromagnetici.",
+		"HelpModalGitPageTitleValue": "Pagina del progetto su GitHub",
+		"HelpModalGitPageTextValue": "Scoprite il codice sorgente e contribuite al progetto su GitHub:",
+		"HelpModalGitPageLinkValue": "Vedi il progetto su GitHub",
+		"HelpModalDocTitleValue": "Documentazione",
+		"HelpModalDocTextValue": "Per una migliore comprensione delle caratteristiche del simulatore, esplorare il Wiki:",
+		"HelpModalDocLinkValue": "Visualizza il Wiki",
+		"HelpModalBugTitleValue": "Bug e suggerimenti",
+		"HelpModalBugTextValue": "Se riscontrate un problema o avete dei suggerimenti, potete condividerli nella pagina seguente:",
+		"HelpModalBugLinkValue": "Segnala un problema",
+		"HelpModalAutorTitleValue": "Autore",
+		"HelpModalAutorTextValue": "Questo progetto è stato creato da Wartets. Controlla il suo profilo GitHub per altri progetti:",
+		"HelpModalAutorLinkValue": "@Wartets",
 	},
 	"la": {
 		"resetView": "Visum resetare",
@@ -250,7 +341,21 @@ const translations = {
 		"PosXValue": "Positio X:",
 		"PosYValue": "Positio Y:",
 		"SpeedXValue": "Velocitas X:",
-		"SpeedYValue": "Velocitas Y:"
+		"SpeedYValue": "Velocitas Y:",
+		"HelpModalTitleValue": "N. Corpus Simulatio",
+		"HelpModalIntroValue": "In hac simulatione interactive, explorare potes vires gravitatis, electromagnetismi, collisiones et effectus friction in systemate N corpore. Celeritatem, massam, crimen et situm compone uniuscuiusque objecti et interactiones in reali tempore observa, necnon campi gravitatis et electromagnetici visualisi vivant.",
+		"HelpModalGitPageTitleValue": "GitHub project pagina",
+		"HelpModalGitPageTextValue": "Fons codicem reperi et ad propositum confer in GitHub;",
+		"HelpModalGitPageLinkValue": "Vide project in GitHub",
+		"HelpModalDocTitleValue": "Documentation",
+		"HelpModalDocTextValue": "Ad meliorem notarum simulatoris cognitionem explora Wiki:",
+		"HelpModalDocLinkValue": "Visum wiki",
+		"HelpModalBugTitleValue": "Bugs & Consilia",
+		"HelpModalBugTextValue": "Si aliquam quaestionem offenderis vel suggestiones habes, eas in sequenti pagina communicare potes:",
+		"HelpModalBugLinkValue": "Referre quaestio",
+		"HelpModalAutorTitleValue": "Auctor",
+		"HelpModalAutorTextValue": "Hoc consilium a Wartets creatum est. Reprehendo sicco ejus profile GitHub plura incepta:",
+		"HelpModalAutorLinkValue": "@Wartets",
 	},
 	"vf": {
 		"resetView": "Réinitialiser la veue",
@@ -284,7 +389,21 @@ const translations = {
 		"PosXValue": "Position X :",
 		"PosYValue": "Position Y :",
 		"SpeedXValue": "Vitesce X :",
-		"SpeedYValue": "Vitesce Y :",
+		"SpeedYValue": "Vitesce Y :",	
+		"HelpModalTitleValue": "Simulacion d'un Système à N-Cors",
+		"HelpModalIntroValue": "En ceste simulacion interactive, vous pourrez explorer les forces d'électromagnétisme, de gravité, les collisions et les effets de la friction en ung système à N-cors. Ajostez la vitesse, la masse, la charge et la position de chascun object, et veez les interacions en temps réel. Veoiez aussi les champs de gravité et d'électromagnétisme en direct.",
+		"HelpModalGitPageTitleValue": "Page GitHub du Projet",
+		"HelpModalGitPageTextValue": "Descovrez le code source et contribuez au projet sur GitHub :",
+		"HelpModalGitPageLinkValue": "Veez le projet sur GitHub",
+		"HelpModalDocTitleValue": "Documentation",
+		"HelpModalDocTextValue": "Pour mieulx comprendre les fonctionnalitez du simulateur, explorez le Wiki :",
+		"HelpModalDocLinkValue": "Veez le Wiki",
+		"HelpModalBugTitleValue": "Failles et Suggestions",
+		"HelpModalBugTextValue": "Se vous trouvez ung problème ou avez suggestiones, vous pouvez les partager en la page cy-dessous :",
+		"HelpModalBugLinkValue": "Raportez une Faille",
+		"HelpModalAutorTitleValue": "Créateur",
+		"HelpModalAutorTextValue": "Cest projet fu créé par Wartets. Veez son profil GitHub pour autres œuvres :",
+		"HelpModalAutorLinkValue": "@Wartets",
 	},
 	"pirate": {
 		"resetView": "Arrr-réinitialiser l'vue",
@@ -319,6 +438,20 @@ const translations = {
 		"PosYValue": "Pos'Y d'l'île:",
 		"SpeedXValue": "Vitesse X du navire:",
 		"SpeedYValue": "Vitesse Y du navire:",
+		"HelpModalTitleValue": "Simulaaaation d’un Systèèèème à N-Corps, arrr!",
+		"HelpModalIntroValue": "Dans c'te simulaaaation interactive, ye pourrrez explorer les forces d’électromagnétisme, de gravitééé, les collisions et les effets d’la friction dans un systèèèème à N-corps. Ajustez la vitesse, la masse, la charge et la position d'chacuun d'ces objets et observez les interactions en temps réeeel, matelot! Visualizez aussi les champs gravitationnels et électromagnétiques, arrrr!",
+		"HelpModalGitPageTitleValue": "Page GitHub du Projet, hoho!",
+		"HelpModalGitPageTextValue": "Découvre le code source et viens donc contribuer, arrrr! :",
+		"HelpModalGitPageLinkValue": "Voir l’trésor sur GitHub, arrr!",
+		"HelpModalDocTitleValue": "Documentation, hoho!",
+		"HelpModalDocTextValue": "Pour mieux comprendre c’coffre aux fonctionnalités, explorez l’Wiki :",
+		"HelpModalDocLinkValue": "Consulter l’Wiki, moussaillon!",
+		"HelpModalBugTitleValue": "Bugs et Suggestiooons, arrr!",
+		"HelpModalBugTextValue": "Si ye tombes sur un problème ou qu’tes idées coulent, partages-les ici :",
+		"HelpModalBugLinkValue": "Signale un Pépin, arrr!",
+		"HelpModalAutorTitleValue": "Capitaine Créateur",
+		"HelpModalAutorTextValue": "Ce bateau a été construit par l’Capitaine Wartets! Jette un coup d’œil à son profil GitHub :",
+		"HelpModalAutorLinkValue": "@Wartets, arrr!",
 	},
 	"shakespeare": {
 		"resetView": "Recalibrate yon Vision",
@@ -353,6 +486,20 @@ const translations = {
 		"PosYValue": "Position on the Y-Axis:",
 		"SpeedXValue": "Speed along the X-Axis:",
 		"SpeedYValue": "Speed along the Y-Axis:",
+		"HelpModalTitleValue": "Simulation of a System with N-Bodies",
+		"HelpModalIntroValue": "In this wondrous simulation most interactive, thou shalt explore the forces of electromagnetism, of gravity, of collision, and of friction in a system of N-bodies. Adjust the speed, the weight, the charge, and the position of each object, and behold the interactions unfold in real time! Lo, witness the gravitational and electromagnetic fields as they change and shift.",
+		"HelpModalGitPageTitleValue": "GitHub Page of the Project",
+		"HelpModalGitPageTextValue": "Unveil the source code and contribute thyself to the project:",
+		"HelpModalGitPageLinkValue": "View the Project on GitHub",
+		"HelpModalDocTitleValue": "Documentation",
+		"HelpModalDocTextValue": "To comprehend the full nature of this simulator’s functions, explore the Wiki:",
+		"HelpModalDocLinkValue": "Peruse the Wiki",
+		"HelpModalBugTitleValue": "Bugs and Suggestions",
+		"HelpModalBugTextValue": "Shouldst thou encounter problems or have thoughts to share, express them on this page:",
+		"HelpModalBugLinkValue": "Report a Problem",
+		"HelpModalAutorTitleValue": "Creator",
+		"HelpModalAutorTextValue": "This fine creation was wrought by Wartets. Look upon his GitHub to discover more:",
+		"HelpModalAutorLinkValue": "@Wartets",
 	},
 	"minion": {
 		"resetView": "Reset banana view!",
@@ -387,6 +534,20 @@ const translations = {
 		"PosYValue": "Banana Y position:",
 		"SpeedXValue": "Banana X speed:",
 		"SpeedYValue": "Banana Y speed:",
+		"HelpModalTitleValue": "Banana System N-Bodies",
+		"HelpModalIntroValue": "In dis fun-fun simulation, you go boom-boom wit da electromagnetism, gravity, kaboomy collisions, an’ banana friction. You go fast-fast wit speed, mass, charge, an’ position all da objects, yello! And look! Real-time! Boom-boom time!",
+		"HelpModalGitPageTitleValue": "GitHub Page Boom-Boom!",
+		"HelpModalGitPageTextValue": "GitHub, yay! Find code an’ help make da project better:",
+		"HelpModalGitPageLinkValue": "Go! GitHub! Banana!",
+		"HelpModalDocTitleValue": "Doco-Doco, heehee!",
+		"HelpModalDocTextValue": "Understandy da simulator? Go ready Wiki, yello:",
+		"HelpModalDocLinkValue": "Read Wiki! Woohoo!",
+		"HelpModalBugTitleValue": "Buggy-Bugs and Idea-Booms",
+		"HelpModalBugTextValue": "Got a problem? Tell me! Tell me! Go here:",
+		"HelpModalBugLinkValue": "Tell Problem!",
+		"HelpModalAutorTitleValue": "Creator Banana!",
+		"HelpModalAutorTextValue": "Made by Wartets! Yay! Look at his GitHub for more!",
+		"HelpModalAutorLinkValue": "@Banana-Wartets!",
 	},
 	"pt": {
 		"resetView": "",
@@ -421,6 +582,20 @@ const translations = {
 		"PosYValue": "",
 		"SpeedXValue": "",
 		"SpeedYValue": "",
+		"HelpModalTitleValue": "",
+		"HelpModalIntroValue": "",
+		"HelpModalGitPageTitleValue": "",
+		"HelpModalGitPageTextValue": "",
+		"HelpModalGitPageLinkValue": "",
+		"HelpModalDocTitleValue": "",
+		"HelpModalDocTextValue": "",
+		"HelpModalDocLinkValue": "",
+		"HelpModalBugTitleValue": "",
+		"HelpModalBugTextValue": "",
+		"HelpModalBugLinkValue": "",
+		"HelpModalAutorTitleValue": "",
+		"HelpModalAutorTextValue": "",
+		"HelpModalAutorLinkValue": "@Wartets",
 	},
 	"LabelName": {
 		"resetView": "resetView",
@@ -455,6 +630,20 @@ const translations = {
 		"PosYValue": "PosYValue",
 		"SpeedXValue": "SpeedXValue",
 		"SpeedYValue": "SpeedYValue",
+		"HelpModalTitleValue": "HelpModalTitleValue",
+		"HelpModalIntroValue": "HelpModalIntroValue",
+		"HelpModalGitPageTitleValue": "HelpModalGitPageTitleValue",
+		"HelpModalGitPageTextValue": "HelpModalGitPageTextValue",
+		"HelpModalGitPageLinkValue": "HelpModalGitPageLinkValue",
+		"HelpModalDocTitleValue": "HelpModalDocTitleValue",
+		"HelpModalDocTextValue": "HelpModalDocTextValue",
+		"HelpModalDocLinkValue": "HelpModalDocLinkValue",
+		"HelpModalBugTitleValue": "HelpModalBugTitleValue",
+		"HelpModalBugTextValue": "HelpModalBugTextValue",
+		"HelpModalBugLinkValue": "HelpModalBugLinkValue",
+		"HelpModalAutorTitleValue": "HelpModalAutorTitleValue",
+		"HelpModalAutorTextValue": "HelpModalAutorTextValue",
+		"HelpModalAutorLinkValue": "HelpModalAutorLinkValue",
 	},
 }
 
