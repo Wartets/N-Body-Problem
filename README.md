@@ -8,7 +8,7 @@ This project simulates the motion of multiple bodies (N-bodies) under the influe
 
 - **Dynamic Object Addition**: You can add an unlimited number of objects, constrained only by your computer's processing power.
 - **Field visualization**: You can observe the force fields applied to the simulation, changing according to the objects.
-- **Multi-language Support**: Available in English, French, Spanish, and German, Italian, Latin with additional languages planned for future releases.
+- **Multi-language Support**: Available in English, French, Spanish, and German, Italian, Latin (also some amusing translations) with additional languages planned for future releases.
 - **Special Thanks**: Appreciation to Arthur Loubeau for contributing the Spanish translation and to Christian Abou for the Italian translation.
 
 ## Usage
@@ -24,10 +24,10 @@ Here’s an example of the simulation in action: (image from v1.0.0)
 ## Compatibility
 
 The simulation has been tested on:
-- **Firefox**: Version 129.0.2 (64-bit) (worked well)
-- **Chromium**: Version 122.0.6250.0 (Dev Build, 64-bit) (worked well)
-- **Safari**: iOS 16.4.1 (20E252) (good, could be better)
-- **Firefox Beta**: Version 130.0 44595 (Dev Build on iOS 16.4.1) (good, could be better)
+- **Firefox**: Version 129.0.2 (64-bit) (very good)
+- **Chromium**: Version 122.0.6250.0 (Dev Build, 64-bit) (very good)
+- **Safari**: iOS 16.4.1 (20E252) (okay, could be better: unworking pinch-to-zoom controls and impractical object size)
+- **Firefox Beta**: Version 130.0 44595 (Dev Build on iOS 16.4.1) (well, could be better: impractical object size)
 
 ## Changelog
 
