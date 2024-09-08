@@ -73,6 +73,7 @@ constValCheckbox.addEventListener('change', updateConstants);
 
 helpBtn.addEventListener('click', () => {
 	isPaused = true
+	updateButtonImage();
 	modal.style.display = 'block';
 });
 
@@ -212,6 +213,7 @@ document.getElementById('addBodyBtn').addEventListener('click', () => {
 	const newBody = {
 		mass: 50 + Math.random() * 100,
 		charge: Math.round((Math.random() * 3 - 1.5) * 10) / 10,
+		radius: Math.ceil(10 * getRadius(2.5, 3, 0.5)) / 10,
 		position: getRandomPosition(),
 		velocity: { x: getRandomSpeed(), y: getRandomSpeed() },
 		color: '#' + Math.floor(Math.random() * 16777215).toString(16),
@@ -240,6 +242,7 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 			bodies.push({
 				mass: 1,
 				charge: 0,
+				radius: 2.5,
 				position: { x: 0, y: 0 },
 				velocity: { x: 0, y: 0 },
 				color: '#ffffff',
@@ -254,6 +257,7 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 			if (bodies[index]) {
 				bodies[index].mass = presetBody.mass;
 				bodies[index].charge = presetBody.charge;
+				bodies[index].radius = presetBody.radius;
 				bodies[index].position = { ...presetBody.position };
 				bodies[index].velocity = { ...presetBody.velocity };
 				bodies[index].color = presetBody.color;
@@ -279,6 +283,7 @@ document.getElementById('savePresetBtn').addEventListener('click', () => {
 		bodies: bodies.map(body => ({
 			mass: body.mass,
 			charge: body.charge,
+			radius: body.radius,
 			position: { x: body.position.x, y: body.position.y },
 			velocity: { x: body.velocity.x, y: body.velocity.y },
 			color: body.color,
@@ -289,6 +294,19 @@ document.getElementById('savePresetBtn').addEventListener('click', () => {
 	updatePresetSelect();
 	presetNameInput.value = '';
 });
+
+function gaussianRandom(mean, stdDev) {
+    let u1 = Math.random();
+    let u2 = Math.random();
+    let z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    return z * stdDev + mean;
+}
+
+function getRadius(mean, stdDev, min) {
+	let const1 = gaussianRandom(mean, stdDev);
+	let const2 = const1 < min ? stdDev : const1;
+	return const2;
+}
 
 function updateCoord() {
     const barycenter = calculateBarycenter();
@@ -381,39 +399,84 @@ function updateControlValues() {
 
 		const group = document.createElement('div');
 		group.className = 'control-group';
-		group.innerHTML = `
-			<div class="checkbox-group">
-				<input type="checkbox" id="show${index + 1}" ${body.show ? 'checked' : ''}>
-				
-				<label for="info${index + 1}">
-					<span class="color-indicator" id="color${index}" style="background-color: ${body.color}; cursor: pointer;"></span>
-					<input type="text" id="name${index}" value="${body.name || `Object ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 90%;">
-					<img src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Supprimer">
-				</label>
-			</div>
-			
-			<label for="mass${index + 1}" id="MassEntree">Mass:</label>
-			<input type="number" id="mass${index + 1}" value="${body.mass.toFixed(2)}" step="any">
-			
-			<label for="charge${index + 1}" id="ChargeEntree">Charge:</label>
-			<input type="number" id="charge${index + 1}" value="${body.charge.toFixed(1)}" step="any">
-			
-			<label for="x${index + 1}" id="PosXEntree">X Position:</label>
-			<input type="number" id="x${index + 1}" value="${body.position.x.toFixed(2)}" step="any">
-			
-			<label for="y${index + 1}" id="PosYEntree">Y Position:</label>
-			<input type="number" id="y${index + 1}" value="${body.position.y.toFixed(2)}" step="any">
-			
-			<label for="vx${index + 1}" id="SpeedXEntree">X Speed:</label>
-			<input type="number" id="vx${index + 1}" value="${body.velocity.x.toFixed(3)}" step="any">
-			
-			<label for="vy${index + 1}" id="SpeedYEntree">Y Speed:</label>
-			<input type="number" id="vy${index + 1}" value="${body.velocity.y.toFixed(3)}" step="any">
-			
-			<hr style="width:25%;text-align:center;color:#444">
-			
-			<br>
-		`;
+        group.innerHTML = `
+            <div class="checkbox-group">
+                <input type="checkbox" id="show${index + 1}" ${body.show ? 'checked' : ''}>
+                
+                <label for="info${index + 1}">
+                    <span class="color-indicator" id="color${index}" style="background-color: ${body.color}; cursor: pointer;"></span>
+                    <input type="text" id="name${index}" value="${body.name || `Object ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 90%;">
+                    <img src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Supprimer">
+                </label>
+            </div>
+            
+            <label for="mass${index + 1}" id="MassEntree">Mass:</label>
+            <div class="input-group">
+                <button onclick="adjustValue('mass${index + 1}', 0.1)">/10</button>
+                <button onclick="adjustValue('mass${index + 1}', 0.5)">/2</button>
+                <input type="number" id="mass${index + 1}" value="${body.mass.toFixed(2)}" step="any">
+                <button onclick="adjustValue('mass${index + 1}', 2)">x2</button>
+                <button onclick="adjustValue('mass${index + 1}', 10)">x10</button>
+            </div>
+            
+            <label for="charge${index + 1}" id="ChargeEntree">Charge:</label>
+            <div class="input-group">
+                <button onclick="adjustValue('charge${index + 1}', 0.1)">/10</button>
+                <button onclick="adjustValue('charge${index + 1}', 0.5)">/2</button>
+                <input type="number" id="charge${index + 1}" value="${body.charge.toFixed(1)}" step="any">
+                <button onclick="adjustValue('charge${index + 1}', 2)">x2</button>
+                <button onclick="adjustValue('charge${index + 1}', 10)">x10</button>
+            </div>
+            
+            <label for="radius${index + 1}" id="radiusEntree">Radius:</label>
+            <div class="input-group">
+                <button onclick="adjustValue('radius${index + 1}', 0.1)">/10</button>
+                <button onclick="adjustValue('radius${index + 1}', 0.5)">/2</button>
+                <input type="number" id="radius${index + 1}" value="${body.radius.toFixed(1)}" step="any">
+                <button onclick="adjustValue('radius${index + 1}', 2)">x2</button>
+                <button onclick="adjustValue('radius${index + 1}', 10)">x10</button>
+            </div>
+            
+            <label for="x${index + 1}" id="PosXEntree">X Position:</label>
+            <div class="input-group">
+                <button onclick="adjustValue('x${index + 1}', 0.1)">/10</button>
+                <button onclick="adjustValue('x${index + 1}', 0.5)">/2</button>
+                <input type="number" id="x${index + 1}" value="${body.position.x.toFixed(2)}" step="any">
+                <button onclick="adjustValue('x${index + 1}', 2)">x2</button>
+                <button onclick="adjustValue('x${index + 1}', 10)">x10</button>
+            </div>
+            
+            <label for="y${index + 1}" id="PosYEntree">Y Position:</label>
+            <div class="input-group">
+                <button onclick="adjustValue('y${index + 1}', 0.1)">/10</button>
+                <button onclick="adjustValue('y${index + 1}', 0.5)">/2</button>
+                <input type="number" id="y${index + 1}" value="${body.position.y.toFixed(2)}" step="any">
+                <button onclick="adjustValue('y${index + 1}', 2)">x2</button>
+                <button onclick="adjustValue('y${index + 1}', 10)">x10</button>
+            </div>
+            
+            <label for="vx${index + 1}" id="SpeedXEntree">X Speed:</label>
+            <div class="input-group">
+                <button onclick="adjustValue('vx${index + 1}', 0.1)">/10</button>
+                <button onclick="adjustValue('vx${index + 1}', 0.5)">/2</button>
+                <input type="number" id="vx${index + 1}" value="${body.velocity.x.toFixed(3)}" step="any">
+                <button onclick="adjustValue('vx${index + 1}', 2)">x2</button>
+                <button onclick="adjustValue('vx${index + 1}', 10)">x10</button>
+            </div>
+            
+            <label for="vy${index + 1}" id="SpeedYEntree">Y Speed:</label>
+            <div class="input-group">
+                <button onclick="adjustValue('vy${index + 1}', 0.5)">/2</button>
+                <button onclick="adjustValue('vy${index + 1}', 0.1)">/10</button>
+                <input type="number" id="vy${index + 1}" value="${body.velocity.y.toFixed(3)}" step="any">
+                <button onclick="adjustValue('vy${index + 1}', 2)">x2</button>
+                <button onclick="adjustValue('vy${index + 1}', 10)">x10</button>
+            </div>
+            
+            <hr style="width:25%;text-align:center;color:#444">
+            
+            <br>
+        `;
 		controlsContainer.appendChild(group);
 
 		document.getElementById(`show${index + 1}`).addEventListener('change', (e) => {
@@ -460,7 +523,8 @@ function updateControlValues() {
 		const yInput = document.getElementById(`y${index + 1}`);
 		const vxInput = document.getElementById(`vx${index + 1}`);
 		const vyInput = document.getElementById(`vy${index + 1}`);
-		const chargeInput = document.getElementById(`charge${index + 1}`)
+		const chargeInput = document.getElementById(`charge${index + 1}`);
+		const radiusInput = document.getElementById(`radius${index + 1}`);
 
 		massInput.addEventListener('input', (e) => {
 			if (isPaused) {
@@ -501,9 +565,24 @@ function updateControlValues() {
 				body.charge = parseFloat(e.target.value);
 			}
 		});
+		
+		radiusInput.addEventListener('input', (e) => {
+			if (isPaused) {
+				body.radius = parseFloat(e.target.value);
+			}
+		});
 	});
 
 	setupTrashIcons();
+}
+
+function adjustValue(inputId, factor) {
+    const input = document.getElementById(inputId);
+    if (input) {
+        input.value = (parseFloat(input.value) * factor).toFixed(2); // Ajuste la valeur en fonction du facteur
+        const event = new Event('input', { bubbles: true });
+        input.dispatchEvent(event); // Déclenche l'événement input pour mettre à jour la valeur du corps
+    }
 }
 
 function playImpactSound() {
@@ -696,7 +775,7 @@ function drawBodies(barycenter) {
 	bodies.forEach(body => {
 		if (body.show) {
 			ctx.beginPath();
-			const radius = showSizeCheckbox.checked ? 10 / scale : 2.5;
+			const radius = showSizeCheckbox.checked ? body.radius / scale * 5 : body.radius;
 			ctx.arc(body.position.x, body.position.y, radius, 0, 2 * Math.PI);
 			ctx.fillStyle = body.color;
 			ctx.fill();
@@ -767,43 +846,45 @@ function getRandomPosition() {
 }
 
 function detectCollisions() {
-	const radius = 2.5; // Rayon des objets
+    for (let i = 0; i < bodies.length; i++) {
+        for (let j = i + 1; j < bodies.length; j++) {
+            const dx = bodies[j].position.x - bodies[i].position.x;
+            const dy = bodies[j].position.y - bodies[i].position.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            const combinedRadius = bodies[i].radius + bodies[j].radius;
 
-	for (let i = 0; i < bodies.length; i++) {
-		for (let j = i + 1; j < bodies.length; j++) {
-			const dx = bodies[j].position.x - bodies[i].position.x;
-			const dy = bodies[j].position.y - bodies[i].position.y;
-			const distance = Math.sqrt(dx * dx + dy * dy);
-
-			if (distance < 2 * radius) {
-				resolveCollision(bodies[i], bodies[j]);
-				playImpactSound();
-			}
-		}
-	}
+            if (distance < combinedRadius) {
+                resolveCollision(bodies[i], bodies[j]);
+                playImpactSound();
+            }
+        }
+    }
 }
+
 
 function resolveCollision(body1, body2) {
-	const radius = 2.5;
-	const dx = body2.position.x - body1.position.x;
-	const dy = body2.position.y - body1.position.y;
-	const distance = Math.sqrt(dx * dx + dy * dy);
+    const dx = body2.position.x - body1.position.x;
+    const dy = body2.position.y - body1.position.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
 
-	const nx = dx / distance;
-	const ny = dy / distance;
+    const nx = dx / distance;
+    const ny = dy / distance;
 
-	const p = 2 * (body1.velocity.x * nx + body1.velocity.y * ny - body2.velocity.x * nx - body2.velocity.y * ny) / (body1.mass + body2.mass);
-	body1.velocity.x -= p * body2.mass * nx;
-	body1.velocity.y -= p * body2.mass * ny;
-	body2.velocity.x += p * body1.mass * nx;
-	body2.velocity.y += p * body1.mass * ny;
+    const p = 2 * (body1.velocity.x * nx + body1.velocity.y * ny - body2.velocity.x * nx - body2.velocity.y * ny) / (body1.mass + body2.mass);
+    body1.velocity.x -= p * body2.mass * nx;
+    body1.velocity.y -= p * body2.mass * ny;
+    body2.velocity.x += p * body1.mass * nx;
+    body2.velocity.y += p * body1.mass * ny;
 
-	const overlap = 2 * radius - distance;
-	body1.position.x -= overlap / 2 * nx;
-	body1.position.y -= overlap / 2 * ny;
-	body2.position.x += overlap / 2 * nx;
-	body2.position.y += overlap / 2 * ny;
+    const combinedRadius = body1.radius + body2.radius;
+    const overlap = combinedRadius - distance;
+    body1.position.x -= overlap / 2 * nx;
+    body1.position.y -= overlap / 2 * ny;
+    body2.position.x += overlap / 2 * nx;
+    body2.position.y += overlap / 2 * ny;
 }
+
 
 function displayFPS(currentTime) {
     frameCount++;
@@ -864,6 +945,7 @@ function handleMouseDown(event) {
 		if (Math.sqrt(dx * dx + dy * dy) < (showSizeCheckbox.checked ? 10 / scale : 10)) {
 			selectedBody = body;
 			isPaused = true;
+			updateButtonImage();
 			break;
 		}
 	}
@@ -879,6 +961,7 @@ function handleMouseMove(event) {
 		clearTimeout(manualMoveTimeout);
 		manualMoveTimeout = setTimeout(() => {
 			isPaused = true;
+			updateButtonImage();
 		}, 0);
 	}
 }

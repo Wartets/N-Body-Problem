@@ -294,3 +294,20 @@ button:hover {
 .hidden #mouseCoords {
 	opacity: 0.3;
 }
+
+#helpBtn:hover,
+#startPauseBtn:hover,
+#controlsToggle:hover,
+#fullscreenBtn:hover,
+#resetViewBtn:hover {
+	filter: brightness(2);
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+}
+
+.input-group button {
+    padding: 5px 7px;
+}
