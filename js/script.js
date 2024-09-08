@@ -96,9 +96,13 @@ controlsToggle.addEventListener('click', () => {;
 fullscreenBtn.addEventListener('click', () => {
 	if (!document.fullscreenElement) {
 		document.documentElement.requestFullscreen();
+        fullscreenImg.src = "image/full-screen-off-icon.png";
+        fullscreenImg.alt = "Quit Full-screen";
 	} else {
 		if (document.exitFullscreen) {
 			document.exitFullscreen();
+			fullscreenImg.src = "image/full-screen-on-icon.png";
+			fullscreenImg.alt = "Full-screen";
 		}
 	}
 });

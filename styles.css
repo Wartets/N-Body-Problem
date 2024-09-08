@@ -21,6 +21,7 @@ body {
 }
 
 #controls {
+	width: 250px;
     height: 100%;
 	padding: 20px;
 	background-color: #2c2c2c;
@@ -35,14 +36,14 @@ body {
 }
 
 #controlsToggle {
-	right: 19.5%;
+	right: 300px;
     position: absolute;
     top: 49%;
     cursor: pointer;
 }
 
 .hidden #controlsToggle {
-    right: 0.5%;
+    right: 5px;
 }
 
 .control-group {
@@ -169,9 +170,38 @@ button:hover {
     cursor: pointer;
 }
 
+.hidden #fullscreenBtn {
+    right: 15px;
+}
+
+#fullscreenBtn {
+    display: block;
+	position: absolute;
+	right: 302.5px;
+	bottom: 15px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+#resetViewBtn {
+    display: block;
+	position: absolute;
+	left: 15px;
+	bottom: 70px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+	opacity: 0.85;
+}
+
 #helpBtn {
 	position: absolute;
-	right: 315px;
+	right: 302.5px;
 	top: 15px;
     background: none;
     border: none;
@@ -240,8 +270,14 @@ button:hover {
 	cursor: pointer;
 }
 
-#startPauseImg, #helpImg {
-    width: 3vw;
+#startPauseImg, #helpImg, #resetViewImg {
+    width: 2.8vw;
+    height: auto;
+    display: block;
+}
+
+#fullscreenImg {
+    width: 2.3vw;
     height: auto;
     display: block;
 }

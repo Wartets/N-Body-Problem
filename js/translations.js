@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		
 		timerLng = trans.timeLabel;
 		
-        document.getElementById('resetViewBtn').textContent = trans.resetView;
-        document.getElementById('fullscreenBtn').textContent = trans.fullscreen;
         document.getElementById('dtLabel').textContent = trans.dt;
         document.getElementById('showSizeLabel').textContent = trans.adaptiveSize;
         document.getElementById('displayModeLabel').textContent = trans.dotViewSetting;

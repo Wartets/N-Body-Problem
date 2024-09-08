@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>N-Body Problem by Wartets</title>
+	<meta name="description" content="Explore Wartets' simulation of the N-body problem, which visualizes different interactions between several bodies.">
+	
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	
+	<meta property="og:title" content="N-Body Problem by Wartets">
+	<meta property="og:description" content="Explore Wartets' simulation of the N-body problem, which visualizes different interactions between several bodies.">
+	<meta property="og:image" content="https://wartets.github.io/N-Body-Problem/image/social-preview.png">
+	<meta property="og:url" content="https://wartets.github.io/N-Body-Problem/">
+	<meta property="og:type" content="website">
+	
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="N-Body Problem by Wartets">
+	<meta name="twitter:description" content="Explore Wartets' simulation of the N-body problem, which visualizes different interactions between several bodies.">
+	<meta name="twitter:image" content="https://wartets.github.io/N-Body-Problem/image/twitter-card.png">
+
 	<link rel="icon" href="image\browser-icon.png">
     <link rel="stylesheet" href="styles.css"> <!-- Lien vers le fichier CSS -->
 </head>
@@ -12,17 +28,21 @@
     <canvas id="simulationCanvas"></canvas>	
 	
 	<div>
-		<button id="resetViewBtn" style="position: absolute; top: 20px; left: 15px;">Réinitialiser la vue</button>
-		
-		<button id="fullscreenBtn" style="position: absolute; top: 65px; left: 15px;">Plein écran</button>
-		
-		<div id="mouseCoords" style="position: absolute; top: 110px; left: 18px;">Coord : (x; y)</div>
+		<div id="mouseCoords" style="position: absolute; top: 15px; left: 18px; -webkit-text-stroke: .5px gray;">Coord : (x; y)</div>
 
-		<div id="timer" style="position: absolute; top: 130px; left: 18px;">Temps : 0.00 s</div>
+		<div id="timer" style="position: absolute; top: 35px; left: 18px; -webkit-text-stroke: .5px gray;">Temps : 0.00 s</div>
 		
-		<div id="fpsDisplay" style="position: absolute; top: 150px; left: 18px;">fps: 0</div>
+		<div id="UsageDisplay" style="position: absolute; top: 55px; left: 18px; -webkit-text-stroke: .5px gray;">Usage: 0%</div>
 		
-		<div id="UsageDisplay" style="position: absolute; top: 170px; left: 18px;">Usage: 0%</div>
+		<div id="fpsDisplay" style="position: absolute; top: 75px; left: 18px; -webkit-text-stroke: .5px gray;">fps: 0</div>
+
+		<button id="resetViewBtn">
+			<img id="resetViewImg" src="image/reset-icon.png" alt="Reset View">
+		</button>
+		
+		<button id="fullscreenBtn">
+			<img id="fullscreenImg" src="image/full-screen-on-icon.png" alt="Full-screen">
+		</button>
 		
 		<button id="startPauseBtn">
 			<img id="startPauseImg" src="image/start-button.png" alt="Start">
