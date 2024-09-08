@@ -77,6 +77,13 @@ const presets = {
 			{ name: "Object 2", mass: 10.000, charge: 0, radius: 1, position: { x: 4.825, y: 7 }, velocity: { x: 5.077, y: -9.240 }, color: "pink", show: true }
 		]
 	},
+	"Sun Earth Moon": { dt: 0.2,
+		bodies: [
+			{ name: "Sun", mass: 1.989e+30, charge: 0, radius: 696342*10, position: { x: 0, y: 0 }, velocity: { x: -2, y: -2 }, color: "yellow", show: true },
+			{ name: "Moon", mass: 7.347e+22, charge: 0, radius: 1737.4*10, position: { x: 149597870.7+384400, y: 0 }, velocity: { x: 0, y: (107000+3683.590215)*8.806 }, color: "gray", show: true },
+			{ name: "Earth", mass: 5.972e+24, charge: 0, radius: 6371*10, position: { x: 149597870.7, y: 0 }, velocity: { x: 0, y: 107000*8.806 }, color: "blue", show: true }
+		]
+	}/* ,
 	"Magnetic Force Test": { dt: 0.3,
 		bodies: [
 			{ name: "Object 1", mass: 40, charge: -2, radius: 2.5, position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
@@ -89,5 +96,5 @@ const presets = {
 			{ name: "Ball 2", mass: 10, charge: 0, radius: 2.5, position: { x: 10.1, y: 20 }, velocity: { x: 0, y: -10 }, color: "gray", show: true },
 			{ name: "else", mass: 0.0001, charge: 0, radius: 2.5, position: { x: -20, y: 12.5 }, velocity: { x: 0, y: 0 }, color: "black", show: true }
 		]
-	}
+	} */
 };

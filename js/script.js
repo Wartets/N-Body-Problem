@@ -473,7 +473,7 @@ function updateControlValues() {
                 <button onclick="adjustValue('vy${index + 1}', 10)">x10</button>
             </div>
             
-            <hr style="width:25%;text-align:center;color:#444">
+            <hr style="width:100%;text-align:center;color:#444">
             
             <br>
         `;
@@ -611,19 +611,31 @@ function calculateForces() {
             if (i !== j) {
                 const dx = bodies[j].position.x - bodies[i].position.x;
                 const dy = bodies[j].position.y - bodies[i].position.y;
+                
+                // if (isNaN(dx) || isNaN(dy)) {
+                    // console.error(`Les positions des objets ${i + 1} ou ${j + 1} sont invalides.`);
+                    // continue;
+                // }
+
                 const distance = Math.sqrt(dx * dx + dy * dy);
+				
+                if (distance > 0) {
+                    // console.log(`Objet${i + 1} - Objet${j + 1}: ${distance.toFixed(2)}`);
 
-                if (gravityEnabled) {
-                    const forceG = (G * bodies[i].mass * bodies[j].mass) / (distance * distance);
-                    fx += forceG * (dx / distance);
-                    fy += forceG * (dy / distance);
-                }
+                    if (gravityEnabled) {
+                        const forceG = (G * bodies[i].mass * bodies[j].mass) / (distance * distance);
+                        fx += forceG * (dx / distance);
+                        fy += forceG * (dy / distance);
+                    }
 
-                if (magneticEnabled) {
-                    const forceEM = (k * bodies[i].charge * bodies[j].charge) / (distance * distance);
-                    fx += forceEM * (-dx / distance);
-                    fy += forceEM * (-dy / distance);
-                }
+                    if (magneticEnabled) {
+                        const forceEM = (k * bodies[i].charge * bodies[j].charge) / (distance * distance);
+                        fx += forceEM * (-dx / distance);
+                        fy += forceEM * (-dy / distance);
+                    }
+                } /* else {
+                    console.warn(`Les objets ${i + 1} et ${j + 1} se chevauchent ou sont à la même position.`);
+                } */
             }
         }
 
@@ -631,6 +643,7 @@ function calculateForces() {
         bodies[i].acceleration.y = fy / bodies[i].mass;
     }
 }
+
 
 function applyFriction() {
 	if (frictionToggle.checked) {
@@ -775,7 +788,7 @@ function drawBodies(barycenter) {
 	bodies.forEach(body => {
 		if (body.show) {
 			ctx.beginPath();
-			const radius = showSizeCheckbox.checked ? body.radius / scale * 5 : body.radius;
+			const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
 			ctx.arc(body.position.x, body.position.y, radius, 0, 2 * Math.PI);
 			ctx.fillStyle = body.color;
 			ctx.fill();
@@ -924,7 +937,7 @@ function animate(currentTime) {
     cpuUsage = Math.min((frameTime / 16.67 / 2) * 100, 500);
     
     document.getElementById('UsageDisplay').textContent = `Usage: ${cpuUsage.toFixed(0)}%`;
-
+	
     requestAnimationFrame(animate);
 }
 
@@ -1177,13 +1190,6 @@ function getDistance(touch1, touch2) {
     return Math.sqrt(dx * dx + dy * dy);
 }
 
-startTimer();
-updateConstants();
-simulate();
-updateControlValues();
-animate();
-updatePresetSelect();
-
 function drawGrid() {
     const showGrid = document.getElementById('showGrid').checked;
     if (!showGrid) return;
@@ -1248,3 +1254,9 @@ function drawGrid() {
     ctx.restore();
 }
 
+startTimer();
+updateConstants();
+simulate();
+updateControlValues();
+animate();
+updatePresetSelect();

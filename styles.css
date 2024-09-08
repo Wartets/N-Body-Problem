@@ -16,10 +16,6 @@ body {
     object-fit: contain;
 }
 
-.hidden #simulationCanvas {
-    object-fit: cover;
-}
-
 #controls {
 	width: 250px;
     height: 100%;
@@ -77,13 +73,17 @@ input[type="checkbox"] {
 	margin-right: 1.1%;
 }
 
+input[type="range"] {
+    transition: all 1.3s ease;
+}
+
 button {
 	padding: 10px;
 	background-color: #444;
 	border: 1px solid #555;
 	color: #fff;
 	cursor: pointer;
-	transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
@@ -136,8 +136,6 @@ button:hover {
 }
 
 .tooltip {
-	position: absolute;
-	left: 45%;
 	background: #444;
 	color: #fff;
 	padding: 2%;
@@ -212,6 +210,7 @@ button:hover {
 
 .hidden #helpBtn {
     right: 15px;
+    transition: right 0.1s ease;
 }
 
 .modal {
@@ -292,6 +291,7 @@ button:hover {
 .hidden #fpsDisplay,
 .hidden #UsageDisplay,
 .hidden #mouseCoords {
+    transition: opacity 0.3s ease;
 	opacity: 0.3;
 }
 
@@ -300,6 +300,7 @@ button:hover {
 #controlsToggle:hover,
 #fullscreenBtn:hover,
 #resetViewBtn:hover {
+    transition: filter 0.2s out;
 	filter: brightness(2);
 }
 
