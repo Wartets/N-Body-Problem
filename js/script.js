@@ -114,6 +114,9 @@ startPauseBtn.addEventListener('click', () => {
 slider.addEventListener('input', (e) => {
 	const value = e.target.value;
 	tooltip.textContent = `10^${value}`;
+	if (value == 0) {
+		clearTrails();
+	}
 });
 
 slider.addEventListener('mouseleave', () => {
@@ -125,10 +128,7 @@ slider.addEventListener('mouseover', () => {
 });
 
 canvas.addEventListener('mousemove', (event) => {
-	const rect = canvas.getBoundingClientRect();
-	const mouseX = (event.clientX - rect.left) / scale + cameraOffset.x;
-	const mouseY = (event.clientY - rect.top) / scale + cameraOffset.y;
-	mouseCoordsDisplay.textContent = `Coord : (${mouseX.toFixed(2)}; ${mouseY.toFixed(2)})`;
+    updateCoord();
 });
 
 window.addEventListener('resize', () => {
@@ -289,6 +289,20 @@ document.getElementById('savePresetBtn').addEventListener('click', () => {
 	updatePresetSelect();
 	presetNameInput.value = '';
 });
+
+function updateCoord() {
+    const barycenter = calculateBarycenter();
+
+    const rect = canvas.getBoundingClientRect();
+
+    const mouseXOnCanvas = (event.clientX - rect.left) / scale;
+    const mouseYOnCanvas = (event.clientY - rect.top) / scale;
+
+    const mouseX = mouseXOnCanvas + (barycenter.x - canvas.width / 2 / scale);
+    const mouseY = mouseYOnCanvas + (barycenter.y - canvas.height / 2 / scale);
+
+    mouseCoordsDisplay.textContent = `Coord : (${mouseX.toFixed(2)}; ${mouseY.toFixed(2)})`;
+}
 
 function updateConstants() {
     if (constValCheckbox.checked) {
@@ -672,6 +686,8 @@ function drawBodies(barycenter) {
 		drawMagneticField();
     }
 
+    drawGrid();
+
 	ctx.save();
 	ctx.translate(canvas.width / 2, canvas.height / 2);
 	ctx.scale(scale, scale);
@@ -711,7 +727,9 @@ function drawBodies(barycenter) {
 		}
 	});
 	ctx.beginPath();
-	ctx.arc(barycenter.x, barycenter.y, barycenterPointSize, 0, 2 * Math.PI);
+	if (document.getElementById('showVelocities').checked) {
+		ctx.arc(barycenter.x, barycenter.y, barycenterPointSize, 0, 2 * Math.PI);
+	}
 	ctx.fillStyle = 'gray';
 	ctx.fill();
 	ctx.closePath();
@@ -828,7 +846,6 @@ function animate(currentTime) {
 
     requestAnimationFrame(animate);
 }
-
 
 function getRandomSpeed() {
     const term0 = Math.random() * 4 - 2;
@@ -1083,3 +1100,68 @@ simulate();
 updateControlValues();
 animate();
 updatePresetSelect();
+
+function drawGrid() {
+    const showGrid = document.getElementById('showGrid').checked;
+    if (!showGrid) return;
+
+    ctx.save();
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
+    const visibleWidth = canvasWidth / scale;
+    const visibleHeight = canvasHeight / scale;
+    const visibleCenterX = calculateBarycenter().x;
+    const visibleCenterY = calculateBarycenter().y;
+
+    const startX = visibleCenterX - (canvasWidth / 2 / scale);
+    const startY = visibleCenterY - (canvasHeight / 2 / scale);
+
+    const baseGridSize = 75; 
+    let gridSize = baseGridSize;
+
+    while (gridSize * scale < 60) { 
+        gridSize *= 2;
+    }
+    while (gridSize * scale > 150) {
+        gridSize /= 2;
+    }
+
+    ctx.strokeStyle = 'rgba(200, 200, 200, 0.15)';
+    ctx.lineWidth = Math.max(0.5, 10/(Math.exp(scale) + 100));
+
+    for (let x = Math.floor(startX / gridSize) * gridSize; x < startX + visibleWidth; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo((x - startX) * scale, 0);
+        ctx.lineTo((x - startX) * scale, canvasHeight);
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    for (let y = Math.floor(startY / gridSize) * gridSize; y < startY + visibleHeight; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, (y - startY) * scale);
+        ctx.lineTo(canvasWidth, (y - startY) * scale);
+        ctx.stroke();
+        ctx.closePath();
+    }
+	
+    const canvasX0 = (0 - visibleCenterX) * scale + canvasWidth / 2;
+    const canvasY0 = (0 - visibleCenterY) * scale + canvasHeight / 2;
+
+    ctx.strokeStyle = 'rgba(200, 200, 200, 0.5)';
+    ctx.beginPath();
+    ctx.moveTo(0, canvasY0); 
+    ctx.lineTo(canvasWidth, canvasY0);
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.moveTo(canvasX0, 0);
+    ctx.lineTo(canvasX0, canvasHeight);
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.restore();
+}
+

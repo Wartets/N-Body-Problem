@@ -1,15 +1,15 @@
 const initialBodies = [
-    { name: "Objet 1", mass: 250, charge: 2, position: { x: 0, y: 0 }, velocity: { x: 0, y: 1 }, color: "red" },
-    { name: "Objet 2", mass: 300, charge: 1.5, position: { x: 200, y: 200 }, velocity: { x: -1, y: 0 }, color: "green" },
-    { name: "Objet 3", mass: 100, charge: -1, position: { x: 200, y: 0 }, velocity: { x: -1, y: 1 }, color: "blue" }
+    { name: "Objet 1", mass: 250, charge: 2, position: { x: -100, y: -100 }, velocity: { x: 0, y: 1 }, color: "red" },
+    { name: "Objet 2", mass: 300, charge: 1.5, position: { x: 100, y: 100 }, velocity: { x: -1, y: 0 }, color: "green" },
+    { name: "Objet 3", mass: 100, charge: -1, position: { x: 100, y: -100 }, velocity: { x: -1, y: 1 }, color: "blue" }
 ];
 
 const presets = {
 	"Initial preset": { dt: 0.24,
 		bodies: [
-			{ name: "Objet 1", mass: 250, charge: 2, position: { x: 0, y: 0 }, velocity: { x: 0, y: 1 }, color: "red", show: true },
-			{ name: "Objet 2", mass: 300, charge: 1.5, position: { x: 200, y: 200 }, velocity: { x: -1, y: 0 }, color: "green", show: true },
-			{ name: "Objet 3", mass: 100, charge: -1, position: { x: 200, y: 0 }, velocity: { x: -1, y: 1 }, color: "blue", show: true }
+			{ name: "Objet 1", mass: 250, charge: 2, position: { x: -100, y: -100 }, velocity: { x: 0, y: 1 }, color: "red" },
+			{ name: "Objet 2", mass: 300, charge: 1.5, position: { x: 100, y: 100 }, velocity: { x: -1, y: 0 }, color: "green" },
+			{ name: "Objet 3", mass: 100, charge: -1, position: { x: 100, y: -100 }, velocity: { x: -1, y: 1 }, color: "blue" }
 		]
 	},
 	"Tri-system 1": { dt: 0.3,
@@ -27,11 +27,11 @@ const presets = {
 			{ name: "Planet 3", mass: 1, charge: 0, position: { x: 5, y: 18.262 }, velocity: { x: -4.730, y: 8.905 }, color: "red", show: true }
 		]
 	},
-	"Sun Earth Moon like": { dt: 0.001,
+	"Star Planet Satellite": { dt: 0.001,
 		bodies: [
-			{ name: "Sun", mass: 100000, charge: 0, position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
-			{ name: "Moon", mass: 3.694e-4, charge: 0, position: { x: 10.02562667, y: 0 }, velocity: { x: 0, y: 31.03 }, color: "gray", show: true },
-			{ name: "Earth", mass: 3.003e-1, charge: 0, position: { x: 10, y: 0 }, velocity: { x: 0, y: 30 }, color: "blue", show: true }
+			{ name: "Star", mass: 100000, charge: 0, position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
+			{ name: "Satellite", mass: 3.694e-4, charge: 0, position: { x: 10.02562667, y: 0 }, velocity: { x: 0, y: 31.03 }, color: "gray", show: true },
+			{ name: "Planet", mass: 3.003e-1, charge: 0, position: { x: 10, y: 0 }, velocity: { x: 0, y: 30 }, color: "blue", show: true }
 		]
 	},
 	"Billard": { dt: 0.1,
@@ -45,11 +45,30 @@ const presets = {
 			{ name: "Blue", mass: 8.5, charge: 0, position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 }, color: "blue", show: true }
 		]
 	},
-	"Collision test": { dt: 0.001,
+	"Hydrogens like": { dt: 0.005,
 		bodies: [
-			{ name: "Ball 1", mass: 20, charge: 0, position: { x: 10, y: 10 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
-			{ name: "Ball 2", mass: 10, charge: 0, position: { x: 10.1, y: 20 }, velocity: { x: 0, y: -10 }, color: "gray", show: true },
-			{ name: "else", mass: 0.0001, charge: 0, position: { x: -20, y: 12.5 }, velocity: { x: 0, y: 0 }, color: "black", show: true }
+			{ name: "Proton 1", mass: 1.67262*(10**(-27)), charge: 1.6/(10**(19)), position: { x: 0, y: 0.8 }, velocity: { x: 3, y: 0.8 }, color: "red", show: true },
+			{ name: "Electron 1", mass: 9.1*(10**(-31)), charge: -1.6/(10**(19)), position: { x: 1.7, y: 0.8 }, velocity: { x: 3, y: 12.8 }, color: "green", show: true },
+			{ name: "Proton 2", mass: 1.67262*(10**(-27)), charge: 1.6/(10**(19)), position: { x: 20, y: 10 }, velocity: { x: -10, y: -4 }, color: "red", show: true },
+			{ name: "Electron 2", mass: 9.1*(10**(-31)), charge: -1.6/(10**(19)), position: { x: 20, y: 11.7 }, velocity: { x: 2, y: -4 }, color: "green", show: true },
+			{ name: "Proton 3", mass: 1.67262*(10**(-27)), charge: 1.6/(10**(19)), position: { x: -15, y: 0}, velocity: { x: 0, y: 0 }, color: "red", show: true },
+			{ name: "Electron 3", mass: 9.1*(10**(-31)), charge: -1.6/(10**(19)), position: { x: -13.8, y: -1.2 }, velocity: { x: 8.485, y: 8.485 }, color: "green", show: true },
+			{ name: "Proton 3", mass: 1.67262*(10**(-27)), charge: 1.6/(10**(19)), position: { x: 12, y: -4.5}, velocity: { x: -0.5, y: 1 }, color: "red", show: true },
+			{ name: "Electron 3", mass: 9.1*(10**(-31)), charge: -1.6/(10**(19)), position: { x: 10.8, y: -3.3 }, velocity: { x: -8.985, y: -7.485 }, color: "green", show: true },
+			{ name: "Proton 4", mass: 1.67262*(10**(-27)), charge: 1.6/(10**(19)), position: { x: -10, y: 15}, velocity: { x: 1, y: -0.7 }, color: "red", show: true }
+		]
+	},
+	"Soup": { dt: 0.09,
+		bodies: [
+			{ name: "Object 1", mass: 10, charge: 1, position: { x: 0, y: 2 }, velocity: { x: -0.21, y: 0 }, color: "Blue", show: true },
+			{ name: "Object 2", mass: 10, charge: -1, position: { x: 22, y: 0 }, velocity: { x: -0.01, y: 0 }, color: "Red", show: true },
+			{ name: "Object 3", mass: 10, charge: 1, position: { x: 1, y: 20 }, velocity: { x: 0, y: 0.01 }, color: "Blue", show: true },
+			{ name: "Object 4", mass: 10, charge: -1, position: { x: 20.2, y: 20 }, velocity: { x: 0, y: 0 }, color: "Red", show: true },
+			{ name: "Object 5", mass: 10, charge: 1, position: { x: 36, y: 0 }, velocity: { x: 0.01, y: 1 }, color: "Blue", show: true },
+			{ name: "Object 6", mass: 10, charge: -1, position: { x: 0, y: 40 }, velocity: { x: 1.5, y: -0.01 }, color: "Red", show: true },
+			{ name: "Object 7", mass: 10, charge: 1, position: { x: 42, y: 40 }, velocity: { x: 0, y: 0 }, color: "Blue", show: true },
+			{ name: "Object 8", mass: 10, charge: -1, position: { x: 20, y: 38 }, velocity: { x: 0, y: 0 }, color: "Red", show: true },
+			{ name: "Object 9", mass: 10, charge: 1, position: { x: 37.6, y: 20.4 }, velocity: { x: 0.01, y: 0.01 }, color: "Blue", show: true }
 		]
 	},
 	"Rosace": { dt: 0.3,
@@ -62,6 +81,13 @@ const presets = {
 		bodies: [
 			{ name: "Object 1", mass: 40, charge: -2, position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
 			{ name: "Object 2", mass: 10, charge: -2, position: { x: 5, y: 5 }, velocity: { x: 0, y: 0 }, color: "pink", show: true }
+		]
+	},
+	"Collision test": { dt: 0.001,
+		bodies: [
+			{ name: "Ball 1", mass: 20, charge: 0, position: { x: 10, y: 10 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
+			{ name: "Ball 2", mass: 10, charge: 0, position: { x: 10.1, y: 20 }, velocity: { x: 0, y: -10 }, color: "gray", show: true },
+			{ name: "else", mass: 0.0001, charge: 0, position: { x: -20, y: 12.5 }, velocity: { x: 0, y: 0 }, color: "black", show: true }
 		]
 	}
 };
