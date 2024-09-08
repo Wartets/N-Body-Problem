@@ -78,7 +78,7 @@ input[type="checkbox"] {
 
 button {
     padding: 0.7vw;
-    font-size: 0.5vh;
+    font-size: 12px;
     margin-bottom: 0.4vh;
 	background-color: #444;
 	border: 1px solid #555;
@@ -243,7 +243,7 @@ button:hover {
 }
 
 #startPauseImg, #helpImg {
-    width: 2.25vw;
+    width: 3vw;
     height: auto;
     display: block;
 }
