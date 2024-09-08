@@ -39,6 +39,7 @@ const impactDelay = 1;
 const helpBtn = document.getElementById('helpBtn');
 const modal = document.getElementById('helpModal');
 const closeBtn = document.querySelector('.close');
+const isHidden = controls.classList.toggle('hidden');
 const bodies = initialBodies.map(body => ({
 	...body,
 	acceleration: { x: 0, y: 0 },
@@ -85,10 +86,11 @@ window.addEventListener('click', (event) => {
 	}
 });
 
-controlsToggle.addEventListener('click', () => {
-    const isHidden = controls.classList.toggle('hidden');
+controlsToggle.addEventListener('click', () => {;
+	const isHidden = !controls.classList.toggle('hidden');
     controlsToggle.innerHTML = isHidden ? '&#x25C0;' : '&#x25B6;';
-    // document.body.classList.toggle('hidden');
+    document.body.classList.toggle('hidden');
+    window.dispatchEvent(new Event('resize'));
 });
 
 fullscreenBtn.addEventListener('click', () => {
@@ -107,9 +109,7 @@ startPauseBtn.addEventListener('click', () => {
 
 slider.addEventListener('input', (e) => {
 	const value = e.target.value;
-	tooltip.textContent = `${value}`;
-	tooltip.style.left = `${offset + tooltipRect.width / 2}px`;
-	tooltip.style.display = 'block';
+	tooltip.textContent = `10^${value}`;
 });
 
 slider.addEventListener('mouseleave', () => {
@@ -128,11 +128,14 @@ canvas.addEventListener('mousemove', (event) => {
 });
 
 window.addEventListener('resize', () => {
-	canvas.width = window.innerWidth - 300;
-	canvas.height = window.innerHeight;
-	if (focusObject === 'barycenter') {
-		resetView();
-	}
+    if (controls.classList.contains('hidden')) {
+        canvas.width = window.innerWidth -300;
+        console.log('window: 0');
+    } else {
+        canvas.width = window.innerWidth;
+        console.log('window: 300');
+    }
+    canvas.height = window.innerHeight;
 });
 
 window.dispatchEvent(new Event('resize'));
@@ -366,7 +369,7 @@ function updateControlValues() {
 				
 				<label for="info${index + 1}">
 					<span class="color-indicator" id="color${index}" style="background-color: ${body.color}; cursor: pointer;"></span>
-					<input type="text" id="name${index}" value="${body.name || `Object ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: auto;">
+					<input type="text" id="name${index}" value="${body.name || `Object ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 90%;">
 					<img src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Supprimer">
 				</label>
 			</div>
@@ -934,7 +937,7 @@ function drawGravityField() {
 
                 if (distance !== 0) {
                     if (showGravityField) {
-                        const forceG = (G * body.mass) / (distance * distance);
+                        const forceG = (0.1 * body.mass) / (distance * distance);
                         fx += forceG * (dx / distance);
                         fy += forceG * (dy / distance);
                     }
@@ -1002,7 +1005,7 @@ function drawMagneticField() {
 
                 if (distance !== 0) {
                     if (showMagneticField) {
-                        const forceEM = (k * body.charge) / (distance * distance);
+                        const forceEM = (10 * body.charge) / (distance * distance);
                         fx += forceEM * (-dx / distance);
                         fy += forceEM * (-dy / distance);
                     }
@@ -1033,11 +1036,10 @@ function drawMagneticField() {
 
 function handleTouchStart(event) {
     if (event.touches.length === 2) {
-        // Si deux doigts sont utilisés, initialise la distance de pincement
         const touch1 = event.touches[0];
         const touch2 = event.touches[1];
         initialPinchDistance = getDistance(touch1, touch2);
-        lastPinchZoom = scrollZoom; // Enregistre le dernier zoom avant le pincement
+        lastPinchZoom = scrollZoom;
     }
 }
 
@@ -1045,18 +1047,14 @@ function handleTouchMove(event) {
     if (event.touches.length === 2) {
         event.preventDefault();
         
-        // Récupère les deux doigts
         const touch1 = event.touches[0];
         const touch2 = event.touches[1];
         
-        // Calcule la distance actuelle entre les deux doigts
         const currentPinchDistance = getDistance(touch1, touch2);
         
         if (initialPinchDistance) {
-            // Calcul du facteur de zoom relatif
             const pinchZoomFactor = currentPinchDistance / initialPinchDistance;
             
-            // Applique le zoom basé sur le facteur du pincement
             scrollZoom = lastPinchZoom * pinchZoomFactor;
             scale = scrollZoom;
         }
@@ -1065,7 +1063,6 @@ function handleTouchMove(event) {
 
 function handleTouchEnd(event) {
     if (event.touches.length < 2) {
-        // Réinitialise la distance de pincement quand il y a moins de deux doigts
         initialPinchDistance = null;
     }
 }
