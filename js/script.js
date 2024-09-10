@@ -1,5 +1,6 @@
 let isPaused = true;
-let collisionsEnabled = false;
+let collisionsEnabled = document.getElementById('collisionToggle').checked;
+let mergingEnabled = document.getElementById('mergeToggle').checked;
 let focusObject = 'barycenter';
 let selectedBody = null;
 let manualMoveTimeout = null;
@@ -11,6 +12,7 @@ let timeElapsed = 0;
 let lastTime = 0;
 let isPlaying = false;
 let lastImpactTime = 0;
+let lastMergeTime = 0;
 let fps = 0;
 let frameCount = 0;
 let fpsTime = 0;
@@ -35,7 +37,9 @@ const slider = document.getElementById('trailLimit');
 const tooltip = document.getElementById('sliderTooltip');
 const timerDisplay = document.getElementById('timer');
 const impactSound = new Audio('sound/impact-sound.mp3');
+const mergeSound = new Audio('sound/merge-sound.mp3');
 const impactDelay = 1;
+const mergeDelay = 1;
 const helpBtn = document.getElementById('helpBtn');
 const modal = document.getElementById('helpModal');
 const closeBtn = document.querySelector('.close');
@@ -162,6 +166,18 @@ document.addEventListener('keydown', (event) => {
 		case 'c':
 			collisionsEnabled = !collisionsEnabled;
 			document.getElementById('collisionToggle').checked = collisionsEnabled;
+			if (collisionsEnabled) {
+				mergingEnabled = false;
+				document.getElementById('mergeToggle').checked = mergingEnabled;
+				}
+			break;
+		case 'm':
+			mergingEnabled = !mergingEnabled;
+			document.getElementById('mergeToggle').checked = mergingEnabled;
+			if (mergingEnabled) {
+				collisionsEnabled = false;
+				document.getElementById('collisionToggle').checked = collisionsEnabled;
+				}
 			break;
 		case 'g':
 			const gravityToggle = document.getElementById('gravityToggle');
@@ -207,6 +223,18 @@ document.getElementById('resetViewBtn').addEventListener('click', () => {
 
 document.getElementById('collisionToggle').addEventListener('change', (e) => {
 	collisionsEnabled = e.target.checked;
+	if (collisionsEnabled) {
+		mergingEnabled = false;
+		document.getElementById('mergeToggle').checked = mergingEnabled;
+		}
+});
+
+document.getElementById('mergeToggle').addEventListener('change', (e) => {
+	mergingEnabled = e.target.checked;
+	if (mergingEnabled) {
+		collisionsEnabled = false;
+		document.getElementById('collisionToggle').checked = collisionsEnabled;
+		}
 });
 
 document.getElementById('addBodyBtn').addEventListener('click', () => {
@@ -414,7 +442,7 @@ function updateControlValues() {
             <div class="input-group">
                 <button onclick="adjustValue('mass${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('mass${index + 1}', 0.5)">/2</button>
-                <input type="number" id="mass${index + 1}" value="${body.mass.toFixed(2)}" step="any">
+                <input type="number" id="mass${index + 1}" value="${body.mass.toFixed(2)}" step="5">
                 <button onclick="adjustValue('mass${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('mass${index + 1}', 10)">x10</button>
             </div>
@@ -423,7 +451,7 @@ function updateControlValues() {
             <div class="input-group">
                 <button onclick="adjustValue('charge${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('charge${index + 1}', 0.5)">/2</button>
-                <input type="number" id="charge${index + 1}" value="${body.charge.toFixed(1)}" step="any">
+                <input type="number" id="charge${index + 1}" value="${body.charge.toFixed(1)}" step="1">
                 <button onclick="adjustValue('charge${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('charge${index + 1}', 10)">x10</button>
             </div>
@@ -432,7 +460,7 @@ function updateControlValues() {
             <div class="input-group">
                 <button onclick="adjustValue('radius${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('radius${index + 1}', 0.5)">/2</button>
-                <input type="number" id="radius${index + 1}" value="${body.radius.toFixed(1)}" step="any">
+                <input type="number" id="radius${index + 1}" value="${body.radius.toFixed(1)}" step="0.5">
                 <button onclick="adjustValue('radius${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('radius${index + 1}', 10)">x10</button>
             </div>
@@ -441,7 +469,7 @@ function updateControlValues() {
             <div class="input-group">
                 <button onclick="adjustValue('x${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('x${index + 1}', 0.5)">/2</button>
-                <input type="number" id="x${index + 1}" value="${body.position.x.toFixed(2)}" step="any">
+                <input type="number" id="x${index + 1}" value="${body.position.x.toFixed(2)}" step="1">
                 <button onclick="adjustValue('x${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('x${index + 1}', 10)">x10</button>
             </div>
@@ -450,7 +478,7 @@ function updateControlValues() {
             <div class="input-group">
                 <button onclick="adjustValue('y${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('y${index + 1}', 0.5)">/2</button>
-                <input type="number" id="y${index + 1}" value="${body.position.y.toFixed(2)}" step="any">
+                <input type="number" id="y${index + 1}" value="${body.position.y.toFixed(2)}" step="0.5">
                 <button onclick="adjustValue('y${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('y${index + 1}', 10)">x10</button>
             </div>
@@ -459,7 +487,7 @@ function updateControlValues() {
             <div class="input-group">
                 <button onclick="adjustValue('vx${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('vx${index + 1}', 0.5)">/2</button>
-                <input type="number" id="vx${index + 1}" value="${body.velocity.x.toFixed(3)}" step="any">
+                <input type="number" id="vx${index + 1}" value="${body.velocity.x.toFixed(3)}" step="0.5">
                 <button onclick="adjustValue('vx${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('vx${index + 1}', 10)">x10</button>
             </div>
@@ -468,7 +496,7 @@ function updateControlValues() {
             <div class="input-group">
                 <button onclick="adjustValue('vy${index + 1}', 0.5)">/2</button>
                 <button onclick="adjustValue('vy${index + 1}', 0.1)">/10</button>
-                <input type="number" id="vy${index + 1}" value="${body.velocity.y.toFixed(3)}" step="any">
+                <input type="number" id="vy${index + 1}" value="${body.velocity.y.toFixed(3)}" step="0.1">
                 <button onclick="adjustValue('vy${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('vy${index + 1}', 10)">x10</button>
             </div>
@@ -528,7 +556,17 @@ function updateControlValues() {
 
 		massInput.addEventListener('input', (e) => {
 			if (isPaused) {
-				body.mass = parseFloat(e.target.value);
+				let value = parseFloat(e.target.value);
+
+				if (value < 0) {
+					value = Math.abs(value);
+				}
+				if (value === 0) {
+					value = 0.0001;
+				}
+
+				body.mass = value;
+				e.target.value = value.toFixed(2);
 			}
 		});
 
@@ -568,7 +606,17 @@ function updateControlValues() {
 		
 		radiusInput.addEventListener('input', (e) => {
 			if (isPaused) {
-				body.radius = parseFloat(e.target.value);
+				let value = parseFloat(e.target.value);
+
+				if (value < 0) {
+					value = Math.abs(value);
+				}
+				if (value === 0) {
+					value = 0.5;
+				}
+
+				body.radius = value;
+				e.target.value = value.toFixed(1);
 			}
 		});
 	});
@@ -591,6 +639,15 @@ function playImpactSound() {
 		lastImpactTime = currentTime;
 		const impactSound = new Audio('sound/impact-sound.mp3');
 		impactSound.play();
+	}
+}
+
+function playMergeSound() {
+	const currentTime = Date.now();
+	if (currentTime - lastMergeTime > mergeDelay) {
+		lastMergeTime = currentTime;
+		const mergeSound = new Audio('sound/merge-sound.mp3');
+		mergeSound.play();
 	}
 }
 
@@ -644,17 +701,16 @@ function calculateForces() {
     }
 }
 
-
 function applyFriction() {
 	if (frictionToggle.checked) {
 		const coefficient = parseFloat(frictionCoefficientInput.value);
 		bodies.forEach(body => {
-			body.velocity.x *= (1 - coefficient);
-			body.velocity.y *= (1 - coefficient);
+			body.velocity.x *= (1 - coefficient ** 3);
+			body.velocity.y *= (1 - coefficient ** 3);
 		});
 	}
 }
-
+		
 function simulate() {
 	if (!isPaused) {
 		calculateForces();
@@ -858,7 +914,38 @@ function getRandomPosition() {
 	return position;
 }
 
-function detectCollisions() {
+function hexToRgb(hex) {
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = (bigint & 255);
+    return { r, g, b };
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+}
+
+function mixColors(color1, color2, surface1, surface2, threshold = 10) {
+    const rgb1 = hexToRgb(color1);
+    const rgb2 = hexToRgb(color2);
+
+    const totalSurface = surface1 + surface2;
+	
+	const colorLost = 1 - 25 / 100
+
+    let r = Math.round((rgb1.r * surface1 + rgb2.r * surface2) / totalSurface * colorLost);
+    let g = Math.round((rgb1.g * surface1 + rgb2.g * surface2) / totalSurface * colorLost);
+    let b = Math.round((rgb1.b * surface1 + rgb2.b * surface2) / totalSurface * colorLost);
+
+    r = Math.max(r, threshold);
+    g = Math.max(g, threshold);
+    b = Math.max(b, threshold);
+
+    return rgbToHex(r, g, b);
+}
+
+function detectProximity() {
     for (let i = 0; i < bodies.length; i++) {
         for (let j = i + 1; j < bodies.length; j++) {
             const dx = bodies[j].position.x - bodies[i].position.x;
@@ -868,13 +955,18 @@ function detectCollisions() {
             const combinedRadius = bodies[i].radius + bodies[j].radius;
 
             if (distance < combinedRadius) {
-                resolveCollision(bodies[i], bodies[j]);
-                playImpactSound();
+				if (collisionsEnabled) {
+					resolveCollision(bodies[i], bodies[j]);
+					playImpactSound();
+				}
+                if (mergingEnabled) {
+                    mergeBodies(bodies[i], bodies[j]);
+					playMergeSound();
+				}
             }
         }
     }
 }
-
 
 function resolveCollision(body1, body2) {
     const dx = body2.position.x - body1.position.x;
@@ -898,6 +990,82 @@ function resolveCollision(body1, body2) {
     body2.position.y += overlap / 2 * ny;
 }
 
+function mergeBodies(body1, body2) {
+    const newMass = body1.mass + body2.mass;
+    const newCharge = body1.charge + body2.charge;
+
+    const dx = body2.position.x - body1.position.x;
+    const dy = body2.position.y - body1.position.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    const nx = dx / distance;
+    const ny = dy / distance;
+
+    const p = 1 * (body1.velocity.x * nx + body1.velocity.y * ny - body2.velocity.x * nx - body2.velocity.y * ny) / (body1.mass + body2.mass);
+
+    const body1VelocityAfterImpact = {
+        x: body1.velocity.x - p * body2.mass * nx,
+        y: body1.velocity.y - p * body2.mass * ny
+    };
+    const body2VelocityAfterImpact = {
+        x: body2.velocity.x + p * body1.mass * nx,
+        y: body2.velocity.y + p * body1.mass * ny
+    };
+
+    const newVelocity = {
+        x: (body1VelocityAfterImpact.x + body2VelocityAfterImpact.x) / 6 + (body1.velocity.x + body2.velocity.x) / 2,
+        y: (body1VelocityAfterImpact.y + body2VelocityAfterImpact.y) / 6 + (body1.velocity.y + body2.velocity.y) / 2
+    };
+
+    const newAcceleration = {
+        x: (body1.acceleration.x + body2.acceleration.x) / 2,
+        y: (body1.acceleration.y + body2.acceleration.y) / 2
+    };
+
+    const surface1 = Math.PI * Math.pow(body1.radius, 2);
+    const surface2 = Math.PI * Math.pow(body2.radius, 2);
+    const newSurface = surface1 + surface2;
+    const newRadius = Math.sqrt(newSurface / Math.PI);
+    const newColor = mixColors(body1.color, body2.color, surface1, surface2)
+
+    const massPosition = {
+        x: (body1.position.x * body1.mass + body2.position.x * body2.mass) / newMass,
+        y: (body1.position.y * body1.mass + body2.position.y * body2.mass) / newMass
+    };
+
+    const chargePosition = {
+        x: (body1.position.x * Math.abs(body1.charge) + body2.position.x * Math.abs(body2.charge)) / (Math.abs(body1.charge) + Math.abs(body2.charge)),
+        y: (body1.position.y * Math.abs(body1.charge) + body2.position.y * Math.abs(body2.charge)) / (Math.abs(body1.charge) + Math.abs(body2.charge))
+    };
+
+    const surfacePosition = {
+        x: (body1.position.x * surface1 + body2.position.x * surface2) / newSurface,
+        y: (body1.position.y * surface1 + body2.position.y * surface2) / newSurface
+    };
+
+    const newPosition = {
+		x: (massPosition.x + chargePosition.x + surfacePosition.x) / 3,
+		y: (massPosition.y + chargePosition.y + surfacePosition.y) / 3
+	};
+		
+    const newBody = {
+        mass: newMass,
+        charge: newCharge,
+        radius: newRadius,
+        position: newPosition,
+        velocity: newVelocity,
+        acceleration: newAcceleration,
+        color: newColor,
+        trail: [],
+        show: true,
+        points: []
+    };
+
+    bodies.splice(bodies.indexOf(body1), 1);
+    bodies.splice(bodies.indexOf(body2), 1);
+
+    bodies.push(newBody);
+}
 
 function displayFPS(currentTime) {
     frameCount++;
@@ -918,8 +1086,8 @@ function animate(currentTime) {
 	if (!isPaused) {
 		const dt = parseFloat(dtInput.value);
 		calculateForces();
-		if (collisionsEnabled) {
-			detectCollisions();
+		if (collisionsEnabled || mergingEnabled) {
+			detectProximity();
 		}
 		updatePositions(dt);
 		const barycenter = calculateBarycenter();

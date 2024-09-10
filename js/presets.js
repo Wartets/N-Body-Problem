@@ -1,15 +1,15 @@
 const initialBodies = [
-    { name: "Objet 1", mass: 250, charge: 2, radius: 2.5, position: { x: -100, y: -100 }, velocity: { x: 0, y: 1 }, color: "red" },
-    { name: "Objet 2", mass: 300, charge: 1.5, radius: 2.5, position: { x: 100, y: 100 }, velocity: { x: -1, y: 0 }, color: "green" },
-    { name: "Objet 3", mass: 100, charge: -1, radius: 2.5, position: { x: 100, y: -100 }, velocity: { x: -1, y: 1 }, color: "blue" }
+    { name: "Objet 1", mass: 250, charge: 2, radius: 2.5, position: { x: -100, y: -100 }, velocity: { x: 0, y: 1 }, color: "red", show: true },
+    { name: "Objet 2", mass: 300, charge: 1.5, radius: 2.5, position: { x: 100, y: 100 }, velocity: { x: -1, y: 0 }, color: "green", show: true },
+    { name: "Objet 3", mass: 100, charge: -1, radius: 2.5, position: { x: 100, y: -100 }, velocity: { x: -1, y: 1 }, color: "blue", show: true }
 ];
 
 const presets = {
 	"Initial preset": { dt: 0.24,
 		bodies: [
-			{ name: "Objet 1", mass: 250, charge: 2, radius: 2.5, position: { x: -100, y: -100 }, velocity: { x: 0, y: 1 }, color: "red" },
-			{ name: "Objet 2", mass: 300, charge: 1.5, radius: 2.5, position: { x: 100, y: 100 }, velocity: { x: -1, y: 0 }, color: "green" },
-			{ name: "Objet 3", mass: 100, charge: -1, radius: 2.5, position: { x: 100, y: -100 }, velocity: { x: -1, y: 1 }, color: "blue" }
+			{ name: "Objet 1", mass: 250, charge: 2, radius: 2.5, position: { x: -100, y: -100 }, velocity: { x: 0, y: 1 }, color: "red", show: true },
+			{ name: "Objet 2", mass: 300, charge: 1.5, radius: 2.5, position: { x: 100, y: 100 }, velocity: { x: -1, y: 0 }, color: "green", show: true },
+			{ name: "Objet 3", mass: 100, charge: -1, radius: 2.5, position: { x: 100, y: -100 }, velocity: { x: -1, y: 1 }, color: "blue", show: true }
 		]
 	},
 	"Tri-system 1": { dt: 0.3,
