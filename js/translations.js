@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('SpeedYEntree').textContent = trans.SpeedYValue;
 		
         document.getElementById('timer').textContent = trans.time;
-        document.getElementById('timerLabel').textContent = trans.timeLabel;
+        //document.getElementById('timerLabel').textContent = trans.timeLabel;
     }
 
     languageSelect.addEventListener('change', () => {

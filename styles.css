@@ -300,7 +300,7 @@ button:hover {
 #controlsToggle:hover,
 #fullscreenBtn:hover,
 #resetViewBtn:hover {
-    transition: filter 0.2s out;
+    transition: filter 0.2s ease;
 	filter: brightness(2);
 }
 
