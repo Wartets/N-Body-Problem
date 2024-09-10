@@ -1265,23 +1265,16 @@ function handleTouchMove(event) {
 }
 
 function handleTouchEnd(event) {
-    if (event.touches.length === 0) {
-        // Fin du drag lorsque tous les doigts ont quitté l'écran
-        isDragging = false;
-        selectedBody = null;
-    } else if (event.touches.length === 1) {
-        // Si un seul doigt reste, désactiver le pinch zoom
-        initialPinchDistance = null;
+    if (event.touches.length < 2) {
+        initialPinchDistance = null;  // Réinitialiser le pinch zoom
+
+        // Si on n'a plus de doigt sur l'écran, arrêter le dragging
+        if (event.touches.length === 0 && isDragging) {
+            isDragging = false;
+            selectedBody = null;  // Arrêter la sélection de l'objet
+        }
     }
 }
-
-// Fonction pour calculer la distance entre deux points de contact
-function getDistance(touch1, touch2) {
-    const dx = touch2.pageX - touch1.pageX;
-    const dy = touch2.pageY - touch1.pageY;
-    return Math.sqrt(dx * dx + dy * dy);
-}
-
 
 function handleMouseWheel(event) {
 	event.preventDefault();
@@ -1450,6 +1443,13 @@ function drawMagneticField() {
     }
 
     ctx.restore();
+}
+
+
+function getDistance(touch1, touch2) {
+    const dx = touch2.pageX - touch1.pageX;
+    const dy = touch2.pageY - touch1.pageY;
+    return Math.sqrt(dx * dx + dy * dy);
 }
 
 function drawGrid() {
