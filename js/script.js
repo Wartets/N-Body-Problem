@@ -1204,7 +1204,6 @@ function handleMouseUp() {
 }
 
 function handleTouchStart(event) {
-	// Empêche les actions par défaut (ex. : scrolling)
 	event.preventDefault();
 	const touch = event.touches[0];
 	const touchX = (touch.clientX - canvas.width / 2) / scale + calculateBarycenter().x;
@@ -1223,7 +1222,6 @@ function handleTouchStart(event) {
 }
 
 function handleTouchMove(event) {
-	// Empêche les actions par défaut (ex. : scrolling)
 	event.preventDefault();
 	if (selectedBody) {
 		const touch = event.touches[0];
@@ -1241,6 +1239,7 @@ function handleTouchMove(event) {
 }
 
 function handleTouchEnd() {
+	event.preventDefault();
 	selectedBody = null;
 }
 
