@@ -60,8 +60,8 @@ canvas.addEventListener('wheel', handleMouseWheel);
 
 canvas.addEventListener('touchstart', handleTouchStart);
 canvas.addEventListener('touchmove', handleTouchMove);
-canvas.addEventListener('touchend', handleTouchEndSelect);
-canvas.addEventListener('touchcancel', handleTouchEndSelect);
+canvas.addEventListener('touchend', handleTouchEnd);
+canvas.addEventListener('touchcancel', handleTouchEnd);
 
 focusSelect.addEventListener('change', (e) => {
 	focusObject = e.target.value;
@@ -1238,10 +1238,6 @@ function handleTouchMove(event) {
 	}
 }
 
-function handleTouchEndSelect() {
-	selectedBody = null;
-}
-
 function handleMouseWheel(event) {
 	event.preventDefault();
 	scrollZoom *= (1 + event.deltaY * -0.001);
@@ -1439,9 +1435,14 @@ function handleTouchMove(event) {
 }
 
 function handleTouchEnd(event) {
-	selectedBody = null;
     if (event.touches.length < 2) {
-        initialPinchDistance = null;
+        initialPinchDistance = null;  // Réinitialiser le pinch zoom
+
+        // Si on n'a plus de doigt sur l'écran, arrêter le dragging
+        if (event.touches.length === 0 && isDragging) {
+            isDragging = false;
+            selectedBody = null;  // Arrêter la sélection de l'objet
+        }
     }
 }
 
