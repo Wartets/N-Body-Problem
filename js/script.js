@@ -1203,41 +1203,6 @@ function handleMouseUp() {
 	selectedBody = null;
 }
 
-function handleTouchStart(event) {
-	event.preventDefault();
-	const touch = event.touches[0];
-	const touchX = (touch.clientX - canvas.width / 2) / scale + calculateBarycenter().x;
-	const touchY = (touch.clientY - canvas.height / 2) / scale + calculateBarycenter().y;
-
-	for (const body of bodies) {
-		const dx = touchX - body.position.x;
-		const dy = touchY - body.position.y;
-		if (Math.sqrt(dx * dx + dy * dy) < (showSizeCheckbox.checked ? 10 / scale : 10)) {
-			selectedBody = body;
-			isPaused = true;
-			updateButtonImage();
-			break;
-		}
-	}
-}
-
-function handleTouchMove(event) {
-	event.preventDefault();
-	if (selectedBody) {
-		const touch = event.touches[0];
-		const touchX = (touch.clientX - canvas.width / 2) / scale + calculateBarycenter().x;
-		const touchY = (touch.clientY - canvas.height / 2) / scale + calculateBarycenter().y;
-		selectedBody.position.x = touchX;
-		selectedBody.position.y = touchY;
-		updateControlValues();
-		clearTimeout(manualMoveTimeout);
-		manualMoveTimeout = setTimeout(() => {
-			isPaused = true;
-			updateButtonImage();
-		}, 0);
-	}
-}
-
 function handleMouseWheel(event) {
 	event.preventDefault();
 	scrollZoom *= (1 + event.deltaY * -0.001);
@@ -1408,7 +1373,25 @@ function drawMagneticField() {
 }
 
 function handleTouchStart(event) {
-    if (event.touches.length === 2) {
+    if (event.touches.length === 1) {
+        // Cas où un seul doigt touche l'écran : début du drag
+        const touch = event.touches[0];
+        const touchX = (touch.clientX - canvas.width / 2) / scale + calculateBarycenter().x;
+        const touchY = (touch.clientY - canvas.height / 2) / scale + calculateBarycenter().y;
+
+        for (const body of bodies) {
+            const dx = touchX - body.position.x;
+            const dy = touchY - body.position.y;
+            if (Math.sqrt(dx * dx + dy * dy) < (showSizeCheckbox.checked ? 10 / scale : 10)) {
+                selectedBody = body;
+                isDragging = true;  // Début du dragging
+                isPaused = true;
+                updateButtonImage();
+                break;
+            }
+        }
+    } else if (event.touches.length === 2) {
+        // Cas de deux doigts pour le pinch zoom
         const touch1 = event.touches[0];
         const touch2 = event.touches[1];
         initialPinchDistance = getDistance(touch1, touch2);
@@ -1417,17 +1400,31 @@ function handleTouchStart(event) {
 }
 
 function handleTouchMove(event) {
-    if (event.touches.length === 2) {
+    if (event.touches.length === 1 && isDragging && selectedBody) {
+        // Si un seul doigt touche et que l'on est en mode dragging
+        event.preventDefault();  // Empêcher le scroll
+        const touch = event.touches[0];
+        const touchX = (touch.clientX - canvas.width / 2) / scale + calculateBarycenter().x;
+        const touchY = (touch.clientY - canvas.height / 2) / scale + calculateBarycenter().y;
+
+        selectedBody.position.x = touchX;
+        selectedBody.position.y = touchY;
+        updateControlValues();
+        clearTimeout(manualMoveTimeout);
+        manualMoveTimeout = setTimeout(() => {
+            isPaused = true;
+            updateButtonImage();
+        }, 0);
+    } else if (event.touches.length === 2) {
+        // Gestion du pinch zoom
         event.preventDefault();
-        
         const touch1 = event.touches[0];
         const touch2 = event.touches[1];
-        
+
         const currentPinchDistance = getDistance(touch1, touch2);
-        
+
         if (initialPinchDistance) {
             const pinchZoomFactor = currentPinchDistance / initialPinchDistance;
-            
             scrollZoom = lastPinchZoom * pinchZoomFactor;
             scale = scrollZoom;
         }
