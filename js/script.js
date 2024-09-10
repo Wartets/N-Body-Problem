@@ -67,7 +67,6 @@ canvas.addEventListener('touchend', handleTouchEnd);
 
 focusSelect.addEventListener('change', (e) => {
 	focusObject = e.target.value;
-	// resetView();
 });
 
 frictionToggle.addEventListener('change', () => {
@@ -723,10 +722,10 @@ function calculateForces() {
                 const dx = bodies[j].position.x - bodies[i].position.x;
                 const dy = bodies[j].position.y - bodies[i].position.y;
                 
-                // if (isNaN(dx) || isNaN(dy)) {
-                    // console.error(`Les positions des objets ${i + 1} ou ${j + 1} sont invalides.`);
-                    // continue;
-                // }
+                if (isNaN(dx) || isNaN(dy)) {
+                    console.error(`Les positions des objets ${i + 1} ou ${j + 1} sont invalides.`);
+                    continue;
+                }
 
                 const distance = Math.sqrt(dx * dx + dy * dy);
 				
@@ -744,9 +743,9 @@ function calculateForces() {
                         fx += forceEM * (-dx / distance);
                         fy += forceEM * (-dy / distance);
                     }
-                } /* else {
+                } else {
                     console.warn(`Les objets ${i + 1} et ${j + 1} se chevauchent ou sont à la même position.`);
-                } */
+                }
             }
         }
 
@@ -1207,7 +1206,6 @@ function handleMouseUp() {
 
 function handleTouchStart(event) {
     if (event.touches.length === 1) {
-        // Cas où un seul doigt touche l'écran : début du drag
         const touch = event.touches[0];
         const touchX = (touch.clientX - canvas.width / 2) / scale + calculateBarycenter().x;
         const touchY = (touch.clientY - canvas.height / 2) / scale + calculateBarycenter().y;
@@ -1217,14 +1215,13 @@ function handleTouchStart(event) {
             const dy = touchY - body.position.y;
             if (Math.sqrt(dx * dx + dy * dy) < (showSizeCheckbox.checked ? 10 / scale : 10)) {
                 selectedBody = body;
-                isDragging = true;  // Début du dragging
+                isDragging = true;
                 isPaused = true;
                 updateButtonImage();
                 break;
             }
         }
     } else if (event.touches.length === 2) {
-        // Cas de deux doigts pour le pinch zoom
         const touch1 = event.touches[0];
         const touch2 = event.touches[1];
         initialPinchDistance = getDistance(touch1, touch2);
@@ -1234,8 +1231,7 @@ function handleTouchStart(event) {
 
 function handleTouchMove(event) {
     if (event.touches.length === 1 && isDragging && selectedBody) {
-        // Si un seul doigt touche et que l'on est en mode dragging
-        event.preventDefault();  // Empêcher le scroll
+        event.preventDefault();
         const touch = event.touches[0];
         const touchX = (touch.clientX - canvas.width / 2) / scale + calculateBarycenter().x;
         const touchY = (touch.clientY - canvas.height / 2) / scale + calculateBarycenter().y;
@@ -1249,7 +1245,6 @@ function handleTouchMove(event) {
             updateButtonImage();
         }, 0);
     } else if (event.touches.length === 2) {
-        // Gestion du pinch zoom
         event.preventDefault();
         const touch1 = event.touches[0];
         const touch2 = event.touches[1];
@@ -1266,12 +1261,11 @@ function handleTouchMove(event) {
 
 function handleTouchEnd(event) {
     if (event.touches.length < 2) {
-        initialPinchDistance = null;  // Réinitialiser le pinch zoom
+        initialPinchDistance = null;
 
-        // Si on n'a plus de doigt sur l'écran, arrêter le dragging
         if (event.touches.length === 0 && isDragging) {
             isDragging = false;
-            selectedBody = null;  // Arrêter la sélection de l'objet
+            selectedBody = null;
         }
     }
 }
@@ -1328,7 +1322,7 @@ function drawGravityField() {
     const startX = visibleCenterX - (canvasWidth / 2 / scale);
     const startY = visibleCenterY - (canvasHeight / 2 / scale);
 
-    const numVectorsX = Math.floor(canvasWidth / 15); // Espacement des vecteurs
+    const numVectorsX = Math.floor(canvasWidth / 15);
     const numVectorsY = Math.floor(canvasHeight / 15);
 
     const maxMass = Math.max(...bodies.map(body => body.mass));
@@ -1396,7 +1390,7 @@ function drawMagneticField() {
     const startX = visibleCenterX - (canvasWidth / 2 / scale);
     const startY = visibleCenterY - (canvasHeight / 2 / scale);
 
-    const numVectorsX = Math.floor(canvasWidth / 15); // Espacement des vecteurs
+    const numVectorsX = Math.floor(canvasWidth / 15);
     const numVectorsY = Math.floor(canvasHeight / 15);
 
 	const maxCharge = bodies.reduce((max, body) => Math.max(max, Math.abs(body.charge)), 0) || 1;
