@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('displayModeLabel').textContent = trans.dotViewSetting;
         document.getElementById('ConstValLabel').textContent = trans.adaptiveValue;
         document.getElementById('displayConstLabel').textContent = trans.constCalcSetting;
+        document.getElementById('mergeToggleLabel').textContent = trans.enableMerging;
         document.getElementById('collisionToggleLabel').textContent = trans.enableCollisions;
         document.getElementById('gravityToggleLabel').textContent = trans.enableGravity;
         document.getElementById('magneticToggleLabel').textContent = trans.enableMA;
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('showMagneticFieldLabel').textContent = trans.idMagneticFieldLabel;
         document.getElementById('frictionCoefficientLabel').textContent = trans.frictionCoefficient;
         document.getElementById('focusSelectLabel').textContent = trans.centerView;
+        document.getElementById('showGridLabel').textContent = trans.enableGrid;
         document.getElementById('zoomingToolLabel').textContent = trans.zoomManual;
         document.getElementById('trailLimitLabel').textContent = trans.trailLimit;
         document.getElementById('presetSelectLabel').textContent = trans.loadPreset;
@@ -79,6 +81,8 @@ const translations = {
 		"constCalcSetting": "Valeurs pour les Constantes :",
 		"adaptiveValue": "(réelles: 1 / normalisées: 0)",
         "enableCollisions": "Activer les collisions",
+		"enableMerging": "Activer la fusion d'objet",
+		"enableGrid": "Afficher la grille",
         "enableGravity": "Activer la gravité",
         "enableMA": "Activer la force électromagnétique",
         "showVelocities": "Afficher les vecteurs de vitesse",
@@ -127,6 +131,8 @@ const translations = {
 		"constCalcSetting": "Values for Constants :",
 		"adaptiveValue": "(real: 1 / normalized: 0)",
         "enableCollisions": "Enable Collisions",
+		"enableMerging": "Enable object merging",
+		"enableGrid": "Show Grid",
         "enableGravity": "Enable Gravity",
         "enableMA": "Activate the electromagnetic force",
         "showVelocities": "Show Velocity Vectors",
@@ -175,6 +181,8 @@ const translations = {
 		"constCalcSetting": "Valores de las constantes:",
 		"adaptiveValue": "(real: 1 / normalizado: 0)",
         "enableCollisions": "Activar colisiones",
+		"enableMerging": "",
+		"enableGrid": "",
         "enableGravity": "Activar gravedad",
         "enableMA": "Activar la fuerza electromagnética",
         "showVelocities": "Mostrar vectores de velocidad",
@@ -223,6 +231,8 @@ const translations = {
 		"constCalcSetting": "Werte für die Konstanten :",
 		"adaptiveValue": "(real: 1 / normalisiert: 0)",
         "enableCollisions": "Kollisionen aktivieren",
+		"enableMerging": "Aktivieren der Objektzusammenführung",
+		"enableGrid": "Raster anzeigen",
         "enableGravity": "Schwerkraft aktivieren",
         "enableMA": "Elektromagnetische Kraft aktivieren",
         "showVelocities": "Geschwindigkeitsvektoren anzeigen",
@@ -271,6 +281,8 @@ const translations = {
 		"constCalcSetting": "Valori per le costanti:",
 		"adaptiveValue": "(reale: 1 / normalizzato: 0)",
 		"enableCollisions": "Attiva collisioni",
+		"enableMerging": "Abilita la fusione degli oggetti",
+		"enableGrid": "Mostra griglia",
 		"enableGravity": "Attiva gravità",
 		"enableMA": "Attiva forza elettromagnetica",
 		"showVelocities": "Mostra vettori di velocità",
@@ -319,6 +331,8 @@ const translations = {
 		"constCalcSetting": "Valores pro Constantibus:",
 		"adaptiveValue": "(realis: I / normalized: Ø)",
 		"enableCollisions": "Permitte collisiones",
+		"enableMerging": "Activate quod merge",
+		"enableGrid": "Ostendere malesuada euismod",
 		"enableGravity": "Permitte gravitatem",
 		"enableMA": "Permitte vim electromagneticam",
 		"showVelocities": "Monstra vectores velocitatis",
@@ -367,6 +381,8 @@ const translations = {
 		"constCalcSetting": "Valours por les Constaunces :",
 		"adaptiveValue": "(véritables: 1 / nivelées: 0)",
 		"enableCollisions": "Activer les collisiouns",
+		"enableMerging": "Entrajoster les corps",
+		"enableGrid": "Aficher la graïlle ",
 		"enableGravity": "Activer la gravité",
 		"enableMA": "Activer la force élektrique",
 		"showVelocities": "Aficher les vectors de vitesce",
@@ -415,6 +431,8 @@ const translations = {
 		"constCalcSetting": "Les trésors pour les Constantes, moussaillon !",
 		"adaptiveValue": "(réelles, aye aye: 1 / à la norme, arggh: 0)",
 		"enableCollisions": "Activer les abordages",
+		"enableMerging": "Activer l'arbordage !",
+		"enableGrid": "Montrez la carte",
 		"enableGravity": "Activer la gravité des mers",
 		"enableMA": "Activer la force élec'tornade",
 		"showVelocities": "Montrer les vents de vitesse",
@@ -463,6 +481,8 @@ const translations = {
 		"constCalcSetting": "Values for the Constants:",
 		"adaptiveValue": "(true: 1 / normalised: 0)",
 		"enableCollisions": "Engage the Collisions True",
+		"enableMerging": "Enable unification of objects",
+		"enableGrid": "Display background grid",
 		"enableGravity": "Unleash the Force of Gravity",
 		"enableMA": "Empower the Electromagnetic Force",
 		"showVelocities": "Reveal the Vectors of Speed",
@@ -511,6 +531,8 @@ const translations = {
 		"constCalcSetting": "Banana for da Constans!",
 		"adaptiveValue": "(bello: 1 / po-ka: 0)",
 		"enableCollisions": "Banana collisions ON!",
+		"enableMerging": "BANANA-FUSION",
+		"enableGrid": "Grid of banana",
 		"enableGravity": "Banana gravity ON!",
 		"enableMA": "Banana electromagnetic ON!",
 		"showVelocities": "Show banana speed vectors!",
@@ -559,6 +581,8 @@ const translations = {
 		"constCalcSetting": "",
 		"adaptiveValue": "",
 		"enableCollisions": "",
+		"enableMerging": "",
+		"enableGrid": "",
 		"enableGravity": "",
 		"enableMA": "",
 		"showVelocities": "",
@@ -607,6 +631,8 @@ const translations = {
 		"constCalcSetting": "constCalcSetting",
 		"adaptiveValue": "adaptiveValue",
 		"enableCollisions": "enableCollisions",
+		"enableMerging": "enableMerging",
+		"enableGrid": "enableGrid",
 		"enableGravity": "enableGravity",
 		"enableMA": "enableMA",
 		"showVelocities": "showVelocities",
