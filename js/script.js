@@ -1439,6 +1439,7 @@ function handleTouchMove(event) {
 }
 
 function handleTouchEnd(event) {
+	selectedBody = null;
     if (event.touches.length < 2) {
         initialPinchDistance = null;
     }
