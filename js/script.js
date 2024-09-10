@@ -52,16 +52,16 @@ const bodies = initialBodies.map(body => ({
 	points: []
 }));
 
-canvas.addEventListener('touchstart', handleTouchStart);
-canvas.addEventListener('touchmove', handleTouchMove);
-canvas.addEventListener('touchend', handleTouchEnd);
 canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mouseup', handleMouseUp);
+
 canvas.addEventListener('wheel', handleMouseWheel);
+
 canvas.addEventListener('touchstart', handleTouchStart);
 canvas.addEventListener('touchmove', handleTouchMove);
-canvas.addEventListener('touchend', handleTouchEnd);
+canvas.addEventListener('touchend', handleTouchEndSelect);
+canvas.addEventListener('touchcancel', handleTouchEndSelect);
 
 focusSelect.addEventListener('change', (e) => {
 	focusObject = e.target.value;
@@ -1238,8 +1238,7 @@ function handleTouchMove(event) {
 	}
 }
 
-function handleTouchEnd() {
-	event.preventDefault();
+function handleTouchEndSelect() {
 	selectedBody = null;
 }
 
