@@ -55,6 +55,8 @@ const bodies = initialBodies.map(body => ({
 canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mouseup', handleMouseUp);
+canvas.addEventListener('touchstart', handleMouseDown);  // touchstart équivaut à mousedown
+canvas.addEventListener('touchmove', handleMouseMove);
 canvas.addEventListener('wheel', handleMouseWheel);
 canvas.addEventListener('touchstart', handleTouchStart);
 canvas.addEventListener('touchmove', handleTouchMove);
@@ -1165,35 +1167,55 @@ function getRandomSpeed() {
     return result;
 }
 
-function handleMouseDown(event) {
-	const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
-	const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
+function getMouseTouchPosition(event) {
+    if (event.type.startsWith('touch')) {
+        const touch = event.touches[0]; // Utiliser le premier point de contact
+        return {
+            x: (touch.clientX - canvas.getBoundingClientRect().left - canvas.width / 2) / scale + calculateBarycenter().x,
+            y: (touch.clientY - canvas.getBoundingClientRect().top - canvas.height / 2) / scale + calculateBarycenter().y
+        };
+    } else {
+        return {
+            x: (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x,
+            y: (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y
+        };
+    }
+}
 
-	for (const body of bodies) {
-		const dx = mouseX - body.position.x;
-		const dy = mouseY - body.position.y;
-		if (Math.sqrt(dx * dx + dy * dy) < (showSizeCheckbox.checked ? 10 / scale : 10)) {
-			selectedBody = body;
-			isPaused = true;
-			updateButtonImage();
-			break;
-		}
-	}
+function handleMouseDown(event) {
+    const { x: mouseX, y: mouseY } = getMouseTouchPosition(event);
+
+    for (const body of bodies) {
+        const dx = mouseX - body.position.x;
+        const dy = mouseY - body.position.y;
+        if (Math.sqrt(dx * dx + dy * dy) < (showSizeCheckbox.checked ? 10 / scale : 10)) {
+            selectedBody = body;
+            isPaused = true;
+            updateButtonImage();
+            break;
+        }
+    }
+
+    // Empêcher le comportement par défaut (pour éviter par ex. le défilement sur les écrans tactiles)
+    event.preventDefault();
 }
 
 function handleMouseMove(event) {
-	if (selectedBody) {
-		const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
-		const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
-		selectedBody.position.x = mouseX;
-		selectedBody.position.y = mouseY;
-		updateControlValues();
-		clearTimeout(manualMoveTimeout);
-		manualMoveTimeout = setTimeout(() => {
-			isPaused = true;
-			updateButtonImage();
-		}, 0);
-	}
+    if (selectedBody) {
+        const { x: mouseX, y: mouseY } = getMouseTouchPosition(event);
+        selectedBody.position.x = mouseX;
+        selectedBody.position.y = mouseY;
+        updateControlValues();
+
+        clearTimeout(manualMoveTimeout);
+        manualMoveTimeout = setTimeout(() => {
+            isPaused = true;
+            updateButtonImage();
+        }, 0);
+
+        // Empêcher le comportement par défaut sur les écrans tactiles
+        event.preventDefault();
+    }
 }
 
 function handleMouseUp() {
