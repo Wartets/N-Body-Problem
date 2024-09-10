@@ -81,7 +81,19 @@ helpBtn.addEventListener('click', () => {
 	modal.style.display = 'block';
 });
 
+helpBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+	isPaused = true
+	updateButtonImage();
+	modal.style.display = 'block';
+});
+
 closeBtn.addEventListener('click', () => {
+	modal.style.display = 'none';
+});
+
+closeBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
 	modal.style.display = 'none';
 });
 
@@ -92,6 +104,14 @@ window.addEventListener('click', (event) => {
 });
 
 controlsToggle.addEventListener('click', () => {;
+	const isHidden = !controls.classList.toggle('hidden');
+    controlsToggle.innerHTML = isHidden ? '&#x25C0;' : '&#x25B6;';
+    document.body.classList.toggle('hidden');
+    window.dispatchEvent(new Event('resize'));
+});
+
+controlsToggle.addEventListener('touchstart', (e) => {
+    e.preventDefault(); 
 	const isHidden = !controls.classList.toggle('hidden');
     controlsToggle.innerHTML = isHidden ? '&#x25C0;' : '&#x25B6;';
     document.body.classList.toggle('hidden');
@@ -112,8 +132,28 @@ fullscreenBtn.addEventListener('click', () => {
 	}
 });
 
+fullscreenBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault(); 
+	if (!document.fullscreenElement) {
+		document.documentElement.requestFullscreen();
+        fullscreenImg.src = "image/full-screen-off-icon.png";
+        fullscreenImg.alt = "Quit Full-screen";
+	} else {
+		if (document.exitFullscreen) {
+			document.exitFullscreen();
+			fullscreenImg.src = "image/full-screen-on-icon.png";
+			fullscreenImg.alt = "Full-screen";
+		}
+	}
+});
+
 startPauseBtn.addEventListener('click', () => {
 	Pause();
+});
+
+startPauseBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault(); 
+    Pause();
 });
 
 slider.addEventListener('input', (e) => {
@@ -256,6 +296,7 @@ document.getElementById('addBodyBtn').addEventListener('click', () => {
 
 document.getElementById('loadPresetBtn').addEventListener('click', () => {
 	const selectedPresetName = document.getElementById('presetSelect').value;
+	createRdPreset();
 	if (selectedPresetName && presets[selectedPresetName]) {
 		const preset = presets[selectedPresetName];
 		dtInput.value = preset.dt;
@@ -295,6 +336,7 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 		});
 
 		updateControlValues();
+		resetView();
 		startTimer();
 	}
 });
@@ -322,6 +364,13 @@ document.getElementById('savePresetBtn').addEventListener('click', () => {
 	updatePresetSelect();
 	presetNameInput.value = '';
 });
+
+function createRdPreset() {
+	createRandomPreset("Random preset (25 objects)", 25, 200, 130);
+	createRandomPreset("Random preset (40 objects)", 40, 230, 150);
+	createRandomPreset("Random preset (60 objects)", 60, 255, 166);
+	createLinePreset("Body Line", 16);
+}
 
 function gaussianRandom(mean, stdDev) {
     let u1 = Math.random();
@@ -377,7 +426,7 @@ function setupTrashIcons() {
 		const trashIcon = document.getElementById(`trash${index}`);
 		if (trashIcon) {
 			trashIcon.addEventListener('click', () => {
-				if (confirm('Êtes-vous sûr de vouloir supprimer cet objet ?')) {
+				if (confirm('Are you sure you want to delete this Object ')) {
 					deleteBody(index);
 				}
 			});
@@ -434,7 +483,7 @@ function updateControlValues() {
                 <label for="info${index + 1}">
                     <span class="color-indicator" id="color${index}" style="background-color: ${body.color}; cursor: pointer;"></span>
                     <input type="text" id="name${index}" value="${body.name || `Object ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 90%;">
-                    <img src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Supprimer">
+                    <img src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Delete">
                 </label>
             </div>
             
@@ -627,9 +676,9 @@ function updateControlValues() {
 function adjustValue(inputId, factor) {
     const input = document.getElementById(inputId);
     if (input) {
-        input.value = (parseFloat(input.value) * factor).toFixed(2); // Ajuste la valeur en fonction du facteur
+        input.value = (parseFloat(input.value) * factor).toFixed(2);
         const event = new Event('input', { bubbles: true });
-        input.dispatchEvent(event); // Déclenche l'événement input pour mettre à jour la valeur du corps
+        input.dispatchEvent(event);
     }
 }
 
@@ -1174,6 +1223,7 @@ function updateButtonImage() {
 
 function updatePresetSelect() {
 	const presetSelect = document.getElementById('presetSelect');
+	createRdPreset();
 	presetSelect.innerHTML = '<option value="">Sélectionnez un preset</option>';
 	Object.keys(presets).forEach(presetName => {
 		const option = document.createElement('option');
