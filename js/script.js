@@ -19,6 +19,8 @@ let lastMergeTime = 0;
 let fps = 0;
 let frameCount = 0;
 let fpsTime = 0;
+let isWheelActive = false;
+let doZoom = true;
 
 const canvas = document.getElementById('simulationCanvas');
 const ctx = canvas.getContext('2d');
@@ -105,6 +107,10 @@ window.addEventListener('click', (event) => {
 	if (event.target === modal) {
 		modal.style.display = 'none';
 	}
+});
+
+document.getElementById('autoZoomToggle').addEventListener('change', (e) => {
+	doZoom = e.target.checked;
 });
 
 controlsToggle.addEventListener('click', () => {;
@@ -417,7 +423,7 @@ function updateConstants() {
 function resetView() {
 	cameraOffset = { x: 0, y: 0 };
 	scrollZoom = 1;
-	scale = 1  * scrollZoom;
+	scale = 1;
 }
 
 function deleteBody(index) {
@@ -830,12 +836,14 @@ function calculateBarycenter() {
 	));
 	
 	const maxRadius = showSizeCheckbox.checked ? 10 / scale : 10;
-	const minCanvasSize = Math.min(canvas.width, canvas.height);
+	const minCanvasSize = 1.02 * Math.min(canvas.width, canvas.height);
 
-	scale = Math.min(
-		minCanvasSize / (maxDistance * 2),
-		minCanvasSize / (maxRadius * 2)
-	) * scrollZoom;
+    if (doZoom) {
+        scale = Math.min(
+            minCanvasSize / (maxDistance * 2),
+            minCanvasSize / (maxRadius * 2)
+        ) * scrollZoom;
+    } else {scrollZoom = 1}
 
 	return barycenter;
 }

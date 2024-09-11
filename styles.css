@@ -27,6 +27,10 @@ body {
 	overflow-y: auto;
 }
 
+#hr1 {
+	font-size: 1px;
+}
+
 .hidden #controls {
 	display: none;
 }

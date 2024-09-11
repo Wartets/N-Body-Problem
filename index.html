@@ -72,6 +72,8 @@
 				<option value="minion">English: Minions</option>
 				<option value="LabelName">LabelName</option>
 			</select>
+			
+			<label id="simulationSettings">Réglages de simulation :</label>
 
 			<!-- Intervalle de temps -->
 			<div class="control-group">
@@ -80,17 +82,9 @@
 			</div>
 
 			<!-- Constantes -->
-			<label id="displayConstLabel">Valeurs pour les Constantes :</label>
 			<div>
 				<input type="checkbox" id="ConstVal" name="ConstVal" />
-				<label for="ConstVal" id="ConstValLabel">(réelles: 1 / normalisées: 0)</label>
-			</div>
-
-			<!-- Options d'affichage -->
-			<label id="displayModeLabel">Mode d'affichage des points :</label>
-			<div>
-				<input type="checkbox" id="showSize" name="showSize" />
-				<label for="showSize" id="showSizeLabel">(adaptative: 1 / constante: 0)</label>
+				<label for="ConstVal" id="ConstValLabel">Const. réelles I / normalisé O</label>
 			</div>
 
 			<!-- Options physiques -->
@@ -135,6 +129,16 @@
 				<input type="checkbox" id="showMagneticField" name="showMagneticField"/>
 				<label for="showMagneticField" id="showMagneticFieldLabel">Afficher le champ électromagnétique</label>
 			</div>
+				
+			<hr style="width:100%;text-align:center;color:#444" id="hr1">
+
+			<!-- Options d'affichage -->
+			<label id="displaySettings">Réglages d'affichages :</label>
+			
+			<div>
+				<input type="checkbox" id="showSize" name="showSize" />
+				<label for="showSize" id="showSizeLabel">Tailles réelles I / constantes O</label>
+			</div>
 
 			<!-- Vecteurs et trail -->
 			<div>
@@ -157,10 +161,15 @@
 				
 				<label for="zooming-tool" id="zoomingToolLabel">Zoom manuel :</label>
 				<div id="zooming-tool" class="btn-group mrgn-bttm-lg">
-					<button type="button" id="zoomOut10" class="btn btn-default"> /10 </button>
-					<button type="button" id="zoomOut2" class="btn btn-default"> /2 </button>
-					<button type="button" id="zoomIn2" class="btn btn-default"> x2 </button>
-					<button type="button" id="zoomIn10" class="btn btn-default"> x10 </button>
+					<button type="button" id="zoomOut10" class="btn btn-default">/10</button>
+					<button type="button" id="zoomOut2" class="btn btn-default">/2</button>
+					<button type="button" id="zoomIn2" class="btn btn-default">x2</button>
+					<button type="button" id="zoomIn10" class="btn btn-default">x10</button>
+				</div>
+			
+				<div>
+					<input type="checkbox" id="autoZoomToggle" name="autoZoomToggle" checked/>
+					<label for="autoZoomToggle" id="autoZoomToggleLabel">Zoom automatique</label>
 				</div>
 			</div>
 
@@ -184,9 +193,11 @@
 				<input type="text" id="presetName" placeholder="Nom du preset (vide pour nom par défaut)">
 			</div>
 
-			<hr style="width:100%;text-align:center;color:#444">
+			<hr style="width:100%;text-align:center;color:#444" id="hr1">
 
 			<!-- Contrôles des objets -->
+			<label id="objectSettings">Réglages des objets :</label>
+			
 			<div id="object-controls">
 				<!-- Controls for each object will be generated dynamically -->
 			</div>
