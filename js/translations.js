@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('trailLimitLabel').textContent = trans.trailLimit;
 		
         document.getElementById('presetSelectLabel').textContent = trans.presetSelectLabelValue;
-        document.getElementById('selectPresetOption').textContent = trans.selectPresetOptionValue;
+        // document.getElementById('selectPresetOption').textContent = trans.selectPresetOptionValue;
         document.getElementById('loadPresetBtn').textContent = trans.loadPreset;
         document.getElementById('savePresetBtn').textContent = trans.savePreset;
         document.getElementById('presetName').placeholder = trans.presetNameValue;

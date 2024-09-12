@@ -1,7 +1,7 @@
 let isPaused = true;
 let collisionsEnabled = document.getElementById('collisionToggle').checked;
 let mergingEnabled = document.getElementById('mergeToggle').checked;
-let focusObject = 'barycenter';
+let focusObject = 'barycenter-mass';
 let selectedBody = null;
 let isDragging = false;
 let initialPinchDistance = null;
@@ -9,7 +9,6 @@ let lastPinchZoom = null;
 let manualMoveTimeout = null;
 let scale = 1;
 let scrollZoom = 1;
-let cameraOffset = { x: 0, y: 0 };
 let G, k;
 let timeElapsed = 0;
 let lastTime = 0;
@@ -19,8 +18,7 @@ let lastMergeTime = 0;
 let fps = 0;
 let frameCount = 0;
 let fpsTime = 0;
-let isWheelActive = false;
-let doZoom = true;
+let doZoom = document.getElementById('autoZoomToggle').checked;;
 
 const canvas = document.getElementById('simulationCanvas');
 const ctx = canvas.getContext('2d');
@@ -421,7 +419,6 @@ function updateConstants() {
 }
 
 function resetView() {
-	cameraOffset = { x: 0, y: 0 };
 	scrollZoom = 1;
 	scale = 1;
 }
@@ -479,7 +476,11 @@ function formatTime(seconds) {
 function updateControlValues() {
 	controlsContainer.innerHTML = '';
 
-	focusSelect.innerHTML = '<option value="barycenter" id="barycenterLabel">Barycentre</option>';
+	focusSelect.innerHTML = '<option value="barycenter-mass" id="barycenterLabel">Barycentre de Masse</option>';
+	focusSelect.innerHTML += '<option value="barycenter-charge" id="barycenterLabelcharge">Barycentre de Charge</option>';
+	focusSelect.innerHTML += '<option value="barycenter-geometric" id="barycenterLabelgeo">Barycentre Géométrique</option>';
+	focusSelect.innerHTML += '<option value="barycenter-surfacique" id="barycenterLabelrad">Barycentre Surfacique</option>';
+	focusSelect.innerHTML += `<option value="noObject" id="noObjectLabel">None</option>`;
 
 	bodies.forEach((body, index) => {
 		focusSelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
@@ -493,69 +494,69 @@ function updateControlValues() {
                 <label for="info${index + 1}">
                     <span class="color-indicator" id="color${index}" style="background-color: ${body.color}; cursor: pointer;"></span>
                     <input type="text" id="name${index}" value="${body.name || `Object ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 90%;">
-                    <img src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Delete">
+                    <img src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Delete" style="filter: brightness(4);">
                 </label>
             </div>
             
             <label for="mass${index + 1}" id="MassEntree">Mass:</label>
-            <div class="input-group">
+            <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('mass${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('mass${index + 1}', 0.5)">/2</button>
-                <input type="number" id="mass${index + 1}" value="${body.mass.toFixed(2)}" step="5">
+                <input type="number" id="mass${index + 1}" value="${body.mass.toExponential(2)}" step="5">
                 <button onclick="adjustValue('mass${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('mass${index + 1}', 10)">x10</button>
             </div>
             
             <label for="charge${index + 1}" id="ChargeEntree">Charge:</label>
-            <div class="input-group">
+            <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('charge${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('charge${index + 1}', 0.5)">/2</button>
-                <input type="number" id="charge${index + 1}" value="${body.charge.toFixed(1)}" step="1">
+                <input type="number" id="charge${index + 1}" value="${body.charge.toExponential(1)}" step="1">
                 <button onclick="adjustValue('charge${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('charge${index + 1}', 10)">x10</button>
             </div>
             
             <label for="radius${index + 1}" id="radiusEntree">Radius:</label>
-            <div class="input-group">
+            <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('radius${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('radius${index + 1}', 0.5)">/2</button>
-                <input type="number" id="radius${index + 1}" value="${body.radius.toFixed(1)}" step="0.5">
+                <input type="number" id="radius${index + 1}" value="${body.radius.toExponential(1)}" step="0.5">
                 <button onclick="adjustValue('radius${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('radius${index + 1}', 10)">x10</button>
             </div>
             
             <label for="x${index + 1}" id="PosXEntree">X Position:</label>
-            <div class="input-group">
+            <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('x${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('x${index + 1}', 0.5)">/2</button>
-                <input type="number" id="x${index + 1}" value="${body.position.x.toFixed(2)}" step="1">
+                <input type="number" id="x${index + 1}" value="${body.position.x.toExponential(2)}" step="1">
                 <button onclick="adjustValue('x${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('x${index + 1}', 10)">x10</button>
             </div>
             
             <label for="y${index + 1}" id="PosYEntree">Y Position:</label>
-            <div class="input-group">
+            <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('y${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('y${index + 1}', 0.5)">/2</button>
-                <input type="number" id="y${index + 1}" value="${body.position.y.toFixed(2)}" step="0.5">
+                <input type="number" id="y${index + 1}" value="${body.position.y.toExponential(2)}" step="0.5">
                 <button onclick="adjustValue('y${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('y${index + 1}', 10)">x10</button>
             </div>
             
             <label for="vx${index + 1}" id="SpeedXEntree">X Speed:</label>
-            <div class="input-group">
+            <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('vx${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('vx${index + 1}', 0.5)">/2</button>
-                <input type="number" id="vx${index + 1}" value="${body.velocity.x.toFixed(3)}" step="0.5">
+                <input type="number" id="vx${index + 1}" value="${body.velocity.x.toExponential(3)}" step="0.5">
                 <button onclick="adjustValue('vx${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('vx${index + 1}', 10)">x10</button>
             </div>
             
             <label for="vy${index + 1}" id="SpeedYEntree">Y Speed:</label>
-            <div class="input-group">
+            <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('vy${index + 1}', 0.5)">/2</button>
                 <button onclick="adjustValue('vy${index + 1}', 0.1)">/10</button>
-                <input type="number" id="vy${index + 1}" value="${body.velocity.y.toFixed(3)}" step="0.1">
+                <input type="number" id="vy${index + 1}" value="${body.velocity.y.toExponential(3)}" step="0.1">
                 <button onclick="adjustValue('vy${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('vy${index + 1}', 10)">x10</button>
             </div>
@@ -620,12 +621,9 @@ function updateControlValues() {
 				if (value < 0) {
 					value = Math.abs(value);
 				}
-				if (value === 0) {
-					value = 0.0001;
-				}
 
 				body.mass = value;
-				e.target.value = value.toFixed(2);
+				e.target.value = value.toExponential(2);
 			}
 		});
 
@@ -675,7 +673,7 @@ function updateControlValues() {
 				}
 
 				body.radius = value;
-				e.target.value = value.toFixed(1);
+				e.target.value = value.toExponential(1);
 			}
 		});
 	});
@@ -813,23 +811,73 @@ function updatePositions(dt) {
 }
 
 function calculateBarycenter() {
-	if (focusObject !== 'barycenter') {
-		const selectedBody = bodies[parseInt(focusObject)];
-		return { x: selectedBody.position.x, y: selectedBody.position.y };
-	}
 	let barycenter = { x: 0, y: 0 };
-	let totalMass = 0;
+	if (focusObject !== 'noObject') {
+		
+		if (focusObject == 'barycenter-mass') {
+			let totalMass = 0;
+			bodies.forEach(body => {
+				if (body.show && (body.mass !== 0)) {
+					totalMass += body.mass;
+					barycenter.x += body.position.x * body.mass;
+					barycenter.y += body.position.y * body.mass;
+				}
+			});
 
-	bodies.forEach(body => {
-		if (body.show) {
-			totalMass += body.mass;
-			barycenter.x += body.position.x * body.mass;
-			barycenter.y += body.position.y * body.mass;
+			if (totalMass !== 0) {
+				barycenter.x /= totalMass;
+				barycenter.y /= totalMass;
+			}
+		} else if (focusObject == 'barycenter-charge') {
+			let totalCharge = 0;
+	
+			bodies.forEach(body => {
+				if (body.show && (body.charge !== 0)) {
+					const absCharge = Math.abs(body.charge);
+					totalCharge += absCharge;
+					barycenter.x += body.position.x * absCharge;
+					barycenter.y += body.position.y * absCharge;
+				}
+			});
+
+			if (totalCharge !== 0) {
+				barycenter.x /= totalCharge;
+				barycenter.y /= totalCharge;
+			}
+		} else if (focusObject == 'barycenter-geometric') {
+			let number = 0;
+	
+			bodies.forEach(body => {
+				number += 1;
+				barycenter.x += body.position.x;
+				barycenter.y += body.position.y;
+			});
+
+			if (number !== 0) {
+				barycenter.x /= number;
+				barycenter.y /= number;
+			}
+		} else if (focusObject == 'barycenter-surfacique') {
+			let totalRadius = 0;
+	
+			bodies.forEach(body => {
+				if (body.show && (body.radius !== 0)) {
+					totalRadius += body.radius;
+					barycenter.x += body.position.x * body.radius;
+					barycenter.y += body.position.y * body.radius;
+				}
+			});
+
+			if (totalRadius !== 0) {
+				barycenter.x /= totalRadius;
+				barycenter.y /= totalRadius;
+			}
+		} else {
+			const selectedBody = bodies[parseInt(focusObject)];
+			return { x: selectedBody.position.x, y: selectedBody.position.y };
 		}
-	});
-
-	barycenter.x /= totalMass;
-	barycenter.y /= totalMass;
+		
+	}
 
 	const maxDistance = Math.max(...bodies.map(body => 
 		Math.sqrt(Math.pow(body.position.x - barycenter.x, 2) + Math.pow(body.position.y - barycenter.y, 2))
@@ -842,7 +890,7 @@ function calculateBarycenter() {
         scale = Math.min(
             minCanvasSize / (maxDistance * 2),
             minCanvasSize / (maxRadius * 2)
-        ) * scrollZoom;
+        ) * scrollZoom * 0.95;
     } else {scrollZoom = 1}
 
 	return barycenter;
@@ -1446,7 +1494,6 @@ function drawMagneticField() {
 
     ctx.restore();
 }
-
 
 function getDistance(touch1, touch2) {
     const dx = touch2.pageX - touch1.pageX;
