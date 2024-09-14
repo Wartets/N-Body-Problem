@@ -1,5 +1,6 @@
 let isPaused = true;
 let collisionsEnabled = document.getElementById('collisionToggle').checked;
+let soundEnabled = document.getElementById('activateSound').checked;
 let mergingEnabled = document.getElementById('mergeToggle').checked;
 let focusObject = 'barycenter-mass';
 let selectedBody = null;
@@ -19,6 +20,7 @@ let fps = 0;
 let frameCount = 0;
 let fpsTime = 0;
 let doZoom = document.getElementById('autoZoomToggle').checked;;
+let showWindow = false;
 
 const canvas = document.getElementById('simulationCanvas');
 const ctx = canvas.getContext('2d');
@@ -67,6 +69,14 @@ canvas.addEventListener('touchend', handleTouchEnd);
 
 focusSelect.addEventListener('change', (e) => {
 	focusObject = e.target.value;
+});
+
+objectASelect.addEventListener('change', (e) => {
+	objectASelect = e.target.value;
+});
+
+objectBSelect.addEventListener('change', (e) => {
+	objectBSelect = e.target.value;
 });
 
 frictionToggle.addEventListener('change', () => {
@@ -195,6 +205,8 @@ window.addEventListener('resize', () => {
     canvas.height = window.innerHeight;
 });
 
+dragElement(document.getElementById('infoWindow'));
+
 window.dispatchEvent(new Event('resize'));
 
 document.addEventListener('keydown', (event) => {
@@ -245,6 +257,19 @@ document.addEventListener('keydown', (event) => {
 	}
 });
 
+document.getElementById('infoWindowBtn').addEventListener('click', function() {
+    showWindow = !showWindow;
+    if (showWindow) {
+        document.getElementById('infoWindow').style.display = 'block';
+    } else {
+        document.getElementById('infoWindow').style.display = 'none';
+    }
+});
+
+document.getElementById('closeInfoWindowBtn').addEventListener('click', function() {
+    document.getElementById('infoWindow').style.display = 'none';
+});
+
 document.getElementById('zoomOut10').addEventListener('click', () => {
 	scrollZoom /= 10;
 	scale = scale * scrollZoom;
@@ -275,6 +300,10 @@ document.getElementById('collisionToggle').addEventListener('change', (e) => {
 		mergingEnabled = false;
 		document.getElementById('mergeToggle').checked = mergingEnabled;
 		}
+});
+
+document.getElementById('activateSound').addEventListener('change', (e)  => {
+	soundEnabled = e.target.checked;
 });
 
 document.getElementById('mergeToggle').addEventListener('change', (e) => {
@@ -480,10 +509,16 @@ function updateControlValues() {
 	focusSelect.innerHTML += '<option value="barycenter-charge" id="barycenterLabelcharge">Barycentre de Charge</option>';
 	focusSelect.innerHTML += '<option value="barycenter-geometric" id="barycenterLabelgeo">Barycentre Géométrique</option>';
 	focusSelect.innerHTML += '<option value="barycenter-surfacique" id="barycenterLabelrad">Barycentre Surfacique</option>';
-	focusSelect.innerHTML += `<option value="noObject" id="noObjectLabel">None</option>`;
+	
+	objectASelect.innerHTML = `<option value="noValue" id="noValueLabel">Aucun</option>`;
+	objectBSelect.innerHTML = `<option value="noValue" id="noValueLabel">Aucun</option>`;
+	
 
 	bodies.forEach((body, index) => {
 		focusSelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
+		
+		objectASelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
+		objectBSelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
 
 		const group = document.createElement('div');
 		group.className = 'control-group';
@@ -494,7 +529,7 @@ function updateControlValues() {
                 <label for="info${index + 1}">
                     <span class="color-indicator" id="color${index}" style="background-color: ${body.color}; cursor: pointer;"></span>
                     <input type="text" id="name${index}" value="${body.name || `Object ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 90%;">
-                    <img src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Delete" style="filter: brightness(4);">
+                    <img src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Delete" style="filter: brightness(4); cursor:pointer;">
                 </label>
             </div>
             
@@ -691,20 +726,24 @@ function adjustValue(inputId, factor) {
 }
 
 function playImpactSound() {
-	const currentTime = Date.now();
-	if (currentTime - lastImpactTime > impactDelay) {
-		lastImpactTime = currentTime;
-		const impactSound = new Audio('sound/impact-sound.mp3');
-		impactSound.play();
+	if (soundEnabled) {
+		const currentTime = Date.now();
+		if (currentTime - lastImpactTime > impactDelay) {
+			lastImpactTime = currentTime;
+			const impactSound = new Audio('sound/impact-sound.mp3');
+			impactSound.play();
+		}
 	}
 }
 
 function playMergeSound() {
-	const currentTime = Date.now();
-	if (currentTime - lastMergeTime > mergeDelay) {
-		lastMergeTime = currentTime;
-		const mergeSound = new Audio('sound/merge-sound.mp3');
-		mergeSound.play();
+	if (soundEnabled) {
+		const currentTime = Date.now();
+		if (currentTime - lastMergeTime > mergeDelay) {
+			lastMergeTime = currentTime;
+			const mergeSound = new Audio('sound/merge-sound.mp3');
+			mergeSound.play();
+		}
 	}
 }
 
@@ -767,7 +806,7 @@ function applyFriction() {
 		});
 	}
 }
-		
+
 function simulate() {
 	if (!isPaused) {
 		calculateForces();
@@ -983,6 +1022,34 @@ function drawBodies(barycenter) {
 			});
 		}
 	});
+
+    if (showWindow) {
+		const objectA = bodies[parseInt(objectASelect)];
+		const objectB = bodies[parseInt(objectBSelect)];
+
+        if (objectA) {
+            ctx.beginPath();
+            const radiusA = showSizeCheckbox.checked ? (objectA.radius * 2.5) / scale : objectA.radius;
+            const highlightedradiusA = showSizeCheckbox.checked ? radiusA * 1.1 + 0.5 : radiusA * 1.35 / scale;
+            ctx.arc(objectA.position.x, objectA.position.y, highlightedradiusA, 0, 2 * Math.PI);
+            ctx.strokeStyle = objectA.color;
+            ctx.lineWidth = showSizeCheckbox.checked ? 1 / scale : 1.2;
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        if (objectB) {
+            ctx.beginPath();
+            const radiusB = showSizeCheckbox.checked ? (objectB.radius * 2.5) / scale : objectB.radius;
+            const highlightedradiusB = showSizeCheckbox.checked ? radiusB * 1.1 + 0.5 : radiusB * 1.35 / scale;
+            ctx.arc(objectB.position.x, objectB.position.y, highlightedradiusB, 0, 2 * Math.PI);
+            ctx.strokeStyle = objectB.color;
+            ctx.lineWidth = showSizeCheckbox.checked ? 1 / scale : 1.2;
+            ctx.stroke();
+            ctx.closePath();
+        }
+    }
+
 	ctx.beginPath();
 	if (document.getElementById('showVelocities').checked) {
 		ctx.arc(barycenter.x, barycenter.y, barycenterPointSize, 0, 2 * Math.PI);
@@ -1066,7 +1133,7 @@ function detectProximity() {
             if (distance < combinedRadius) {
 				if (collisionsEnabled) {
 					resolveCollision(bodies[i], bodies[j]);
-					playImpactSound();
+					playImpactSound(bodies[i], bodies[j]);
 				}
                 if (mergingEnabled) {
                     mergeBodies(bodies[i], bodies[j]);
@@ -1191,30 +1258,37 @@ function displayFPS(currentTime) {
 
 function animate(currentTime) {
     const startTime = performance.now();
-    
-	if (!isPaused) {
-		const dt = parseFloat(dtInput.value);
-		calculateForces();
-		if (collisionsEnabled || mergingEnabled) {
-			detectProximity();
-		}
-		updatePositions(dt);
-		const barycenter = calculateBarycenter();
-		drawBodies(barycenter);
-		updateControlValues();
-	} else {
-		drawBodies(calculateBarycenter());
-	}
 
     displayFPS(currentTime);
+
+	const objectA = bodies[parseInt(objectASelect)];
+	const objectB = bodies[parseInt(objectBSelect)];
+
+    if (!isPaused) {
+        const dt = parseFloat(dtInput.value);
+        calculateForces();
+        if (collisionsEnabled || mergingEnabled) {
+            detectProximity();
+        }
+        updatePositions(dt);
+        const barycenter = calculateBarycenter();
+        drawBodies(barycenter);
+        updateControlValues();
+
+    } else {
+        drawBodies(calculateBarycenter());
+    }
+	
+    if (objectA && objectB) {
+        updateObjectInfo(objectA, objectB);
+    }
     
     const endTime = performance.now();
     const frameTime = endTime - startTime;
-	
-    cpuUsage = Math.min((frameTime / 16.67 / 2) * 100, 500);
     
+    cpuUsage = Math.min((frameTime / 16.67 / 2) * 100, 500);
     document.getElementById('UsageDisplay').textContent = `Usage: ${cpuUsage.toFixed(0)}%`;
-	
+    
     requestAnimationFrame(animate);
 }
 
@@ -1563,6 +1637,115 @@ function drawGrid() {
     ctx.closePath();
 
     ctx.restore();
+}
+
+function dragElement(elmnt) {
+    const header = document.getElementById("infoWindowHeader");
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    
+    if (header) {
+        header.onmousedown = dragMouseDown;
+    }
+
+    function dragMouseDown(e) {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
+
+function getDistanceFromBarycenter(object) {
+    const barycenter = calculateBarycenter();
+    const dx = object.position.x - barycenter.x;
+    const dy = object.position.y - barycenter.y;
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+function getDistanceBetweenObjects(objectA, objectB) {
+    const dx = objectB.position.x - objectA.position.x;
+    const dy = objectB.position.y - objectA.position.y;
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+function getRadialSpeed(object) {
+    return Math.sqrt(object.velocity.x * object.velocity.x + object.velocity.y * object.velocity.y);
+}
+
+function getRadialAcceleration(object) {
+    return Math.sqrt(object.acceleration.x * object.acceleration.x + object.acceleration.y * object.acceleration.y);
+}
+
+function getTotalRadialForce(object) {
+    return getRadialAcceleration(object) * object.mass;
+}
+
+function getRelativeRadialSpeed(objectA, objectB) {
+    return Math.sqrt(Math.pow(objectB.velocity.x - objectA.velocity.x, 2) + Math.pow(objectB.velocity.y - objectA.velocity.y, 2));
+}
+
+function getRelativeRadialAcceleration(objectA, objectB) {
+    return Math.sqrt(Math.pow(objectB.acceleration.x - objectA.acceleration.x, 2) + Math.pow(objectB.acceleration.y - objectA.acceleration.y, 2));
+}
+
+function getAttractionForce(objectA, objectB) {
+    const distance = getDistanceBetweenObjects(objectA, objectB);
+	let totalForce = 0
+    if (distance > 0) {
+		if (gravityEnabled) {
+			totalForce += - (G * objectA.mass * objectB.mass) / (distance * distance)
+		}
+		if (magneticEnabled) {
+			totalForce += (K * objectA.charge * objectB.charge) / (distance * distance)
+		}
+        return totalForce;
+    }
+    return 0;
+}
+
+function updateObjectInfo(objectA, objectB) {
+    // Mise à jour des informations de l'objet 1
+    document.getElementById('massA').textContent = `${objectA.mass.toExponential(2)} kg`;
+    document.getElementById('chargeA').textContent = `${objectA.charge.toExponential(1)} C`;
+    document.getElementById('radiusA').textContent = `${objectA.radius.toExponential(1)} m`;
+    document.getElementById('surface1').textContent = `${(Math.PI * Math.pow(objectA.radius, 2)).toExponential(2)} m²`;
+    document.getElementById('postionA').textContent = `(${objectA.position.x.toExponential(2)}, ${objectA.position.y.toExponential(2)})`;
+    document.getElementById('distanceBary1').textContent = `${getDistanceFromBarycenter(objectA).toExponential(2)} m`;
+    document.getElementById('speedRadial1').textContent = `${getRadialSpeed(objectA).toExponential(4)} m/s`;
+    document.getElementById('accelerationRadial1').textContent = `${getRadialAcceleration(objectA).toExponential(4)} m/s²`;
+    document.getElementById('forceTotalRadial1').textContent = `${getTotalRadialForce(objectA).toExponential(4)} kg m/s²`;
+    
+    // Mise à jour des informations de l'objet 2
+    document.getElementById('massB').textContent = `${objectB.mass.toExponential(2)} kg`;
+    document.getElementById('chargeB').textContent = `${objectB.charge.toExponential(1)} C`;
+    document.getElementById('radiusB').textContent = `${objectB.radius.toExponential(1)} m`;
+    document.getElementById('surface2').textContent = `${(Math.PI * Math.pow(objectB.radius, 2)).toExponential(2)} m²`;
+    document.getElementById('postionB').textContent = `(${objectB.position.x.toExponential(2)}, ${objectB.position.y.toExponential(2)})`;
+    document.getElementById('distanceBary2').textContent = `${getDistanceFromBarycenter(objectB).toExponential(2)} m`;
+    document.getElementById('speedRadial2').textContent = `${getRadialSpeed(objectB).toExponential(4)} m/s`;
+    document.getElementById('accelerationRadial2').textContent = `${getRadialAcceleration(objectB).toExponential(4)} m/s²`;
+    document.getElementById('forceTotalRadial2').textContent = `${getTotalRadialForce(objectB).toExponential(4)} kg m/s²`;
+    
+    // Mise à jour des informations relatives entre les deux objets
+    document.getElementById('distanceBetween').textContent = `${getDistanceBetweenObjects(objectA, objectB).toExponential(4)} m`;
+    document.getElementById('relativeSpeedRadial').textContent = `${Math.abs(getRadialSpeed(objectA) - getRadialSpeed(objectB)).toExponential(4)} m/s`;
+    document.getElementById('relativeAccelerationRadial').textContent = `${Math.abs(getRadialAcceleration(objectA) - getRadialAcceleration(objectB)).toExponential(4)} m/s²`;
 }
 
 startTimer();
