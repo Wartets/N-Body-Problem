@@ -513,21 +513,21 @@ function formatTime(seconds) {
 function updateControlValues() {
 	controlsContainer.innerHTML = '';
 
-	focusSelect.innerHTML = '<option value="noValue">-</option>';
+	focusSelect.innerHTML = '<option value="null">-</option>';
 	focusSelect.innerHTML += '<option value="barycenter-mass" id="barycenterLabel">Barycentre de Masse</option>';
 	focusSelect.innerHTML += '<option value="barycenter-charge" id="barycenterLabelcharge">Barycentre de Charge</option>';
 	focusSelect.innerHTML += '<option value="barycenter-geometric" id="barycenterLabelgeo">Barycentre Géométrique</option>';
 	focusSelect.innerHTML += '<option value="barycenter-surfacique" id="barycenterLabelrad">Barycentre Surfacique</option>';
 	
-	objectASelect.innerHTML = `<option value="noValue" id="noValueLabel">-</option>`;
-	objectBSelect.innerHTML = `<option value="noValue" id="noValueLabel">-</option>`;
+	objectASelect.innerHTML = `<option value="null">-</option>`;
+	objectBSelect.innerHTML = `<option value="null">-</option>`;
 	
 
 	bodies.forEach((body, index) => {
-		focusSelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
-		
 		objectASelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
 		objectBSelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
+		
+		focusSelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
 
 		const group = document.createElement('div');
 		group.className = 'control-group';
