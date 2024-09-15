@@ -1642,9 +1642,12 @@ function drawGrid() {
 function dragElement(elmnt) {
     const header = document.getElementById("infoWindowHeader");
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    
+
     if (header) {
+        // Ajouter les écouteurs d'événements pour la souris
         header.onmousedown = dragMouseDown;
+        // Ajouter les écouteurs d'événements pour le tactile
+        header.ontouchstart = dragTouchStart;
     }
 
     function dragMouseDown(e) {
@@ -1653,6 +1656,15 @@ function dragElement(elmnt) {
         pos4 = e.clientY;
         document.onmouseup = closeDragElement;
         document.onmousemove = elementDrag;
+    }
+
+    function dragTouchStart(e) {
+        e.preventDefault();
+        // Utiliser les coordonnées du premier point de contact
+        pos3 = e.touches[0].clientX;
+        pos4 = e.touches[0].clientY;
+        document.ontouchend = closeDragElement;
+        document.ontouchmove = elementTouchDrag;
     }
 
     function elementDrag(e) {
@@ -1665,9 +1677,24 @@ function dragElement(elmnt) {
         elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
     }
 
+    function elementTouchDrag(e) {
+        e.preventDefault();
+        // Utiliser les coordonnées du premier point de contact pour les mouvements
+        pos1 = pos3 - e.touches[0].clientX;
+        pos2 = pos4 - e.touches[0].clientY;
+        pos3 = e.touches[0].clientX;
+        pos4 = e.touches[0].clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+
     function closeDragElement() {
+        // Arrêter les événements de la souris
         document.onmouseup = null;
         document.onmousemove = null;
+        // Arrêter les événements tactiles
+        document.ontouchend = null;
+        document.ontouchmove = null;
     }
 }
 
