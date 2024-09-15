@@ -21,6 +21,7 @@ let frameCount = 0;
 let fpsTime = 0;
 let doZoom = document.getElementById('autoZoomToggle').checked;;
 let showWindow = false;
+let hoveredBody = null;
 
 const canvas = document.getElementById('simulationCanvas');
 const ctx = canvas.getContext('2d');
@@ -176,7 +177,7 @@ startPauseBtn.addEventListener('touchstart', (e) => {
 
 slider.addEventListener('input', (e) => {
 	const value = e.target.value;
-	tooltip.textContent = `10^${value}`;
+	tooltip.innerHTML = `10<sup>${value}</sup>`;
 	if (value == 0) {
 		clearTrails();
 	}
@@ -196,11 +197,11 @@ canvas.addEventListener('mousemove', (event) => {
 
 window.addEventListener('resize', () => {
     if (controls.classList.contains('hidden')) {
-        canvas.width = window.innerWidth -300;
-        console.log('window: 0');
+        canvas.width = window.innerWidth - 300;
+        console.log('Canvas width : window.width - 300');
     } else {
         canvas.width = window.innerWidth;
-        console.log('window: 300');
+        console.log('Canvas width : window.width');
     }
     canvas.height = window.innerHeight;
 });
@@ -267,6 +268,7 @@ document.getElementById('infoWindowBtn').addEventListener('click', function() {
 });
 
 document.getElementById('closeInfoWindowBtn').addEventListener('click', function() {
+	showWindow = false
     document.getElementById('infoWindow').style.display = 'none';
 });
 
@@ -315,20 +317,26 @@ document.getElementById('mergeToggle').addEventListener('change', (e) => {
 });
 
 document.getElementById('addBodyBtn').addEventListener('click', () => {
+	let rdradius = Math.ceil(10 * getRadius(2.5, 3, 0.5)) / 10
+	let rdposition = getRandomPosition(rdradius)
+	if (rdposition !== null) {
 	const newBody = {
-		mass: 50 + Math.random() * 100,
-		charge: Math.round((Math.random() * 3 - 1.5) * 10) / 10,
-		radius: Math.ceil(10 * getRadius(2.5, 3, 0.5)) / 10,
-		position: getRandomPosition(),
-		velocity: { x: getRandomSpeed(), y: getRandomSpeed() },
-		color: '#' + Math.floor(Math.random() * 16777215).toString(16),
-		acceleration: { x: 0, y: 0 },
-		trail: [],
-		show: true,
-		points: []
-	};
-	bodies.push(newBody);
-	updateControlValues();
+			mass: 50 + Math.random() * 100,
+			charge: Math.round((Math.random() * 3 - 1.5) * 10) / 10,
+			radius: rdradius,
+			position: rdposition,
+			velocity: { x: getRandomSpeed(), y: getRandomSpeed() },
+			color: '#' + Math.floor(Math.random() * 16777215).toString(16),
+			acceleration: { x: 0, y: 0 },
+			trail: [],
+			show: true,
+			points: []
+		};
+		bodies.push(newBody);
+		updateControlValues();
+	} else {
+		alert(`ERROR: no space for an object with a radius of ${rdradius} m`)
+	}
 });
 
 document.getElementById('loadPresetBtn').addEventListener('click', () => {
@@ -505,13 +513,14 @@ function formatTime(seconds) {
 function updateControlValues() {
 	controlsContainer.innerHTML = '';
 
-	focusSelect.innerHTML = '<option value="barycenter-mass" id="barycenterLabel">Barycentre de Masse</option>';
+	focusSelect.innerHTML = '<option value="noValue">-</option>';
+	focusSelect.innerHTML += '<option value="barycenter-mass" id="barycenterLabel">Barycentre de Masse</option>';
 	focusSelect.innerHTML += '<option value="barycenter-charge" id="barycenterLabelcharge">Barycentre de Charge</option>';
 	focusSelect.innerHTML += '<option value="barycenter-geometric" id="barycenterLabelgeo">Barycentre Géométrique</option>';
 	focusSelect.innerHTML += '<option value="barycenter-surfacique" id="barycenterLabelrad">Barycentre Surfacique</option>';
 	
-	objectASelect.innerHTML = `<option value="noValue" id="noValueLabel">Aucun</option>`;
-	objectBSelect.innerHTML = `<option value="noValue" id="noValueLabel">Aucun</option>`;
+	objectASelect.innerHTML = `<option value="noValue" id="noValueLabel">-</option>`;
+	objectBSelect.innerHTML = `<option value="noValue" id="noValueLabel">-</option>`;
 	
 
 	bodies.forEach((body, index) => {
@@ -533,7 +542,7 @@ function updateControlValues() {
                 </label>
             </div>
             
-            <label for="mass${index + 1}" id="MassEntree">Mass:</label>
+            <label for="mass${index + 1}" id="MassEntree${index + 1}">Mass:</label>
             <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('mass${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('mass${index + 1}', 0.5)">/2</button>
@@ -542,7 +551,7 @@ function updateControlValues() {
                 <button onclick="adjustValue('mass${index + 1}', 10)">x10</button>
             </div>
             
-            <label for="charge${index + 1}" id="ChargeEntree">Charge:</label>
+            <label for="charge${index + 1}" id="ChargeEntree${index + 1}">Charge:</label>
             <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('charge${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('charge${index + 1}', 0.5)">/2</button>
@@ -551,7 +560,7 @@ function updateControlValues() {
                 <button onclick="adjustValue('charge${index + 1}', 10)">x10</button>
             </div>
             
-            <label for="radius${index + 1}" id="radiusEntree">Radius:</label>
+            <label for="radius${index + 1}" id="radiusEntree${index + 1}">Radius:</label>
             <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('radius${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('radius${index + 1}', 0.5)">/2</button>
@@ -560,7 +569,7 @@ function updateControlValues() {
                 <button onclick="adjustValue('radius${index + 1}', 10)">x10</button>
             </div>
             
-            <label for="x${index + 1}" id="PosXEntree">X Position:</label>
+            <label for="x${index + 1}" id="PosXEntree${index + 1}">X Position:</label>
             <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('x${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('x${index + 1}', 0.5)">/2</button>
@@ -569,7 +578,7 @@ function updateControlValues() {
                 <button onclick="adjustValue('x${index + 1}', 10)">x10</button>
             </div>
             
-            <label for="y${index + 1}" id="PosYEntree">Y Position:</label>
+            <label for="y${index + 1}" id="PosYEntree${index + 1}">Y Position:</label>
             <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('y${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('y${index + 1}', 0.5)">/2</button>
@@ -578,7 +587,7 @@ function updateControlValues() {
                 <button onclick="adjustValue('y${index + 1}', 10)">x10</button>
             </div>
             
-            <label for="vx${index + 1}" id="SpeedXEntree">X Speed:</label>
+            <label for="vx${index + 1}" id="SpeedXEntree${index + 1}">X Speed:</label>
             <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('vx${index + 1}', 0.1)">/10</button>
                 <button onclick="adjustValue('vx${index + 1}', 0.5)">/2</button>
@@ -587,7 +596,7 @@ function updateControlValues() {
                 <button onclick="adjustValue('vx${index + 1}', 10)">x10</button>
             </div>
             
-            <label for="vy${index + 1}" id="SpeedYEntree">Y Speed:</label>
+            <label for="vy${index + 1}" id="SpeedYEntree${index + 1}">Y Speed:</label>
             <div class="btn-group mrgn-bttm-lg">
                 <button onclick="adjustValue('vy${index + 1}', 0.5)">/2</button>
                 <button onclick="adjustValue('vy${index + 1}', 0.1)">/10</button>
@@ -773,7 +782,6 @@ function calculateForces() {
                 const distance = Math.sqrt(dx * dx + dy * dy);
 				
                 if (distance > 0) {
-                    // console.log(`Objet${i + 1} - Objet${j + 1}: ${distance.toFixed(2)}`);
 
                     if (gravityEnabled) {
                         const forceG = (G * bodies[i].mass * bodies[j].mass) / (distance * distance);
@@ -995,6 +1003,13 @@ function drawBodies(barycenter) {
 			const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
 			ctx.arc(body.position.x, body.position.y, radius, 0, 2 * Math.PI);
 			ctx.fillStyle = body.color;
+			
+			if (hoveredBody === body) {
+				ctx.globalAlpha = 0.45;
+			} else {
+				ctx.globalAlpha = 0.9;
+			}
+
 			ctx.fill();
 			ctx.closePath();
 
@@ -1003,9 +1018,7 @@ function drawBodies(barycenter) {
 				const pointSize = radius * 0;
 				ctx.arc(point.x, point.y, pointSize, 0, 2 * Math.PI);
 				ctx.fillStyle = body.color;
-				ctx.globalAlpha = 0.5;
 				ctx.fill();
-				ctx.globalAlpha = 1.0;
 				ctx.closePath();
 			});
 
@@ -1027,21 +1040,23 @@ function drawBodies(barycenter) {
 		const objectA = bodies[parseInt(objectASelect)];
 		const objectB = bodies[parseInt(objectBSelect)];
 
-        if (objectA) {
+        if (objectA && objectA.show) {
             ctx.beginPath();
-            const radiusA = showSizeCheckbox.checked ? (objectA.radius * 2.5) / scale : objectA.radius;
-            const highlightedradiusA = showSizeCheckbox.checked ? (radiusA * 1.1 + 0.5) : radiusA * 1.35;
+            const radiusA = showSizeCheckbox.checked ? objectA.radius / scale : objectA.radius;
+            const highlightedradiusA = (showSizeCheckbox.checked ? (Math.min(objectA.radius * 2.5, 7)) / scale * 1.7 : Math.min(1.8 * radiusA, 2.5 + radiusA));
+			ctx.globalAlpha = 0.5;
             ctx.arc(objectA.position.x, objectA.position.y, highlightedradiusA, 0, 2 * Math.PI);
             ctx.strokeStyle = objectA.color;
-            ctx.lineWidth = showSizeCheckbox.checked ? 1 / scale : 1.1;
+            ctx.lineWidth = showSizeCheckbox.checked ? 1.1 / scale : 1.1;
             ctx.stroke();
             ctx.closePath();
         }
 
-        if (objectB) {
+        if (objectB && objectB.show) {
             ctx.beginPath();
-            const radiusB = showSizeCheckbox.checked ? (objectB.radius * 2.5) / scale : objectB.radius;
-            const highlightedradiusB = showSizeCheckbox.checked ? (radiusB * 1.1 + 0.5) : radiusB * 1.35;
+            const radiusB = showSizeCheckbox.checked ? objectB.radius / scale : objectB.radius;
+            const highlightedradiusB = (showSizeCheckbox.checked ? (Math.min(objectB.radius * 2.5, 7)) / scale * 1.7 : Math.min(1.8 * radiusB, 2.5 + radiusB));
+			ctx.globalAlpha = 0.5;
             ctx.arc(objectB.position.x, objectB.position.y, highlightedradiusB, 0, 2 * Math.PI);
             ctx.strokeStyle = objectB.color;
             ctx.lineWidth = showSizeCheckbox.checked ? 1 / scale : 1.1;
@@ -1070,21 +1085,29 @@ function clearTrails() {
 	});
 }
 
-function getRandomPosition() {
-	const minDistance = 50;
+function getRandomPosition(rdradius) {
+	let minDistance = 0;
+	bodies.forEach(body => {
+		minDistance = Math.max(minDistance, body.radius)
+	});
 	let position;
 	let validPosition = false;
+	const startTime = Date.now();
 
 	while (!validPosition) {
+		if (Date.now() - startTime > 500) {
+			console.warn("No possible position");
+			return null;
+		}
 		position = {
-			x: (Math.random() - 0.5) * canvas.width / scale + calculateBarycenter().x,
-			y: (Math.random() - 0.5) * canvas.height / scale + calculateBarycenter().y
+			x: (Math.random() - 0.5) * canvas.width / scale * 0.75 + calculateBarycenter().x,
+			y: (Math.random() - 0.5) * canvas.height / scale * 0.75 + calculateBarycenter().y
 		};
 		
 		validPosition = bodies.every(body => {
 			const dx = body.position.x - position.x;
 			const dy = body.position.y - position.y;
-			return Math.sqrt(dx * dx + dy * dy) > minDistance;
+			return Math.sqrt(dx * dx + dy * dy) > minDistance + rdradius;
 		});
 	}
 	return position;
@@ -1316,9 +1339,23 @@ function handleMouseDown(event) {
 }
 
 function handleMouseMove(event) {
+	const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
+	const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
+
+	hoveredBody = null;
+
+	bodies.forEach(body => {
+		const dx = body.position.x - mouseX;
+		const dy = body.position.y - mouseY;
+		const distance = Math.sqrt(dx * dx + dy * dy);
+
+		const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
+		if (distance < radius) {
+			hoveredBody = body;
+		}
+	});
+
 	if (selectedBody) {
-		const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
-		const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
 		selectedBody.position.x = mouseX;
 		selectedBody.position.y = mouseY;
 		updateControlValues();
@@ -1328,6 +1365,12 @@ function handleMouseMove(event) {
 			updateButtonImage();
 		}, 0);
 	}
+	
+    if (hoveredBody) {
+        canvas.style.cursor = 'pointer';
+    } else {
+        canvas.style.cursor = 'crosshair';
+    }
 }
 
 function handleMouseUp() {
@@ -1343,7 +1386,9 @@ function handleTouchStart(event) {
         for (const body of bodies) {
             const dx = touchX - body.position.x;
             const dy = touchY - body.position.y;
-            if (Math.sqrt(dx * dx + dy * dy) < (showSizeCheckbox.checked ? 10 / scale : 10)) {
+			const distance = Math.sqrt(dx * dx + dy * dy);
+			const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius
+            if (distance < radius) {
                 selectedBody = body;
                 isDragging = true;
                 isPaused = true;
@@ -1424,7 +1469,6 @@ function updateButtonImage() {
 function updatePresetSelect() {
 	const presetSelect = document.getElementById('presetSelect');
 	createRdPreset();
-	presetSelect.innerHTML = '<option value="">Sélectionnez un preset</option>';
 	Object.keys(presets).forEach(presetName => {
 		const option = document.createElement('option');
 		option.value = presetName;
@@ -1644,9 +1688,7 @@ function dragElement(elmnt) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
     if (header) {
-        // Ajouter les écouteurs d'événements pour la souris
         header.onmousedown = dragMouseDown;
-        // Ajouter les écouteurs d'événements pour le tactile
         header.ontouchstart = dragTouchStart;
     }
 
@@ -1660,7 +1702,6 @@ function dragElement(elmnt) {
 
     function dragTouchStart(e) {
         e.preventDefault();
-        // Utiliser les coordonnées du premier point de contact
         pos3 = e.touches[0].clientX;
         pos4 = e.touches[0].clientY;
         document.ontouchend = closeDragElement;
@@ -1679,7 +1720,6 @@ function dragElement(elmnt) {
 
     function elementTouchDrag(e) {
         e.preventDefault();
-        // Utiliser les coordonnées du premier point de contact pour les mouvements
         pos1 = pos3 - e.touches[0].clientX;
         pos2 = pos4 - e.touches[0].clientY;
         pos3 = e.touches[0].clientX;
@@ -1689,10 +1729,8 @@ function dragElement(elmnt) {
     }
 
     function closeDragElement() {
-        // Arrêter les événements de la souris
         document.onmouseup = null;
         document.onmousemove = null;
-        // Arrêter les événements tactiles
         document.ontouchend = null;
         document.ontouchmove = null;
     }
@@ -1747,32 +1785,56 @@ function getAttractionForce(objectA, objectB) {
 }
 
 function updateObjectInfo(objectA, objectB) {
-    // Mise à jour des informations de l'objet 1
-    document.getElementById('massA').textContent = `${objectA.mass.toExponential(2)} kg`;
-    document.getElementById('chargeA').textContent = `${objectA.charge.toExponential(1)} C`;
-    document.getElementById('radiusA').textContent = `${objectA.radius.toExponential(1)} m`;
-    document.getElementById('surface1').textContent = `${(Math.PI * Math.pow(objectA.radius, 2)).toExponential(2)} m²`;
-    document.getElementById('postionA').textContent = `(${objectA.position.x.toExponential(2)}, ${objectA.position.y.toExponential(2)})`;
-    document.getElementById('distanceBary1').textContent = `${getDistanceFromBarycenter(objectA).toExponential(2)} m`;
-    document.getElementById('speedRadial1').textContent = `${getRadialSpeed(objectA).toExponential(4)} m/s`;
-    document.getElementById('accelerationRadial1').textContent = `${getRadialAcceleration(objectA).toExponential(4)} m/s²`;
-    document.getElementById('forceTotalRadial1').textContent = `${getTotalRadialForce(objectA).toExponential(4)} kg m/s²`;
-    
-    // Mise à jour des informations de l'objet 2
-    document.getElementById('massB').textContent = `${objectB.mass.toExponential(2)} kg`;
-    document.getElementById('chargeB').textContent = `${objectB.charge.toExponential(1)} C`;
-    document.getElementById('radiusB').textContent = `${objectB.radius.toExponential(1)} m`;
-    document.getElementById('surface2').textContent = `${(Math.PI * Math.pow(objectB.radius, 2)).toExponential(2)} m²`;
-    document.getElementById('postionB').textContent = `(${objectB.position.x.toExponential(2)}, ${objectB.position.y.toExponential(2)})`;
-    document.getElementById('distanceBary2').textContent = `${getDistanceFromBarycenter(objectB).toExponential(2)} m`;
-    document.getElementById('speedRadial2').textContent = `${getRadialSpeed(objectB).toExponential(4)} m/s`;
-    document.getElementById('accelerationRadial2').textContent = `${getRadialAcceleration(objectB).toExponential(4)} m/s²`;
-    document.getElementById('forceTotalRadial2').textContent = `${getTotalRadialForce(objectB).toExponential(4)} kg m/s²`;
-    
+    // Mise à jour des informations de l'objet A
+    document.getElementById('massA').textContent = formatScientific(objectA.mass, 2) + ' kg';
+    document.getElementById('chargeA').textContent = formatScientific(objectA.charge, 1) + ' C';
+    document.getElementById('radiusA').textContent = formatScientific(objectA.radius, 1) + ' m';
+    document.getElementById('surface1').textContent = formatScientific(Math.PI * Math.pow(objectA.radius, 2), 2) + ' m²';
+    document.getElementById('positionA').textContent = `(${formatScientific(objectA.position.x, 2)}, ${formatScientific(objectA.position.y, 2)})`;
+    document.getElementById('distanceBary1').textContent = formatScientific(getDistanceFromBarycenter(objectA), 2) + ' m';
+    document.getElementById('speedRadial1').textContent = formatScientific(getRadialSpeed(objectA), 4) + ' m/s';
+    document.getElementById('accelerationRadial1').textContent = formatScientific(getRadialAcceleration(objectA), 4) + ' m/s²';
+    document.getElementById('forceTotalRadial1').textContent = formatScientific(getTotalRadialForce(objectA), 4) + ' kg m/s²';
+
+    // Mise à jour des informations de l'objet B
+    document.getElementById('massB').textContent = formatScientific(objectB.mass, 2) + ' kg';
+    document.getElementById('chargeB').textContent = formatScientific(objectB.charge, 1) + ' C';
+    document.getElementById('radiusB').textContent = formatScientific(objectB.radius, 1) + ' m';
+    document.getElementById('surface2').textContent = formatScientific(Math.PI * Math.pow(objectB.radius, 2), 2) + ' m²';
+    document.getElementById('positionB').textContent = `(${formatScientific(objectB.position.x, 2)}, ${formatScientific(objectB.position.y, 2)})`;
+    document.getElementById('distanceBary2').textContent = formatScientific(getDistanceFromBarycenter(objectB), 2) + ' m';
+    document.getElementById('speedRadial2').textContent = formatScientific(getRadialSpeed(objectB), 4) + ' m/s';
+    document.getElementById('accelerationRadial2').textContent = formatScientific(getRadialAcceleration(objectB), 4) + ' m/s²';
+    document.getElementById('forceTotalRadial2').textContent = formatScientific(getTotalRadialForce(objectB), 4) + ' kg m/s²';
+
     // Mise à jour des informations relatives entre les deux objets
-    document.getElementById('distanceBetween').textContent = `${getDistanceBetweenObjects(objectA, objectB).toExponential(4)} m`;
-    document.getElementById('relativeSpeedRadial').textContent = `${Math.abs(getRadialSpeed(objectA) - getRadialSpeed(objectB)).toExponential(4)} m/s`;
-    document.getElementById('relativeAccelerationRadial').textContent = `${Math.abs(getRadialAcceleration(objectA) - getRadialAcceleration(objectB)).toExponential(4)} m/s²`;
+    document.getElementById('distanceBetween').textContent = formatScientific(getDistanceBetweenObjects(objectA, objectB), 4) + ' m';
+    document.getElementById('relativeSpeedRadial').textContent = formatScientific(Math.abs(getRadialSpeed(objectA) - getRadialSpeed(objectB)), 4) + ' m/s';
+    document.getElementById('relativeAccelerationRadial').textContent = formatScientific(Math.abs(getRadialAcceleration(objectA) - getRadialAcceleration(objectB)), 4) + ' m/s²';
+}
+
+function formatScientific(number, digits) {
+    if (number === 0) {
+        return `${number.toFixed(digits)}`;
+    }
+    
+    if (Math.abs(number) >= Math.pow(10, digits) || Math.abs(number) < Math.pow(10, -digits)) {
+        const exp = number.toExponential(digits);
+        const parts = exp.split('e');
+        const coefficient = parts[0].replace('.', ',');
+        const exponent = parseInt(parts[1], 10);
+
+        const exponentSign = exponent < 0 ? '⁻' : '';
+        const exponentAbs = Math.abs(exponent).toString();
+        const exponentUnicode = exponentSign + exponentAbs.replace(/0/g, '⁰').replace(/1/g, '¹').replace(/2/g, '²')
+                                                           .replace(/3/g, '³').replace(/4/g, '⁴').replace(/5/g, '⁵')
+                                                           .replace(/6/g, '⁶').replace(/7/g, '⁷').replace(/8/g, '⁸')
+                                                           .replace(/9/g, '⁹');
+
+        return `${coefficient}×10${exponentUnicode}`;
+    } else {
+        return number.toFixed(digits).replace('.', ',');
+    }
 }
 
 startTimer();

@@ -26,8 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('zoomingToolLabel').textContent = trans.zoomManual;
         document.getElementById('trailLimitLabel').textContent = trans.trailLimit;
 		
+        document.getElementById('activateSoundLabel').textContent = trans.doSound;
+        document.getElementById('autoZoomToggleLabel').textContent = trans.doZoom;
+		
         document.getElementById('presetSelectLabel').textContent = trans.presetSelectLabelValue;
-        // document.getElementById('selectPresetOption').textContent = trans.selectPresetOptionValue;
         document.getElementById('loadPresetBtn').textContent = trans.loadPreset;
         document.getElementById('savePresetBtn').textContent = trans.savePreset;
         document.getElementById('presetName').placeholder = trans.presetNameValue;
@@ -54,15 +56,47 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('HelpModalAutorLink').textContent = trans.HelpModalAutorLinkValue;
 		
         document.getElementById('barycenterLabel').textContent = trans.Baryenable;
-        document.getElementById('MassEntree').textContent = trans.MassValue;
-        document.getElementById('ChargeEntree').textContent = trans.ChargeValue;
-        document.getElementById('PosXEntree').textContent = trans.PosXValue;
-        document.getElementById('PosYEntree').textContent = trans.PosYValue;
-        document.getElementById('SpeedXEntree').textContent = trans.SpeedXValue;
-        document.getElementById('SpeedYEntree').textContent = trans.SpeedYValue;
+		
+		for (let i = 0; i < bodies.length; i++) {
+			document.getElementById(`MassEntree${i + 1}`).textContent = trans.MassValue;
+			document.getElementById(`ChargeEntree${i + 1}`).textContent = trans.ChargeValue;
+			document.getElementById(`radiusEntree${i + 1}`).textContent = trans.radiusValue;
+			document.getElementById(`PosXEntree${i + 1}`).textContent = trans.PosXValue;
+			document.getElementById(`PosYEntree${i + 1}`).textContent = trans.PosYValue;
+			document.getElementById(`SpeedXEntree${i + 1}`).textContent = trans.SpeedXValue;
+			document.getElementById(`SpeedYEntree${i + 1}`).textContent = trans.SpeedYValue;
+		}
+		
+        document.getElementById('objectASelectLabel').textContent = trans.objectASelectEntree;
+        document.getElementById('objectBSelectLabel').textContent = trans.objectBSelectEntree;
+        document.getElementById('infoWindowTitle').textContent = trans.infoWindowTitleEntree;
+		
+        document.getElementById('massAtext').textContent = trans.massAtextEntree;
+        document.getElementById('chargeAtext').textContent = trans.chargeAtextEntree;
+        document.getElementById('radiusAtext').textContent = trans.radiusAtextEntree;
+        document.getElementById('surfaceAtext').textContent = trans.surfaceAtextEntree;
+        document.getElementById('posAtext').textContent = trans.posAtextEntree;
+        document.getElementById('distAtext').textContent = trans.distAtextEntree;
+        document.getElementById('speedAtext').textContent = trans.speedAtextEntree;
+        document.getElementById('accAtext').textContent = trans.accAtextEntree;
+        document.getElementById('forceAtext').textContent = trans.forceAtextEntree;
+		
+        document.getElementById('massBtext').textContent = trans.massAtextEntree;
+        document.getElementById('chargeBtext').textContent = trans.chargeAtextEntree;
+        document.getElementById('radiusBtext').textContent = trans.radiusAtextEntree;
+        document.getElementById('surfaceBtext').textContent = trans.surfaceAtextEntree;
+        document.getElementById('posBtext').textContent = trans.posAtextEntree;
+        document.getElementById('distBtext').textContent = trans.distAtextEntree;
+        document.getElementById('speedBtext').textContent = trans.speedAtextEntree;
+        document.getElementById('accBtext').textContent = trans.accAtextEntree;
+        document.getElementById('forceBtext').textContent = trans.forceAtextEntree;
+		
+        document.getElementById('distABtext').textContent = trans.distABtextEntree;
+        document.getElementById('speedABtext').textContent = trans.speedABtextEntree;
+        document.getElementById('accABtext').textContent = trans.accABtextEntree;
+		
 		
         document.getElementById('timer').textContent = trans.time;
-        //document.getElementById('timerLabel').textContent = trans.timeLabel;
     }
 
     languageSelect.addEventListener('change', () => {
@@ -87,6 +121,8 @@ const translations = {
 		"adaptiveValue": "Const. réelles I / normalisé O",
         "enableCollisions": "Activer les collisions",
 		"enableMerging": "Activer la fusion d'objet",
+		"doSound": "Activer le son",
+		"doZoom": "Zoom automatique",
 		"enableGrid": "Afficher la grille",
         "enableGravity": "Activer la gravité",
         "enableMA": "Activer la force électromagnétique",
@@ -100,14 +136,12 @@ const translations = {
         "trailLimit": "Nombre de points du trail (puiss. 10)",
         "loadPreset": "Charger un preset :",
         "savePreset": "Sauvegarder le preset",
-		"selectPresetOptionValue": "",
 		"presetSelectLabelValue": "",
         "presetNameValue": "Nom du preset (vide pour nom par défaut)",
-		"selectPresetOptionValue": "",
-		"presetSelectLabelValue": "",
         "addObject": "Ajouter un objet",
 		"Baryenable": "Barycentre",
 		"MassValue": "Masse :",
+		"radiusValue": "Rayon :",
 		"ChargeValue": "Charge :",
 		"PosXValue": "Position X :",
 		"PosYValue": "Position Y :",
@@ -127,6 +161,21 @@ const translations = {
 		"HelpModalAutorTitleValue": "Créateur",
 		"HelpModalAutorTextValue": "Ce projet a été créé par Wartets. Consultez son profil GitHub pour en découvrir d'autres projets :",
 		"HelpModalAutorLinkValue": "@Wartets",
+		"objectASelectEntree": "Choix de l'objet 1 : ",
+		"objectBSelectEntree": "Choix de l'objet 2 : ",
+		"infoWindowTitleEntree": "Détails des Objets",
+		"massAtextEntree": "Masse: ",
+		"chargeAtextEntree": "Charge: ",
+		"radiusAtextEntree": "Rayon: ",
+		"surfaceAtextEntree": "Surface: ",
+		"posAtextEntree": "Position: ",
+		"distAtextEntree": "Distance du Barycentre: ",
+		"speedAtextEntree": "Vitesse radiale: ",
+		"accAtextEntree": "Accélération radiale: ",
+		"forceAtextEntree": "Force totale radiale: ",
+		"distABtextEntree": "Distance entre les deux objets: ",
+		"accABtextEntree": "Vitesse relative radiale: ",
+		"speedABtextEntree": "Accélération relative radiale: ",
     },
     "en": {
         "resetView": "Reset View",
@@ -142,6 +191,8 @@ const translations = {
 		"adaptiveValue": "Actual const. I / normalized O",
         "enableCollisions": "Enable Collisions",
 		"enableMerging": "Enable object merging",
+		"doSound": "Activate sound",
+		"doZoom": "Auto-Zoom",
 		"enableGrid": "Show Grid",
         "enableGravity": "Enable Gravity",
         "enableMA": "Activate electromagnetic force",
@@ -155,14 +206,12 @@ const translations = {
         "trailLimit": "Trail Points (power of 10)",
         "loadPreset": "Load Preset",
         "savePreset": "Save Preset",
-		"selectPresetOptionValue": "",
 		"presetSelectLabelValue": "",
         "presetNameValue": "Preset Name (empty for default)",
-		"selectPresetOptionValue": "",
-		"presetSelectLabelValue": "",
         "addObject": "Add Object",
 		"Baryenable": "Barycenter",
 		"MassValue": "Mass:",
+		"radiusValue": "Radius :",
 		"ChargeValue": "Charge:",
 		"PosXValue": "X Position:",
 		"PosYValue": "Y Position:",
@@ -182,6 +231,21 @@ const translations = {
 		"HelpModalAutorTitleValue": "Author",
 		"HelpModalAutorTextValue": "This project was created by Wartets. Check out his GitHub profile for more projects:",
 		"HelpModalAutorLinkValue": "@Wartets",
+		"objectASelectEntree": "",
+		"objectBSelectEntree": "",
+		"infoWindowTitleEntree": "",
+		"massAtextEntree": "",
+		"chargeAtextEntree": "",
+		"radiusAtextEntree": "",
+		"surfaceAtextEntree": "",
+		"posAtextEntree": "",
+		"distAtextEntree": "",
+		"speedAtextEntree": "",
+		"accAtextEntree": "",
+		"forceAtextEntree": "",
+		"distABtextEntree": "",
+		"accABtextEntree": "",
+		"speedABtextEntree": "",
     },
     "es": {
         "resetView": "Reiniciar vista",
@@ -196,6 +260,8 @@ const translations = {
         "adaptiveSize": "Tamaños reales I / constante",
 		"adaptiveValue": "Const. reales I / normalizadas O",
 		"enableMerging": "Activar la fusión de objetos",
+		"doSound": "",
+		"doZoom": "",
 		"enableGrid": "Mostrar rejilla",
         "enableCollisions": "Activar colisiones",
         "enableGravity": "Activar gravedad",
@@ -210,14 +276,12 @@ const translations = {
         "trailLimit": "Puntos del trazado (potencia de 10)",
         "loadPreset": "Cargar preset:",
         "savePreset": "Salvaguardar preset",
+		"presetSelectLabelValue": "",
         "presetNameValue": "Nombre del preset (vacío para predeterminado)",
-		"selectPresetOptionValue": "",
-		"presetSelectLabelValue": "",
-		"selectPresetOptionValue": "",
-		"presetSelectLabelValue": "",
         "addObject": "Añadir objeto",
 		"Baryenable": "Baricentro",
 		"MassValue": "Masa:",
+		"radiusValue": "",
 		"ChargeValue": "Carga:",
 		"PosXValue": "Posición X:",
 		"PosYValue": "Posición Y:",
@@ -237,6 +301,21 @@ const translations = {
 		"HelpModalAutorTitleValue": "Autor",
 		"HelpModalAutorTextValue": "Este proyecto fue creado por Wartets. Echa un vistazo a su perfil de GitHub para ver más proyectos:",
 		"HelpModalAutorLinkValue": "@Wartets",
+		"objectASelectEntree": "",
+		"objectBSelectEntree": "",
+		"infoWindowTitleEntree": "",
+		"massAtextEntree": "",
+		"chargeAtextEntree": "",
+		"radiusAtextEntree": "",
+		"surfaceAtextEntree": "",
+		"posAtextEntree": "",
+		"distAtextEntree": "",
+		"speedAtextEntree": "",
+		"accAtextEntree": "",
+		"forceAtextEntree": "",
+		"distABtextEntree": "",
+		"accABtextEntree": "",
+		"speedABtextEntree": "",
     },
 	"de": {
         "resetView": "Ansicht zurücksetzen",
@@ -252,6 +331,8 @@ const translations = {
 		"adaptiveValue": "Konstanten real I / normalisiert O",
         "enableCollisions": "Kollisionen aktivieren",
 		"enableMerging": "Aktivieren der Objektzusammenführung",
+		"doSound": "",
+		"doZoom": "",
 		"enableGrid": "Raster anzeigen",
         "enableGravity": "Schwerkraft aktivieren",
         "enableMA": "Elektromagnetische Kraft aktivieren",
@@ -265,12 +346,12 @@ const translations = {
         "trailLimit": "Spurpunkte (Zehnerpotenzen)",
         "loadPreset": "Voreinstellung laden:",
         "savePreset": "Voreinstellung speichern",
-        "presetNameValue": "Name der Voreinstellung (leer für Standard)",
-		"selectPresetOptionValue": "",
 		"presetSelectLabelValue": "",
+        "presetNameValue": "Name der Voreinstellung (leer für Standard)",
         "addObject": "Objekt hinzufügen",
 		"Baryenable": "Schwerpunkt",
 		"MassValue": "Masse:",
+		"radiusValue": "",
 		"ChargeValue": "Ladung:",
 		"PosXValue": "X-Position:",
 		"PosYValue": "Y-Position:",
@@ -290,6 +371,21 @@ const translations = {
 		"HelpModalAutorTitleValue": "Autor",
 		"HelpModalAutorTextValue": "Dieses Projekt wurde von Wartets erstellt. Auf seinem GitHub-Profil finden Sie weitere Projekte:",
 		"HelpModalAutorLinkValue": "@Wartets",
+		"objectASelectEntree": "",
+		"objectBSelectEntree": "",
+		"infoWindowTitleEntree": "",
+		"massAtextEntree": "",
+		"chargeAtextEntree": "",
+		"radiusAtextEntree": "",
+		"surfaceAtextEntree": "",
+		"posAtextEntree": "",
+		"distAtextEntree": "",
+		"speedAtextEntree": "",
+		"accAtextEntree": "",
+		"forceAtextEntree": "",
+		"distABtextEntree": "",
+		"accABtextEntree": "",
+		"speedABtextEntree": "",
     },
 	"it": {
 		"resetView": "Reimposta vista",
@@ -305,6 +401,8 @@ const translations = {
 		"adaptiveValue": "Costanti reali I / normalizzate O",
 		"enableCollisions": "Attiva collisioni",
 		"enableMerging": "Abilita la fusione degli oggetti",
+		"doSound": "",
+		"doZoom": "",
 		"enableGrid": "Mostra griglia",
 		"enableGravity": "Attiva gravità",
 		"enableMA": "Attiva forza elettromagnetica",
@@ -322,6 +420,7 @@ const translations = {
 		"addObject": "Aggiungi un oggetto",
 		"Baryenable": "Baricentro",
 		"MassValue": "Massa:",
+		"radiusValue": "",
 		"ChargeValue": "Carica:",
 		"PosXValue": "Posizione X:",
 		"PosYValue": "Posizione Y:",
@@ -341,6 +440,21 @@ const translations = {
 		"HelpModalAutorTitleValue": "Autore",
 		"HelpModalAutorTextValue": "Questo progetto è stato creato da Wartets. Controlla il suo profilo GitHub per altri progetti:",
 		"HelpModalAutorLinkValue": "@Wartets",
+		"objectASelectEntree": "",
+		"objectBSelectEntree": "",
+		"infoWindowTitleEntree": "",
+		"massAtextEntree": "",
+		"chargeAtextEntree": "",
+		"radiusAtextEntree": "",
+		"surfaceAtextEntree": "",
+		"posAtextEntree": "",
+		"distAtextEntree": "",
+		"speedAtextEntree": "",
+		"accAtextEntree": "",
+		"forceAtextEntree": "",
+		"distABtextEntree": "",
+		"accABtextEntree": "",
+		"speedABtextEntree": "",
 	},
 	"la": {
 		"resetView": "Visum resetare",
@@ -356,6 +470,8 @@ const translations = {
 		"adaptiveValue": "Constantes Reales I / Normalizatae Ø",
 		"enableCollisions": "Permitte collisiones",
 		"enableMerging": "Activate quod merge",
+		"doSound": "",
+		"doZoom": "",
 		"enableGrid": "Ostendere malesuada euismod",
 		"enableGravity": "Permitte gravitatem",
 		"enableMA": "Permitte vim electromagneticam",
@@ -373,6 +489,7 @@ const translations = {
 		"addObject": "Adde obiectum",
 		"Baryenable": "Baricentrum",
 		"MassValue": "Massa:",
+		"radiusValue": "",
 		"ChargeValue": "Onus:",
 		"PosXValue": "Positio X:",
 		"PosYValue": "Positio Y:",
@@ -392,6 +509,21 @@ const translations = {
 		"HelpModalAutorTitleValue": "Auctor",
 		"HelpModalAutorTextValue": "Hoc consilium a Wartets creatum est. Reprehendo sicco ejus profile GitHub plura incepta:",
 		"HelpModalAutorLinkValue": "@Wartets",
+		"objectASelectEntree": "",
+		"objectBSelectEntree": "",
+		"infoWindowTitleEntree": "",
+		"massAtextEntree": "",
+		"chargeAtextEntree": "",
+		"radiusAtextEntree": "",
+		"surfaceAtextEntree": "",
+		"posAtextEntree": "",
+		"distAtextEntree": "",
+		"speedAtextEntree": "",
+		"accAtextEntree": "",
+		"forceAtextEntree": "",
+		"distABtextEntree": "",
+		"accABtextEntree": "",
+		"speedABtextEntree": "",
 	},
 	"vf": {
 		"resetView": "Réinitialiser la veue",
@@ -407,6 +539,8 @@ const translations = {
 		"adaptiveValue": "Constans réelles I / normalisées O",
 		"enableCollisions": "Activer les collisiouns",
 		"enableMerging": "Entrajoster les corps",
+		"doSound": "",
+		"doZoom": "",
 		"enableGrid": "Aficher la graïlle ",
 		"enableGravity": "Activer la gravité",
 		"enableMA": "Activer la force élektrique",
@@ -424,6 +558,7 @@ const translations = {
 		"addObject": "Ajouter ung objet",
 		"Baryenable": "Baricentrum",
 		"MassValue": "Masse :",
+		"radiusValue": "",
 		"ChargeValue": "Charge :",
 		"PosXValue": "Position X :",
 		"PosYValue": "Position Y :",
@@ -443,6 +578,21 @@ const translations = {
 		"HelpModalAutorTitleValue": "Créateur",
 		"HelpModalAutorTextValue": "Cest projet fu créé par Wartets. Veez son profil GitHub pour autres œuvres :",
 		"HelpModalAutorLinkValue": "@Wartets",
+		"objectASelectEntree": "",
+		"objectBSelectEntree": "",
+		"infoWindowTitleEntree": "",
+		"massAtextEntree": "",
+		"chargeAtextEntree": "",
+		"radiusAtextEntree": "",
+		"surfaceAtextEntree": "",
+		"posAtextEntree": "",
+		"distAtextEntree": "",
+		"speedAtextEntree": "",
+		"accAtextEntree": "",
+		"forceAtextEntree": "",
+		"distABtextEntree": "",
+		"accABtextEntree": "",
+		"speedABtextEntree": "",
 	},
 	"pirate": {
 		"resetView": "Arrr-réinitialiser l'vue",
@@ -458,6 +608,8 @@ const translations = {
 		"adaptiveValue": "Constantes d'vraie vie I / normalisées O",
 		"enableCollisions": "Activer les abordages",
 		"enableMerging": "Activer l'arbordage !",
+		"doSound": "",
+		"doZoom": "",
 		"enableGrid": "Montrez la carte",
 		"enableGravity": "Activer la gravité des mers",
 		"enableMA": "Activer la force élec'tornade",
@@ -475,6 +627,7 @@ const translations = {
 		"addObject": "Ajouter un objet d'butin",
 		"Baryenable": "Baricentre du trésor",
 		"MassValue": "Masse du butin:",
+		"radiusValue": "",
 		"ChargeValue": "Charge d'or:",
 		"PosXValue": "Pos'X d'l'île:",
 		"PosYValue": "Pos'Y d'l'île:",
@@ -494,6 +647,21 @@ const translations = {
 		"HelpModalAutorTitleValue": "Capitaine Créateur",
 		"HelpModalAutorTextValue": "Ce bateau a été construit par l’Capitaine Wartets! Jette un coup d’œil à son profil GitHub :",
 		"HelpModalAutorLinkValue": "@Wartets, arrr!",
+		"objectASelectEntree": "",
+		"objectBSelectEntree": "",
+		"infoWindowTitleEntree": "",
+		"massAtextEntree": "",
+		"chargeAtextEntree": "",
+		"radiusAtextEntree": "",
+		"surfaceAtextEntree": "",
+		"posAtextEntree": "",
+		"distAtextEntree": "",
+		"speedAtextEntree": "",
+		"accAtextEntree": "",
+		"forceAtextEntree": "",
+		"distABtextEntree": "",
+		"accABtextEntree": "",
+		"speedABtextEntree": "",
 	},
 	"shakespeare": {
 		"resetView": "Recalibrate yon Vision",
@@ -509,6 +677,8 @@ const translations = {
 		"adaptiveValue": "True Constants I / Normalised O",
 		"enableCollisions": "Engage the Collisions True",
 		"enableMerging": "Enable unification of objects",
+		"doSound": "",
+		"doZoom": "",
 		"enableGrid": "Display background grid",
 		"enableGravity": "Unleash the Force of Gravity",
 		"enableMA": "Empower the Electromagnetic Force",
@@ -526,6 +696,7 @@ const translations = {
 		"addObject": "Introduce an Object of Worth",
 		"Baryenable": "Empower the Barycentre",
 		"MassValue": "Measure of Mass:",
+		"radiusValue": "",
 		"ChargeValue": "Value of Charge:",
 		"PosXValue": "Position on the X-Axis:",
 		"PosYValue": "Position on the Y-Axis:",
@@ -545,6 +716,21 @@ const translations = {
 		"HelpModalAutorTitleValue": "Creator",
 		"HelpModalAutorTextValue": "This fine creation was wrought by Wartets. Look upon his GitHub to discover more:",
 		"HelpModalAutorLinkValue": "@Wartets",
+		"objectASelectEntree": "",
+		"objectBSelectEntree": "",
+		"infoWindowTitleEntree": "",
+		"massAtextEntree": "",
+		"chargeAtextEntree": "",
+		"radiusAtextEntree": "",
+		"surfaceAtextEntree": "",
+		"posAtextEntree": "",
+		"distAtextEntree": "",
+		"speedAtextEntree": "",
+		"accAtextEntree": "",
+		"forceAtextEntree": "",
+		"distABtextEntree": "",
+		"accABtextEntree": "",
+		"speedABtextEntree": "",
 	},
 	"minion": {
 		"resetView": "Reset banana view!",
@@ -560,6 +746,8 @@ const translations = {
 		"adaptiveValue": "Consta-tata I / Norm-tata O",
 		"enableCollisions": "Banana collisions ON!",
 		"enableMerging": "BANANA-FUSION",
+		"doSound": "",
+		"doZoom": "",
 		"enableGrid": "Grid of banana",
 		"enableGravity": "Banana gravity ON!",
 		"enableMA": "Banana electromagnetic ON!",
@@ -577,6 +765,7 @@ const translations = {
 		"addObject": "Add banana object!",
 		"Baryenable": "Banana barycentre ON!",
 		"MassValue": "Banana mass:",
+		"radiusValue": "",
 		"ChargeValue": "Banana charge:",
 		"PosXValue": "Banana X position:",
 		"PosYValue": "Banana Y position:",
@@ -596,6 +785,21 @@ const translations = {
 		"HelpModalAutorTitleValue": "Creator Banana!",
 		"HelpModalAutorTextValue": "Made by Wartets! Yay! Look at his GitHub for more!",
 		"HelpModalAutorLinkValue": "@Banana-Wartets!",
+		"objectASelectEntree": "",
+		"objectBSelectEntree": "",
+		"infoWindowTitleEntree": "",
+		"massAtextEntree": "",
+		"chargeAtextEntree": "",
+		"radiusAtextEntree": "",
+		"surfaceAtextEntree": "",
+		"posAtextEntree": "",
+		"distAtextEntree": "",
+		"speedAtextEntree": "",
+		"accAtextEntree": "",
+		"forceAtextEntree": "",
+		"distABtextEntree": "",
+		"accABtextEntree": "",
+		"speedABtextEntree": "",
 	},
 	"pt": {
 		"resetView": "",
@@ -611,6 +815,8 @@ const translations = {
 		"adaptiveValue": "",
 		"enableCollisions": "",
 		"enableMerging": "",
+		"doSound": "",
+		"doZoom": "",
 		"enableGrid": "",
 		"enableGravity": "",
 		"enableMA": "",
@@ -628,6 +834,7 @@ const translations = {
 		"addObject": "",
 		"Baryenable": "",
 		"MassValue": "",
+		"radiusValue": "",
 		"ChargeValue": "",
 		"PosXValue": "",
 		"PosYValue": "",
@@ -647,6 +854,21 @@ const translations = {
 		"HelpModalAutorTitleValue": "",
 		"HelpModalAutorTextValue": "",
 		"HelpModalAutorLinkValue": "@Wartets",
+		"objectASelectEntree": "",
+		"objectBSelectEntree": "",
+		"infoWindowTitleEntree": "",
+		"massAtextEntree": "",
+		"chargeAtextEntree": "",
+		"radiusAtextEntree": "",
+		"surfaceAtextEntree": "",
+		"posAtextEntree": "",
+		"distAtextEntree": "",
+		"speedAtextEntree": "",
+		"accAtextEntree": "",
+		"forceAtextEntree": "",
+		"distABtextEntree": "",
+		"accABtextEntree": "",
+		"speedABtextEntree": "",
 	},
 	"LabelName": {
 		"resetView": "resetView",
@@ -662,6 +884,8 @@ const translations = {
 		"adaptiveValue": "adaptiveValue",
 		"enableCollisions": "enableCollisions",
 		"enableMerging": "enableMerging",
+		"doSound": "doSound",
+		"doZoom": "doZoom",
 		"enableGrid": "enableGrid",
 		"enableGravity": "enableGravity",
 		"enableMA": "enableMA",
@@ -679,6 +903,7 @@ const translations = {
 		"addObject": "addObject",
 		"Baryenable": "Baryenable",
 		"MassValue": "MassValue",
+		"radiusValue": "radiusValue",
 		"ChargeValue": "ChargeValue",
 		"PosXValue": "PosXValue",
 		"PosYValue": "PosYValue",
@@ -698,6 +923,21 @@ const translations = {
 		"HelpModalAutorTitleValue": "HelpModalAutorTitleValue",
 		"HelpModalAutorTextValue": "HelpModalAutorTextValue",
 		"HelpModalAutorLinkValue": "HelpModalAutorLinkValue",
+		"objectASelectEntree": "objectASelectEntree",
+		"objectBSelectEntree": "objectBSelectEntree",
+		"infoWindowTitleEntree": "infoWindowTitleEntree",
+		"massAtextEntree": "massAtextEntree",
+		"chargeAtextEntree": "chargeAtextEntree",
+		"radiusAtextEntree": "radiusAtextEntree",
+		"surfaceAtextEntree": "surfaceAtextEntree",
+		"posAtextEntree": "posAtextEntree",
+		"distAtextEntree": "distAtextEntree",
+		"speedAtextEntree": "speedAtextEntree",
+		"accAtextEntree": "accAtextEntree",
+		"forceAtextEntree": "forceAtextEntree",
+		"distABtextEntree": "distABtextEntree",
+		"accABtextEntree": "accABtextEntree",
+		"speedABtextEntree": "speedABtextEntree",
 	},
 }
 
