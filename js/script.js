@@ -1051,8 +1051,8 @@ function drawBodies(barycenter) {
         if (objectA && objectA.show) {
             ctx.beginPath();
             const radiusA = showSizeCheckbox.checked ? objectA.radius / scale : objectA.radius;
-            const highlightedradiusA = (showSizeCheckbox.checked ? (Math.min(objectA.radius * 2.5, 7)) / scale * 1.7 : Math.min(1.8 * radiusA, 2.5 + radiusA));
-			ctx.globalAlpha = 0.5;
+            const highlightedradiusA = (showSizeCheckbox.checked ? (Math.min(objectA.radius * 2.5, 7)) / scale * 1.7 : Math.min(Math.max(1.8 * radiusA, 2.5 + radiusA), 2.5 + radiusA));
+			ctx.globalAlpha = 0.2;
             ctx.arc(objectA.position.x, objectA.position.y, highlightedradiusA, 0, 2 * Math.PI);
             ctx.strokeStyle = objectA.color;
             ctx.lineWidth = showSizeCheckbox.checked ? 1.1 / scale : 1.1;
@@ -1063,8 +1063,8 @@ function drawBodies(barycenter) {
         if (objectB && objectB.show) {
             ctx.beginPath();
             const radiusB = showSizeCheckbox.checked ? objectB.radius / scale : objectB.radius;
-            const highlightedradiusB = (showSizeCheckbox.checked ? (Math.min(objectB.radius * 2.5, 7)) / scale * 1.7 : Math.min(1.8 * radiusB, 2.5 + radiusB));
-			ctx.globalAlpha = 0.5;
+            const highlightedradiusB = (showSizeCheckbox.checked ? (Math.min(objectB.radius * 2.5, 7)) / scale * 1.7 : Math.min(Math.max(1.8 * radiusB, 2.5 + radiusB), 2.5 + radiusB));
+			ctx.globalAlpha = 0.2;
             ctx.arc(objectB.position.x, objectB.position.y, highlightedradiusB, 0, 2 * Math.PI);
             ctx.strokeStyle = objectB.color;
             ctx.lineWidth = showSizeCheckbox.checked ? 1 / scale : 1.1;

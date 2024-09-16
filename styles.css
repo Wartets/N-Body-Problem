@@ -372,6 +372,9 @@ button:hover {
 	text-align:center
 }
 
+#infoWindowTitle {
+	margin-left: 10px
+}
 
 #infoWindow {
     width: auto;
