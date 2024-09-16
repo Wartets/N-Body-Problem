@@ -22,6 +22,8 @@ let fpsTime = 0;
 let doZoom = document.getElementById('autoZoomToggle').checked;;
 let showWindow = false;
 let hoveredBody = null;
+let chart;
+let chartInitialized = false;
 
 const canvas = document.getElementById('simulationCanvas');
 const ctx = canvas.getContext('2d');
@@ -70,14 +72,6 @@ canvas.addEventListener('touchend', handleTouchEnd);
 
 focusSelect.addEventListener('change', (e) => {
 	focusObject = e.target.value;
-});
-
-objectASelect.addEventListener('change', (e) => {
-	objectASelect = e.target.value;
-});
-
-objectBSelect.addEventListener('change', (e) => {
-	objectBSelect = e.target.value;
 });
 
 frictionToggle.addEventListener('change', () => {
@@ -258,6 +252,16 @@ document.addEventListener('keydown', (event) => {
 	}
 });
 
+objectASelect.addEventListener('change', (e) => {
+	objectASelect = e.target.value;
+	clearChart();
+});
+
+objectBSelect.addEventListener('change', (e) => {
+	objectBSelect = e.target.value;
+	clearChart();
+});
+
 document.getElementById('infoWindowBtn').addEventListener('click', function() {
     showWindow = !showWindow;
     if (showWindow) {
@@ -294,26 +298,7 @@ document.getElementById('zoomIn10').addEventListener('click', () => {
 
 document.getElementById('resetViewBtn').addEventListener('click', () => {
 	resetView();
-});
-
-document.getElementById('collisionToggle').addEventListener('change', (e) => {
-	collisionsEnabled = e.target.checked;
-	if (collisionsEnabled) {
-		mergingEnabled = false;
-		document.getElementById('mergeToggle').checked = mergingEnabled;
-		}
-});
-
-document.getElementById('activateSound').addEventListener('change', (e)  => {
-	soundEnabled = e.target.checked;
-});
-
-document.getElementById('mergeToggle').addEventListener('change', (e) => {
-	mergingEnabled = e.target.checked;
-	if (mergingEnabled) {
-		collisionsEnabled = false;
-		document.getElementById('collisionToggle').checked = collisionsEnabled;
-		}
+	clearChart();
 });
 
 document.getElementById('addBodyBtn').addEventListener('click', () => {
@@ -409,6 +394,29 @@ document.getElementById('savePresetBtn').addEventListener('click', () => {
 	updatePresetSelect();
 	presetNameInput.value = '';
 });
+
+document.getElementById('collisionToggle').addEventListener('change', (e) => {
+	collisionsEnabled = e.target.checked;
+	if (collisionsEnabled) {
+		mergingEnabled = false;
+		document.getElementById('mergeToggle').checked = mergingEnabled;
+		}
+});
+
+document.getElementById('activateSound').addEventListener('change', (e)  => {
+	soundEnabled = e.target.checked;
+});
+
+document.getElementById('mergeToggle').addEventListener('change', (e) => {
+	mergingEnabled = e.target.checked;
+	if (mergingEnabled) {
+		collisionsEnabled = false;
+		document.getElementById('collisionToggle').checked = collisionsEnabled;
+		}
+});
+
+document.getElementById('paramXSelect').addEventListener('change', clearChart);
+document.getElementById('paramYSelect').addEventListener('change', clearChart);
 
 function createRdPreset() {
 	createRandomPreset("Random preset (25 objects)", 25, 200, 130);
@@ -1304,6 +1312,7 @@ function animate(currentTime) {
 	
     if (objectA && objectB) {
         updateObjectInfo(objectA, objectB);
+        updateGraphWithParameters(objectA, objectB);
     }
     
     const endTime = performance.now();
@@ -1785,7 +1794,6 @@ function getAttractionForce(objectA, objectB) {
 }
 
 function updateObjectInfo(objectA, objectB) {
-    // Mise à jour des informations de l'objet A
     document.getElementById('massA').textContent = formatScientific(objectA.mass, 2) + ' kg';
     document.getElementById('chargeA').textContent = formatScientific(objectA.charge, 1) + ' C';
     document.getElementById('radiusA').textContent = formatScientific(objectA.radius, 1) + ' m';
@@ -1796,7 +1804,6 @@ function updateObjectInfo(objectA, objectB) {
     document.getElementById('accelerationRadial1').textContent = formatScientific(getRadialAcceleration(objectA), 4) + ' m/s²';
     document.getElementById('forceTotalRadial1').textContent = formatScientific(getTotalRadialForce(objectA), 4) + ' kg m/s²';
 
-    // Mise à jour des informations de l'objet B
     document.getElementById('massB').textContent = formatScientific(objectB.mass, 2) + ' kg';
     document.getElementById('chargeB').textContent = formatScientific(objectB.charge, 1) + ' C';
     document.getElementById('radiusB').textContent = formatScientific(objectB.radius, 1) + ' m';
@@ -1807,7 +1814,6 @@ function updateObjectInfo(objectA, objectB) {
     document.getElementById('accelerationRadial2').textContent = formatScientific(getRadialAcceleration(objectB), 4) + ' m/s²';
     document.getElementById('forceTotalRadial2').textContent = formatScientific(getTotalRadialForce(objectB), 4) + ' kg m/s²';
 
-    // Mise à jour des informations relatives entre les deux objets
     document.getElementById('distanceBetween').textContent = formatScientific(getDistanceBetweenObjects(objectA, objectB), 4) + ' m';
     document.getElementById('relativeSpeedRadial').textContent = formatScientific(Math.abs(getRadialSpeed(objectA) - getRadialSpeed(objectB)), 4) + ' m/s';
     document.getElementById('relativeAccelerationRadial').textContent = formatScientific(Math.abs(getRadialAcceleration(objectA) - getRadialAcceleration(objectB)), 4) + ' m/s²';
@@ -1837,9 +1843,171 @@ function formatScientific(number, digits) {
     }
 }
 
-startTimer();
-updateConstants();
-simulate();
-updateControlValues();
-animate();
-updatePresetSelect();
+function populateParameterDropdowns() {
+    const params = {
+		objectA: [
+            { label: 'Mass A', value: 'massA' },
+            { label: 'Charge A', value: 'chargeA' },
+            { label: 'Radius A', value: 'radiusA' },
+            { label: 'Radial Speed A', value: 'speedRadial1' },
+            { label: 'Radial Acceleration A', value: 'accelerationRadial1' }
+        ],
+        objectB: [
+            { label: 'Mass B', value: 'massB' },
+            { label: 'Charge B', value: 'chargeB' },
+            { label: 'Radius B', value: 'radiusB' },
+            { label: 'Radial Speed B', value: 'speedRadial2' },
+            { label: 'Radial Acceleration B', value: 'accelerationRadial2' }
+        ],
+        relative: [
+            { label: 'Time', value: 'timeElapsed' },
+            { label: 'Distance Between A and B', value: 'distanceBetween' },
+            { label: 'Relative Radial Speed', value: 'relativeSpeedRadial' },
+            { label: 'Relative Radial Acceleration', value: 'relativeAccelerationRadial' }
+        ]
+    };
+
+    const paramXSelect = document.getElementById('paramXSelect');
+    const paramYSelect = document.getElementById('paramYSelect');
+
+    function addOptionsToSelect(select, label, options, letter) {
+        const optGroup = document.createElement('optgroup');
+        optGroup.label = label;
+        // optGroup.id = label + 'choiceLabel';
+        options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option.value;
+            opt.text = option.label;
+            opt.id = option.value + letter + 'choiceLabel';
+            optGroup.appendChild(opt);
+        });
+        select.appendChild(optGroup);
+    }
+
+    paramXSelect.innerHTML = '';
+    paramYSelect.innerHTML = '';
+
+    addOptionsToSelect(paramXSelect, 'Relative Parameters', params.relative, 'X');
+    addOptionsToSelect(paramXSelect, 'Object A Parameters', params.objectA, 'X');
+    addOptionsToSelect(paramXSelect, 'Object B Parameters', params.objectB, 'X');
+
+    addOptionsToSelect(paramYSelect, 'Relative Parameters', params.relative, 'Y');
+    addOptionsToSelect(paramYSelect, 'Object A Parameters', params.objectA, 'Y');
+    addOptionsToSelect(paramYSelect, 'Object B Parameters', params.objectB, 'Y');
+}
+
+function initChart() {
+    const ctx = document.getElementById('parameterChart');
+    chart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Evolution of Parameters',
+                data: [],
+                backgroundColor: `rgba(${Math.random() * 100}, ${Math.random() * 100 + 155}, ${Math.random() * 100 + 155})`
+            }]
+        },
+        options: {
+            animation: false,
+            scales: {
+                x: {
+                    type: 'linear',
+                    title: {
+                        display: true,
+                        text: 'X',
+                        color: 'rgba(255, 255, 255, 0.5)'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.2)'
+                    },
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.5)'
+                    }
+                },
+                y: {
+                    type: 'linear',
+                    title: {
+                        display: true,
+                        text: 'Y',
+                        color: 'rgba(255, 255, 255, 0.5)'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.2)'
+                    },
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.5)'
+                    }
+                }
+            }
+        }
+    });
+    chartInitialized = true;
+}
+
+function updateChart(xValue, yValue) {
+    if (chartInitialized) {
+        chart.data.datasets[0].data.push({ x: xValue, y: yValue });
+        chart.update();
+    }
+}
+
+function getSelectedParameterValue(parameter, objectA, objectB) {
+    switch (parameter) {
+        case 'massA': return objectA.mass;
+        case 'chargeA': return objectA.charge;
+        case 'radiusA': return objectA.radius;
+        case 'speedRadial1': return getRadialSpeed(objectA);
+        case 'accelerationRadial1': return getRadialAcceleration(objectA);
+        case 'massB': return objectB.mass;
+        case 'chargeB': return objectB.charge;
+        case 'radiusB': return objectB.radius;
+        case 'speedRadial2': return getRadialSpeed(objectB);
+        case 'accelerationRadial2': return getRadialAcceleration(objectB);
+        case 'distanceBetween': return getDistanceBetweenObjects(objectA, objectB);
+        case 'relativeSpeedRadial': return Math.abs(getRadialSpeed(objectA) - getRadialSpeed(objectB));
+        case 'relativeAccelerationRadial': return Math.abs(getRadialAcceleration(objectA) - getRadialAcceleration(objectB));
+        case 'timeElapsed': return timeElapsed;
+        default: return 0;
+    }
+}
+
+function updateGraphWithParameters(objectA, objectB, currentTime) {
+    const paramXSelect = document.getElementById('paramXSelect');
+    const paramYSelect = document.getElementById('paramYSelect');
+
+    const xParameter = paramXSelect.value;
+    const yParameter = paramYSelect.value;
+
+    const xValue = getSelectedParameterValue(xParameter, objectA, objectB);
+    const yValue = getSelectedParameterValue(yParameter, objectA, objectB);
+
+    const xLabel = paramXSelect.options[paramXSelect.selectedIndex].text;
+    const yLabel = paramYSelect.options[paramYSelect.selectedIndex].text;
+
+    chart.options.scales.x.title.text = xLabel;
+    chart.options.scales.y.title.text = yLabel;
+
+    chart.update();
+
+    if (xValue !== null && yValue !== null) {
+        updateChart(xValue, yValue, currentTime);
+    }
+}
+
+function clearChart() {
+    if (chartInitialized) {
+        chart.data.datasets[0].data = [];
+        chart.update();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initChart();
+	startTimer();
+	updateConstants();
+	simulate();
+	updateControlValues();
+	animate();
+	updatePresetSelect();
+	populateParameterDropdowns();
+});

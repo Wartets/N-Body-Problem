@@ -79,6 +79,19 @@
 			<li><span id="accABtext">Accélération relative radiale: </span><span id="relativeAccelerationRadial">NA</span></li>
 			</li>
 		</ul>
+		<!-- Ajout des listes déroulantes pour les paramètres -->
+		<div style="padding: 15px;text-align:center;">
+			<label for="paramXSelect">Sélectionner le paramètre X :</label>
+			<select id="paramXSelect"></select>
+			<br>
+			<label for="paramYSelect">Sélectionner le paramètre Y :</label>
+			<select id="paramYSelect"></select>
+		</div>
+
+		<!-- Ajout du graphique -->
+		<div id="containerChart" style="">
+			<canvas id="parameterChart"></canvas>
+		</div>
 	</div>
 
 	<div>
@@ -325,10 +338,12 @@
 		</div>
 	</div>
 
-    <script src="js/translations.js"></script> <!-- Lien vers le fichier JavaScript des Traductions -->
+    <script src="js/chart/chart.um.js"></script> <!-- Chart.js v4.4.4 -->
 
     <script src="js/presets.js"></script> <!-- Lien vers le fichier JavaScript des Presets -->
 
     <script src="js/script.js"></script> <!-- Lien vers le fichier JavaScript des Fonctions -->
+
+    <script src="js/translations.js"></script> <!-- Lien vers le fichier JavaScript des Traductions -->
 </body>
 </html>

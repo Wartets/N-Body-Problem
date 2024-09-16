@@ -95,6 +95,44 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('speedABtext').textContent = trans.speedABtextEntree;
         document.getElementById('accABtext').textContent = trans.accABtextEntree;
 		
+        document.getElementById('massAXchoiceLabel').textContent = trans.massAchoiceEntree;
+        document.getElementById('chargeAXchoiceLabel').textContent = trans.chargeAchoiceEntree;
+        document.getElementById('radiusAXchoiceLabel').textContent = trans.radiusAchoiceEntree;
+        document.getElementById('speedRadial1XchoiceLabel').textContent = trans.speedRadial1choiceEntree;
+        document.getElementById('accelerationRadial1XchoiceLabel').textContent = trans.accelerationRadial1choiceEntree;
+		
+        document.getElementById('massBXchoiceLabel').textContent = trans.massBchoiceEntree;
+        document.getElementById('chargeBXchoiceLabel').textContent = trans.chargeBchoiceEntree;
+        document.getElementById('radiusBXchoiceLabel').textContent = trans.radiusBchoiceEntree;
+        document.getElementById('speedRadial2XchoiceLabel').textContent = trans.speedRadial2choiceEntree;
+        document.getElementById('accelerationRadial2XchoiceLabel').textContent = trans.accelerationRadial2choiceEntree;
+		
+        document.getElementById('timeElapsedXchoiceLabel').textContent = trans.timeElapsedchoiceEntree;
+        document.getElementById('distanceBetweenXchoiceLabel').textContent = trans.distanceBetweenchoiceEntree;
+        document.getElementById('relativeSpeedRadialXchoiceLabel').textContent = trans.relativeSpeedRadialchoiceEntree;
+        document.getElementById('relativeAccelerationRadialXchoiceLabel').textContent = trans.relativeAccelerationRadialchoiceEntree;
+		
+        document.getElementById('massAYchoiceLabel').textContent = trans.massAchoiceEntree;
+        document.getElementById('chargeAYchoiceLabel').textContent = trans.chargeAchoiceEntree;
+        document.getElementById('radiusAYchoiceLabel').textContent = trans.radiusAchoiceEntree;
+        document.getElementById('speedRadial1YchoiceLabel').textContent = trans.speedRadial1choiceEntree;
+        document.getElementById('accelerationRadial1YchoiceLabel').textContent = trans.accelerationRadial1choiceEntree;
+		
+        document.getElementById('massBYchoiceLabel').textContent = trans.massBchoiceEntree;
+        document.getElementById('chargeBYchoiceLabel').textContent = trans.chargeBchoiceEntree;
+        document.getElementById('radiusBYchoiceLabel').textContent = trans.radiusBchoiceEntree;
+        document.getElementById('speedRadial2YchoiceLabel').textContent = trans.speedRadial2choiceEntree;
+        document.getElementById('accelerationRadial2YchoiceLabel').textContent = trans.accelerationRadial2choiceEntree;
+		
+        document.getElementById('timeElapsedYchoiceLabel').textContent = trans.timeElapsedchoiceEntree;
+        document.getElementById('distanceBetweenYchoiceLabel').textContent = trans.distanceBetweenchoiceEntree;
+        document.getElementById('relativeSpeedRadialYchoiceLabel').textContent = trans.relativeSpeedRadialchoiceEntree;
+        document.getElementById('relativeAccelerationRadialYchoiceLabel').textContent = trans.relativeAccelerationRadialchoiceEntree;
+		
+        // document.getElementById('objectAchoiceLabel').textContent = trans.objectAchoiceEntree;
+        // document.getElementById('objectBchoiceLabel').textContent = trans.objectBchoiceEntree;
+        // document.getElementById('relativechoiceLabel').textContent = trans.relativechoiceEntree;
+		
 		
         document.getElementById('timer').textContent = trans.time;
     }
@@ -103,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         applyTranslations(languageSelect.value);
     });
 
-    applyTranslations(languageSelect.value || 'fr');
+    applyTranslations(languageSelect.value || 'en');
 });
 
 const translations = {
@@ -163,7 +201,7 @@ const translations = {
 		"HelpModalAutorLinkValue": "@Wartets",
 		"objectASelectEntree": "Choix de l'objet 1 : ",
 		"objectBSelectEntree": "Choix de l'objet 2 : ",
-		"infoWindowTitleEntree": "Détails des Objets",
+		"infoWindowTitleEntree": "Détails et analyse des Objets",
 		"massAtextEntree": "Masse: ",
 		"chargeAtextEntree": "Charge: ",
 		"radiusAtextEntree": "Rayon: ",
@@ -176,6 +214,23 @@ const translations = {
 		"distABtextEntree": "Distance entre les deux objets: ",
 		"accABtextEntree": "Vitesse relative radiale: ",
 		"speedABtextEntree": "Accélération relative radiale: ",
+		"massAchoiceEntree": "Masse A",
+		"chargeAchoiceEntree": "Charge A",
+		"radiusAchoiceEntree": "Rayon A",
+		"speedRadial1choiceEntree": "Vitesse radiale A",
+		"accelerationRadial1choiceEntree": "Accélération radiale A",
+		"massBchoiceEntree": "Masse B",
+		"chargeBchoiceEntree": "Charge B",
+		"radiusBchoiceEntree": "Rayon B",
+		"speedRadial2choiceEntree": "Vitesse radiale B",
+		"accelerationRadial2choiceEntree": "Accélération radiale B",
+		"timeElapsedchoiceEntree": "Temps",
+		"distanceBetweenchoiceEntree": "Distance entre A & B",
+		"relativeSpeedRadialchoiceEntree": "Vitesse relative entre A & B",
+		"relativeAccelerationRadialchoiceEntree": "Accélération relative entre A & B",
+		// "objectAchoiceEntree": "Paramètres Objet A",
+		// "objectBchoiceEntree": "Paramètres Objet B",
+		// "relativechoiceEntree": "Paramètres relatifs",
     },
     "en": {
         "resetView": "Reset View",
@@ -246,6 +301,20 @@ const translations = {
 		"distABtextEntree": "",
 		"accABtextEntree": "",
 		"speedABtextEntree": "",
+		"massAchoiceEntree": "Mass A",
+		"chargeAchoiceEntree": "Charge A",
+		"radiusAchoiceEntree": "Radius A",
+		"speedRadial1choiceEntree": "Radial speed A",
+		"accelerationRadial1choiceEntree": "Radial acceleration A",
+		"massBchoiceEntree": "Mass B",
+		"chargeBchoiceEntree": "Charge B",
+		"radiusBchoiceEntree": "Radius B",
+		"speedRadial2choiceEntree": "Radial speed B",
+		"accelerationRadial2choiceEntree": "Radiale acceleration B",
+		"timeElapsedchoiceEntree": "Time",
+		"distanceBetweenchoiceEntree": "Distance between A & B",
+		"relativeSpeedRadialchoiceEntree": "Relative radial Speed",
+		"relativeAccelerationRadialchoiceEntree": "Relative radial Acceleration",
     },
     "es": {
         "resetView": "Reiniciar vista",
@@ -316,6 +385,20 @@ const translations = {
 		"distABtextEntree": "",
 		"accABtextEntree": "",
 		"speedABtextEntree": "",
+		"massAchoiceEntree": "",
+		"chargeAchoiceEntree": "",
+		"radiusAchoiceEntree": "",
+		"speedRadial1choiceEntree": "",
+		"accelerationRadial1choiceEntree": "",
+		"massBchoiceEntree": "",
+		"chargeBchoiceEntree": "",
+		"radiusBchoiceEntree": "",
+		"speedRadial2choiceEntree": "",
+		"accelerationRadial2choiceEntree": "",
+		"timeElapsedchoiceEntree": "",
+		"distanceBetweenchoiceEntree": "",
+		"relativeSpeedRadialchoiceEntree": "",
+		"relativeAccelerationRadialchoiceEntree": "",
     },
 	"de": {
         "resetView": "Ansicht zurücksetzen",
@@ -386,6 +469,20 @@ const translations = {
 		"distABtextEntree": "",
 		"accABtextEntree": "",
 		"speedABtextEntree": "",
+		"massAchoiceEntree": "",
+		"chargeAchoiceEntree": "",
+		"radiusAchoiceEntree": "",
+		"speedRadial1choiceEntree": "",
+		"accelerationRadial1choiceEntree": "",
+		"massBchoiceEntree": "",
+		"chargeBchoiceEntree": "",
+		"radiusBchoiceEntree": "",
+		"speedRadial2choiceEntree": "",
+		"accelerationRadial2choiceEntree": "",
+		"timeElapsedchoiceEntree": "",
+		"distanceBetweenchoiceEntree": "",
+		"relativeSpeedRadialchoiceEntree": "",
+		"relativeAccelerationRadialchoiceEntree": "",
     },
 	"it": {
 		"resetView": "Reimposta vista",
@@ -455,6 +552,20 @@ const translations = {
 		"distABtextEntree": "",
 		"accABtextEntree": "",
 		"speedABtextEntree": "",
+		"massAchoiceEntree": "",
+		"chargeAchoiceEntree": "",
+		"radiusAchoiceEntree": "",
+		"speedRadial1choiceEntree": "",
+		"accelerationRadial1choiceEntree": "",
+		"massBchoiceEntree": "",
+		"chargeBchoiceEntree": "",
+		"radiusBchoiceEntree": "",
+		"speedRadial2choiceEntree": "",
+		"accelerationRadial2choiceEntree": "",
+		"timeElapsedchoiceEntree": "",
+		"distanceBetweenchoiceEntree": "",
+		"relativeSpeedRadialchoiceEntree": "",
+		"relativeAccelerationRadialchoiceEntree": "",
 	},
 	"la": {
 		"resetView": "Visum resetare",
@@ -524,6 +635,20 @@ const translations = {
 		"distABtextEntree": "",
 		"accABtextEntree": "",
 		"speedABtextEntree": "",
+		"massAchoiceEntree": "",
+		"chargeAchoiceEntree": "",
+		"radiusAchoiceEntree": "",
+		"speedRadial1choiceEntree": "",
+		"accelerationRadial1choiceEntree": "",
+		"massBchoiceEntree": "",
+		"chargeBchoiceEntree": "",
+		"radiusBchoiceEntree": "",
+		"speedRadial2choiceEntree": "",
+		"accelerationRadial2choiceEntree": "",
+		"timeElapsedchoiceEntree": "",
+		"distanceBetweenchoiceEntree": "",
+		"relativeSpeedRadialchoiceEntree": "",
+		"relativeAccelerationRadialchoiceEntree": "",
 	},
 	"vf": {
 		"resetView": "Réinitialiser la veue",
@@ -593,6 +718,20 @@ const translations = {
 		"distABtextEntree": "",
 		"accABtextEntree": "",
 		"speedABtextEntree": "",
+		"massAchoiceEntree": "",
+		"chargeAchoiceEntree": "",
+		"radiusAchoiceEntree": "",
+		"speedRadial1choiceEntree": "",
+		"accelerationRadial1choiceEntree": "",
+		"massBchoiceEntree": "",
+		"chargeBchoiceEntree": "",
+		"radiusBchoiceEntree": "",
+		"speedRadial2choiceEntree": "",
+		"accelerationRadial2choiceEntree": "",
+		"timeElapsedchoiceEntree": "",
+		"distanceBetweenchoiceEntree": "",
+		"relativeSpeedRadialchoiceEntree": "",
+		"relativeAccelerationRadialchoiceEntree": "",
 	},
 	"pirate": {
 		"resetView": "Arrr-réinitialiser l'vue",
@@ -662,6 +801,20 @@ const translations = {
 		"distABtextEntree": "",
 		"accABtextEntree": "",
 		"speedABtextEntree": "",
+		"massAchoiceEntree": "",
+		"chargeAchoiceEntree": "",
+		"radiusAchoiceEntree": "",
+		"speedRadial1choiceEntree": "",
+		"accelerationRadial1choiceEntree": "",
+		"massBchoiceEntree": "",
+		"chargeBchoiceEntree": "",
+		"radiusBchoiceEntree": "",
+		"speedRadial2choiceEntree": "",
+		"accelerationRadial2choiceEntree": "",
+		"timeElapsedchoiceEntree": "",
+		"distanceBetweenchoiceEntree": "",
+		"relativeSpeedRadialchoiceEntree": "",
+		"relativeAccelerationRadialchoiceEntree": "",
 	},
 	"shakespeare": {
 		"resetView": "Recalibrate yon Vision",
@@ -731,6 +884,20 @@ const translations = {
 		"distABtextEntree": "",
 		"accABtextEntree": "",
 		"speedABtextEntree": "",
+		"massAchoiceEntree": "",
+		"chargeAchoiceEntree": "",
+		"radiusAchoiceEntree": "",
+		"speedRadial1choiceEntree": "",
+		"accelerationRadial1choiceEntree": "",
+		"massBchoiceEntree": "",
+		"chargeBchoiceEntree": "",
+		"radiusBchoiceEntree": "",
+		"speedRadial2choiceEntree": "",
+		"accelerationRadial2choiceEntree": "",
+		"timeElapsedchoiceEntree": "",
+		"distanceBetweenchoiceEntree": "",
+		"relativeSpeedRadialchoiceEntree": "",
+		"relativeAccelerationRadialchoiceEntree": "",
 	},
 	"minion": {
 		"resetView": "Reset banana view!",
@@ -800,6 +967,20 @@ const translations = {
 		"distABtextEntree": "",
 		"accABtextEntree": "",
 		"speedABtextEntree": "",
+		"massAchoiceEntree": "",
+		"chargeAchoiceEntree": "",
+		"radiusAchoiceEntree": "",
+		"speedRadial1choiceEntree": "",
+		"accelerationRadial1choiceEntree": "",
+		"massBchoiceEntree": "",
+		"chargeBchoiceEntree": "",
+		"radiusBchoiceEntree": "",
+		"speedRadial2choiceEntree": "",
+		"accelerationRadial2choiceEntree": "",
+		"timeElapsedchoiceEntree": "",
+		"distanceBetweenchoiceEntree": "",
+		"relativeSpeedRadialchoiceEntree": "",
+		"relativeAccelerationRadialchoiceEntree": "",
 	},
 	"pt": {
 		"resetView": "",
@@ -869,6 +1050,20 @@ const translations = {
 		"distABtextEntree": "",
 		"accABtextEntree": "",
 		"speedABtextEntree": "",
+		"massAchoiceEntree": "",
+		"chargeAchoiceEntree": "",
+		"radiusAchoiceEntree": "",
+		"speedRadial1choiceEntree": "",
+		"accelerationRadial1choiceEntree": "",
+		"massBchoiceEntree": "",
+		"chargeBchoiceEntree": "",
+		"radiusBchoiceEntree": "",
+		"speedRadial2choiceEntree": "",
+		"accelerationRadial2choiceEntree": "",
+		"timeElapsedchoiceEntree": "",
+		"distanceBetweenchoiceEntree": "",
+		"relativeSpeedRadialchoiceEntree": "",
+		"relativeAccelerationRadialchoiceEntree": "",
 	},
 	"LabelName": {
 		"resetView": "resetView",
@@ -938,6 +1133,20 @@ const translations = {
 		"distABtextEntree": "distABtextEntree",
 		"accABtextEntree": "accABtextEntree",
 		"speedABtextEntree": "speedABtextEntree",
+		"massAchoiceEntree": "massAchoiceEntree",
+		"chargeAchoiceEntree": "chargeAchoiceEntree",
+		"radiusAchoiceEntree": "radiusAchoiceEntree",
+		"speedRadial1choiceEntree": "speedRadial1choiceEntree",
+		"accelerationRadial1choiceEntree": "accelerationRadial1choiceEntree",
+		"massBchoiceEntree": "massBchoiceEntree",
+		"chargeBchoiceEntree": "chargeBchoiceEntree",
+		"radiusBchoiceEntree": "radiusBchoiceEntree",
+		"speedRadial2choiceEntree": "speedRadial2choiceEntree",
+		"accelerationRadial2choiceEntree": "accelerationRadial2choiceEntree",
+		"timeElapsedchoiceEntree": "timeElapsedchoiceEntree",
+		"distanceBetweenchoiceEntree": "distanceBetweenchoiceEntree",
+		"relativeSpeedRadialchoiceEntree": "relativeSpeedRadialchoiceEntree",
+		"relativeAccelerationRadialchoiceEntree": "relativeAccelerationRadialchoiceEntree",
 	},
 }
 
