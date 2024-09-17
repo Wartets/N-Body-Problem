@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('HelpModalAutorText').textContent = trans.HelpModalAutorTextValue;
         document.getElementById('HelpModalAutorLink').textContent = trans.HelpModalAutorLinkValue;
 		
-        document.getElementById('barycenterLabel').textContent = trans.Baryenable;
+        // document.getElementById('barycenterLabel').textContent = trans.Baryenable;
 		
 		for (let i = 0; i < bodies.length; i++) {
 			document.getElementById(`MassEntree${i + 1}`).textContent = trans.MassValue;
@@ -156,7 +156,7 @@ const translations = {
 		"displaySettingsValue": "Réglages d'affichages :",
 		"objectSettingsValue": "Réglages des objets :",
         "adaptiveSize": "Tailles réelles I / constantes O",
-		"adaptiveValue": "Const. réelles I / normalisé O",
+		"adaptiveValue": "Valeurs des constantes réelles",
         "enableCollisions": "Activer les collisions",
 		"enableMerging": "Activer la fusion d'objet",
 		"doSound": "Activer le son",
@@ -1151,5 +1151,7 @@ const translations = {
 }
 
 function applyTranslations() {
-    console.log('Translations:', translations);
+	if (devModenabled) {
+		console.log('Translations:', translations);
+	}
 }

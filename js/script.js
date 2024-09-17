@@ -24,6 +24,8 @@ let showWindow = false;
 let hoveredBody = null;
 let chart;
 let chartInitialized = false;
+let updateCounter = 0;
+let devModenabled = false
 
 const canvas = document.getElementById('simulationCanvas');
 const ctx = canvas.getContext('2d');
@@ -36,7 +38,12 @@ const focusSelect = document.getElementById('focusSelect');
 const mouseCoordsDisplay = document.getElementById('mouseCoords');
 const controls = document.getElementById('controls');
 const controlsToggle = document.getElementById('controlsToggle');
+const advancedControls = document.getElementById('advancedControls');
+const advancedControlsToggle = document.getElementById('advancedControlsToggle');
 const constValCheckbox = document.getElementById('ConstVal');
+const customConstantsDiv = document.getElementById('customConstants');
+const GInput = document.getElementById('GValue');
+const kInput = document.getElementById('kValue');
 const fullscreenBtn = document.getElementById('fullscreenBtn');
 const frictionToggle = document.getElementById('frictionToggle');
 const frictionCoefficientContainer = document.getElementById('frictionCoefficientContainer');
@@ -52,6 +59,11 @@ const helpBtn = document.getElementById('helpBtn');
 const modal = document.getElementById('helpModal');
 const closeBtn = document.querySelector('.close');
 const isHidden = controls.classList.toggle('hidden');
+const isShownControl = controls.classList.toggle('shownControl');
+const vectorLengthSliderG = document.getElementById('vectorLengthSliderG');
+const vectorLengthDisplayG = document.getElementById('vectorLengthValueG');
+const vectorLengthSliderk = document.getElementById('vectorLengthSliderk');
+const vectorLengthDisplayk = document.getElementById('vectorLengthValuek');
 const bodies = initialBodies.map(body => ({
 	...body,
 	acceleration: { x: 0, y: 0 },
@@ -83,6 +95,19 @@ frictionToggle.addEventListener('change', () => {
 });
 
 constValCheckbox.addEventListener('change', updateConstants);
+
+GInput.addEventListener('input', updateConstants);
+kInput.addEventListener('input', updateConstants);
+
+vectorLengthSliderG.addEventListener('input', function() {
+    vectorLengthDisplayG.textContent = vectorLengthSliderG.value;
+    drawGravityField();
+});
+
+vectorLengthSliderk.addEventListener('input', function() {
+    vectorLengthDisplayk.textContent = vectorLengthSliderk.value;
+    drawMagneticField();
+});
 
 helpBtn.addEventListener('click', () => {
 	isPaused = true
@@ -128,6 +153,25 @@ controlsToggle.addEventListener('touchstart', (e) => {
 	const isHidden = !controls.classList.toggle('hidden');
     controlsToggle.innerHTML = isHidden ? '&#x25C0;' : '&#x25B6;';
     document.body.classList.toggle('hidden');
+    window.dispatchEvent(new Event('resize'));
+});
+
+advancedControlsToggle.addEventListener('click', () => {;
+    isPaused = true;
+	updateButtonImage();
+	const isShownControl = !controls.classList.toggle('shownControl');
+    advancedControlsToggle.innerHTML = isShownControl ? '&#x25C0;' : '|';
+    document.body.classList.toggle('shownControl');
+    window.dispatchEvent(new Event('resize'));
+});
+
+advancedControlsToggle.addEventListener('touchstart', (e) => {
+    isPaused = true;
+	updateButtonImage();
+    e.preventDefault(); 
+	const isShownControl = !controls.classList.toggle('shownControl');
+    controlsToggle.innerHTML = isShownControl ? '&#x25C0;' : '|';
+    document.body.classList.toggle('shownControl');
     window.dispatchEvent(new Event('resize'));
 });
 
@@ -192,17 +236,14 @@ canvas.addEventListener('mousemove', (event) => {
 window.addEventListener('resize', () => {
     if (controls.classList.contains('hidden')) {
         canvas.width = window.innerWidth - 300;
-        console.log('Canvas width : window.width - 300');
     } else {
         canvas.width = window.innerWidth;
-        console.log('Canvas width : window.width');
     }
     canvas.height = window.innerHeight;
+	if (devModenabled) {
+        console.log('Canvas width :', canvas.width);
+	}
 });
-
-dragElement(document.getElementById('infoWindow'));
-
-window.dispatchEvent(new Event('resize'));
 
 document.addEventListener('keydown', (event) => {
 	switch (event.key) {
@@ -213,10 +254,10 @@ document.addEventListener('keydown', (event) => {
 			resetView();
 			break;
 		case '+':
-			scale *= 1.2;
+			scale *= 1;
 			break;
 		case '-':
-			scale /= 1.2;
+			scale /= 1;
 			break;
 		case 'c':
 			collisionsEnabled = !collisionsEnabled;
@@ -250,6 +291,9 @@ document.addEventListener('keydown', (event) => {
 			Pause();
 			break;
 	}
+	if (devModenabled) {
+        console.log('Key pressed :', event.key);
+	}
 });
 
 objectASelect.addEventListener('change', (e) => {
@@ -261,6 +305,10 @@ objectBSelect.addEventListener('change', (e) => {
 	objectBSelect = e.target.value;
 	clearChart();
 });
+
+dragElement(document.getElementById('infoWindow'));
+
+window.dispatchEvent(new Event('resize'));
 
 document.getElementById('infoWindowBtn').addEventListener('click', function() {
     showWindow = !showWindow;
@@ -298,6 +346,9 @@ document.getElementById('zoomIn10').addEventListener('click', () => {
 
 document.getElementById('resetViewBtn').addEventListener('click', () => {
 	resetView();
+});
+
+document.getElementById('resetChartBtn').addEventListener('click', () => {
 	clearChart();
 });
 
@@ -331,7 +382,6 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 		const preset = presets[selectedPresetName];
 		dtInput.value = preset.dt;
 
-		clearTrails();
 		
 		while (bodies.length > preset.bodies.length) {
 			bodies.pop();
@@ -365,6 +415,8 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 			}
 		});
 
+		clearTrails();
+        chart.update();
 		updateControlValues();
 		resetView();
 		startTimer();
@@ -401,6 +453,13 @@ document.getElementById('collisionToggle').addEventListener('change', (e) => {
 		mergingEnabled = false;
 		document.getElementById('mergeToggle').checked = mergingEnabled;
 		}
+});
+
+document.getElementById('devMod').addEventListener('change', (e) => {
+	devModenabled = e.target.checked;
+	if (devModenabled) {
+		console.log('DevMod activated');
+	}
 });
 
 document.getElementById('activateSound').addEventListener('change', (e)  => {
@@ -454,23 +513,34 @@ function updateCoord() {
 
 function updateConstants() {
     if (constValCheckbox.checked) {
-        G = 6.67e-11; // Constante gravitationnelle (réelle)
-        k = 8.99e9; // Constante de Coulomb (réelle)
+        G = 6.67430e-11;		// Constante gravitationnelle (réelle)
+        k = 8.9875517923e9;		// Constante de Coulomb (réelle)
+        customConstantsDiv.style.display = 'none';
     } else {
-        G = 0.1; // Valeurs normalisées
-        k = 100;
+        // Utiliser les valeurs personnalisées
+        G = parseFloat(GInput.value);
+        k = parseFloat(kInput.value);
+        customConstantsDiv.style.display = 'block';
     }
-    console.log('G:', G, 'k:', k);
+	if (devModenabled) {
+		console.log('G:', G, 'k:', k);
+	}
 }
 
 function resetView() {
 	scrollZoom = 1;
 	scale = 1;
+	if (devModenabled) {
+		console.log('View reseted');
+	}
 }
 
 function deleteBody(index) {
 	bodies.splice(index, 1);
 	updateControlValues();
+	if (devModenabled) {
+		console.log('Body deleted');
+	}
 }
 
 function setupTrashIcons() {
@@ -1091,6 +1161,9 @@ function clearTrails() {
 		body.trail = [];
 		body.points = [];
 	});
+	if (devModenabled) {
+		console.log('trails cleared');
+	}
 }
 
 function getRandomPosition(rdradius) {
@@ -1463,6 +1536,14 @@ function handleMouseWheel(event) {
 function Pause() {
 	isPaused = !isPaused;
     updateButtonImage();
+	if (devModenabled) {
+		if (isPaused) {
+			console.log('Pause');
+		} else {
+			console.log('Play');
+		}
+		
+	}
 }
 
 function updateButtonImage() {
@@ -1487,6 +1568,8 @@ function updatePresetSelect() {
 }
 
 function drawGravityField() {
+    const vectorLengthSliderG = document.getElementById('vectorLengthSliderG');
+    const vectorLengthValueG = parseFloat(vectorLengthSliderG.value);
     const showGravityField = document.getElementById('showGravityField').checked;
 
     if (!showGravityField) return;
@@ -1535,7 +1618,7 @@ function drawGravityField() {
             const forceMagnitude = Math.sqrt(fx * fx + fy * fy);
 
             if (forceMagnitude !== 0) {
-                const vectorLength = Math.min(Math.sqrt(forceMagnitude) / maxMass * 20000, 10) / (showSizeCheckbox.checked ? scale : 2) * 1.5 ;
+                const vectorLength = Math.min(Math.sqrt(forceMagnitude) / maxMass * 20000, 10) / (showSizeCheckbox.checked ? scale : 2) * 1.5 * vectorLengthValueG;
 
                 ctx.beginPath();
                 ctx.moveTo(x * scale - visibleCenterX * scale + canvasWidth / 2, y * scale - visibleCenterY * scale + canvasHeight / 2);
@@ -1555,6 +1638,8 @@ function drawGravityField() {
 }
 
 function drawMagneticField() {
+    const vectorLengthSliderk = document.getElementById('vectorLengthSliderk');
+    const vectorLengthValuek = parseFloat(vectorLengthSliderk.value);
     const showMagneticField = document.getElementById('showMagneticField').checked;
 
     if (!showMagneticField) return;
@@ -1603,7 +1688,7 @@ function drawMagneticField() {
             const forceMagnitude = Math.sqrt(fx * fx + fy * fy);
 
             if (forceMagnitude !== 0) {
-                const vectorLength = Math.min(Math.sqrt(forceMagnitude / maxCharge) * 2000, 10) / (showSizeCheckbox.checked ? scale : 2) ;
+                const vectorLength = Math.min(Math.sqrt(forceMagnitude / maxCharge) * 2000, 10) / (showSizeCheckbox.checked ? scale : 2) * vectorLengthValuek;
 				
                 ctx.beginPath();
                 ctx.moveTo(x * scale - visibleCenterX * scale + canvasWidth / 2, y * scale - visibleCenterY * scale + canvasHeight / 2);
@@ -1942,12 +2027,17 @@ function initChart() {
         }
     });
     chartInitialized = true;
+	if (devModenabled && chartInitialized) {
+		console.log('Chart initialized');
+	}
 }
 
 function updateChart(xValue, yValue) {
-    if (chartInitialized) {
-        chart.data.datasets[0].data.push({ x: xValue, y: yValue });
-        chart.update();
+	if (showWindow) {
+		if (chartInitialized) {
+			chart.data.datasets[0].data.push({ x: xValue, y: yValue });
+			chart.update();
+		}
     }
 }
 
@@ -1990,7 +2080,11 @@ function updateGraphWithParameters(objectA, objectB, currentTime) {
     chart.update();
 
     if (xValue !== null && yValue !== null) {
-        updateChart(xValue, yValue, currentTime);
+        updateCounter++;
+		const doconst = Math.min(Math.ceil(cpuUsage ** 2 / 1e4), 7)
+        if (updateCounter % doconst === 0) {
+            updateChart(xValue, yValue, currentTime);
+        }
     }
 }
 
@@ -1998,6 +2092,9 @@ function clearChart() {
     if (chartInitialized) {
         chart.data.datasets[0].data = [];
         chart.update();
+		if (devModenabled) {
+			console.log('Chart cleared');
+		}
     }
 }
 
@@ -2010,4 +2107,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	animate();
 	updatePresetSelect();
 	populateParameterDropdowns();
+	if (devModenabled) {
+		console.log('Starting...');
+	}
 });
