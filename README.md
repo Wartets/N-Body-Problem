@@ -13,15 +13,15 @@ This project simulates the motion of multiple bodies (N-bodies) under the influe
 
 ## Usage
 
-For more information on how to access and use the simulation, please visit the [wiki](https://github.com/Wartets/N-Body-Problem/wiki#n-body-simulation-wiki).
+For more information on how to access and use the simulation, please visit the [wiki](https://github.com/Wartets/N-Body-Problem/wiki#n-body-simulation-wiki "Wiki").
 
 ## Example
 
 Here’s some examples of the simulation in action: (images from v1.1.2)
 
-![exemple1](https://github.com/user-attachments/assets/38d73689-0c6e-4a35-b179-b8fc7167450f)
-![exemple2](https://github.com/user-attachments/assets/38148f72-d339-4707-8f96-4de98b7edf0d)
-![exemple3](https://github.com/user-attachments/assets/27f9cce2-276e-43c7-ad93-7df6f2709d25)
+![exemple1](https://github.com/user-attachments/assets/38d73689-0c6e-4a35-b179-b8fc7167450f "Random preset")
+![exemple2](https://github.com/user-attachments/assets/38148f72-d339-4707-8f96-4de98b7edf0d "Body line with electomagnetic field")
+![exemple3](https://github.com/user-attachments/assets/27f9cce2-276e-43c7-ad93-7df6f2709d25 "Rosace with analysis interface")
 
 ## Compatibility
 
@@ -33,4 +33,4 @@ The simulation has been tested on:
 
 ## Changelog
 
-For detailed updates and improvements, please refer to the [Full Changelog](https://github.com/Wartets/N-Body-Problem/blob/main/Changelog.md).
+For detailed updates and improvements, please refer to the [Full Changelog](https://github.com/Wartets/N-Body-Problem/blob/main/Changelog.md "Full Changelog").
