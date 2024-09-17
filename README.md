@@ -17,9 +17,11 @@ For more information on how to access and use the simulation, please visit the [
 
 ## Example
 
-Here’s an example of the simulation in action: (image from v1.0.0)
+Here’s some examples of the simulation in action: (images from v1.1.2)
 
-![Example](https://github.com/user-attachments/assets/d24260e7-9659-4b81-8771-bceb32ab6217)
+![exemple1](https://github.com/user-attachments/assets/38d73689-0c6e-4a35-b179-b8fc7167450f)
+![exemple2](https://github.com/user-attachments/assets/38148f72-d339-4707-8f96-4de98b7edf0d)
+![exemple3](https://github.com/user-attachments/assets/27f9cce2-276e-43c7-ad93-7df6f2709d25)
 
 ## Compatibility
 
