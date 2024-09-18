@@ -153,7 +153,6 @@ controlsToggle.addEventListener('touchstart', (e) => {
 	const isHidden = !controls.classList.toggle('hidden');
     controlsToggle.innerHTML = isHidden ? '&#x25C0;' : '&#x25B6;';
     document.body.classList.toggle('hidden');
-    window.dispatchEvent(new Event('resize'));
 });
 
 advancedControlsToggle.addEventListener('click', () => {;
@@ -162,7 +161,6 @@ advancedControlsToggle.addEventListener('click', () => {;
 	const isShownControl = !controls.classList.toggle('shownControl');
     advancedControlsToggle.innerHTML = isShownControl ? '&#x25C0;' : '|';
     document.body.classList.toggle('shownControl');
-    window.dispatchEvent(new Event('resize'));
 });
 
 advancedControlsToggle.addEventListener('touchstart', (e) => {
@@ -170,7 +168,7 @@ advancedControlsToggle.addEventListener('touchstart', (e) => {
 	updateButtonImage();
     e.preventDefault(); 
 	const isShownControl = !controls.classList.toggle('shownControl');
-    controlsToggle.innerHTML = isShownControl ? '&#x25C0;' : '|';
+    advancedControlsToggle..innerHTML = isShownControl ? '&#x25C0;' : '|';
     document.body.classList.toggle('shownControl');
     window.dispatchEvent(new Event('resize'));
 });
