@@ -160,7 +160,7 @@ advancedControlsToggle.addEventListener('click', () => {;
 	isPaused = true;
 	updateButtonImage();
 	const isShownControl = !advancedControls.classList.toggle('shownControl');
-	advancedControlsToggle.innerHTML = isShownControl ? '&#x25C0;' : '|';
+	advancedControlsToggle.innerHTML = !isShownControl ? '&#x25C0;' : '|';
 	document.body.classList.toggle('shownControl');
 });
 
@@ -169,7 +169,7 @@ advancedControlsToggle.addEventListener('touchstart', (e) => {
 	updateButtonImage();
 	e.preventDefault();
 	const isShownControl = !advancedControls.classList.toggle('shownControl');
-	advancedControlsToggle.innerHTML = isShownControl ? '&#x25C0;' : '|';
+	advancedControlsToggle.innerHTML = !isShownControl ? '&#x25C0;' : '|';
 	document.body.classList.toggle('shownControl');
 });
 
