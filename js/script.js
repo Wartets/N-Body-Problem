@@ -159,20 +159,18 @@ controlsToggle.addEventListener('touchstart', (e) => {
 advancedControlsToggle.addEventListener('click', () => {;
 	isPaused = true;
 	updateButtonImage();
-	const isShownControl = !controls.classList.toggle('shownControl');
+	const isShownControl = !advancedControls.classList.toggle('shownControl');
 	advancedControlsToggle.innerHTML = isShownControl ? '&#x25C0;' : '|';
 	document.body.classList.toggle('shownControl');
-	window.dispatchEvent(new Event('resize'));
 });
 
 advancedControlsToggle.addEventListener('touchstart', (e) => {
 	isPaused = true;
 	updateButtonImage();
 	e.preventDefault();
-	const isShownControl = !controls.classList.toggle('shownControl');
+	const isShownControl = !advancedControls.classList.toggle('shownControl');
 	advancedControlsToggle.innerHTML = isShownControl ? '&#x25C0;' : '|';
 	document.body.classList.toggle('shownControl');
-	window.dispatchEvent(new Event('resize'));
 });
 
 fullscreenBtn.addEventListener('click', () => {
