@@ -39,7 +39,6 @@ const mouseCoordsDisplay = document.getElementById('mouseCoords');
 const controls = document.getElementById('controls');
 const controlsToggle = document.getElementById('controlsToggle');
 const advancedControls = document.getElementById('advancedControls');
-const advancedControlsToggle = document.getElementById('advancedControlsToggle');
 const constValCheckbox = document.getElementById('ConstVal');
 const customConstantsDiv = document.getElementById('customConstants');
 const GInput = document.getElementById('GValue');
@@ -143,7 +142,8 @@ document.getElementById('autoZoomToggle').addEventListener('change', (e) => {
 
 controlsToggle.addEventListener('click', () => {;
 	const isHidden = !controls.classList.toggle('hidden');
-	controlsToggle.innerHTML = isHidden ? '&#x25C0;' : '&#x25B6;';
+	controlsToggle.src = isHidden ? 'image/U+25C0.svg' : 'image/U+25B6.svg';
+	controlsToggle.alt = isHidden ? 'open controls' : 'close controls';
 	document.body.classList.toggle('hidden');
 	window.dispatchEvent(new Event('resize'));
 });
@@ -151,44 +151,12 @@ controlsToggle.addEventListener('click', () => {;
 controlsToggle.addEventListener('touchstart', (e) => {
 	e.preventDefault();
 	const isHidden = !controls.classList.toggle('hidden');
-	controlsToggle.innerHTML = isHidden ? '&#x25C0;' : '&#x25B6;';
+	controlsToggle.src = isHidden ? 'image/U+25C0.svg' : 'image/U+25B6.svg';
 	document.body.classList.toggle('hidden');
 	window.dispatchEvent(new Event('resize'));
 });
 
-advancedControlsToggle.addEventListener('click', () => {;
-	isPaused = true;
-	updateButtonImage();
-	const isShownControl = !advancedControls.classList.toggle('shownControl');
-	advancedControlsToggle.innerHTML = !isShownControl ? '&#x25C0;' : '|';
-	document.body.classList.toggle('shownControl');
-});
-
-advancedControlsToggle.addEventListener('touchstart', (e) => {
-	isPaused = true;
-	updateButtonImage();
-	e.preventDefault();
-	const isShownControl = !advancedControls.classList.toggle('shownControl');
-	advancedControlsToggle.innerHTML = !isShownControl ? '&#x25C0;' : '|';
-	document.body.classList.toggle('shownControl');
-});
-
 fullscreenBtn.addEventListener('click', () => {
-	if (!document.fullscreenElement) {
-		document.documentElement.requestFullscreen();
-        fullscreenImg.src = "image/full-screen-off-icon.png";
-        fullscreenImg.alt = "Quit Full-screen";
-	} else {
-		if (document.exitFullscreen) {
-			document.exitFullscreen();
-			fullscreenImg.src = "image/full-screen-on-icon.png";
-			fullscreenImg.alt = "Full-screen";
-		}
-	}
-});
-
-fullscreenBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault(); 
 	if (!document.fullscreenElement) {
 		document.documentElement.requestFullscreen();
         fullscreenImg.src = "image/full-screen-off-icon.png";
@@ -698,32 +666,30 @@ function updateControlValues() {
 
 		const colorIndicator = document.getElementById(`color${index}`);
 		colorIndicator.addEventListener('click', () => {
-			if (isPaused) {
-				const colorPicker = document.createElement('input');
-				colorPicker.type = 'color';
-				colorPicker.value = body.color;
-				colorPicker.style.position = 'absolute';
-				colorPicker.style.left = `${colorIndicator.getBoundingClientRect().left}px`;
-				colorPicker.style.top = `${colorIndicator.getBoundingClientRect().top}px`;
-				//document.body.appendChild(colorPicker);
+			const colorPicker = document.createElement('input');
+			colorPicker.type = 'color';
+			colorPicker.value = body.color;
+			colorPicker.style.position = 'absolute';
+			colorPicker.style.left = `${colorIndicator.getBoundingClientRect().left}px`;
+			colorPicker.style.top = `${colorIndicator.getBoundingClientRect().top}px`;
+			//document.body.appendChild(colorPicker);
 
-				colorPicker.addEventListener('input', (event) => {
-					body.color = event.target.value;
-					updateControlValues();
-				});
-				colorPicker.addEventListener('change', () => {
+			colorPicker.addEventListener('input', (event) => {
+				body.color = event.target.value;
+				updateControlValues();
+			});
+			colorPicker.addEventListener('change', () => {
+				document.body.removeChild(colorPicker);
+			});
+
+			document.addEventListener('click', function handler(event) {
+				if (!colorPicker.contains(event.target) && event.target !== colorIndicator) {
 					document.body.removeChild(colorPicker);
-				});
+					document.removeEventListener('click', handler);
+				}
+			}, { once: true });
 
-				document.addEventListener('click', function handler(event) {
-					if (!colorPicker.contains(event.target) && event.target !== colorIndicator) {
-						document.body.removeChild(colorPicker);
-						document.removeEventListener('click', handler);
-					}
-				}, { once: true });
-
-				colorPicker.click();
-			}
+			colorPicker.click();
 		});
 
 		const massInput = document.getElementById(`mass${index + 1}`);
@@ -2108,4 +2074,20 @@ document.addEventListener('DOMContentLoaded', function() {
 	if (devModenabled) {
 		console.log('Starting...');
 	}
+});
+
+const toggleButtons = document.querySelectorAll('.toggle-btn');
+
+toggleButtons.forEach((button, index) => {
+    button.addEventListener('click', function () {
+        const controlGroup = this.parentElement.nextElementSibling;
+        
+        if (controlGroup.classList.contains('collapsed')) {
+            controlGroup.classList.remove('collapsed');
+            this.textContent = '▼';
+        } else {
+            controlGroup.classList.add('collapsed');
+            this.textContent = '▶';
+        }
+    });
 });

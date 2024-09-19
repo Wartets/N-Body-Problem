@@ -26,51 +26,6 @@
 </head>
 
 <body>
-	<div>
-		<div id="advancedControls">
-			<label id="advancedSimulationSettings">Réglages avancés de la simulation :</label>
-			
-			<hr style="width:98%;text-align:center;color:#333">
-
-			<!-- Constantes -->
-			<div>
-				<input type="checkbox" id="ConstVal" name="ConstVal" />
-				<label for="ConstVal" id="ConstValLabel">Valeur des constantes réelles</label>
-
-				<div id="customConstants">
-					<label for="GValue" id="GValueLabel">Constante Gravitationnelle (G) :</label>
-					<input type="number" id="GValue" value="0.1" step="0.1" />
-					<br>
-					<label for="kValue" id="kValueLabel">Constante de Coulomb (k) :</label>
-					<input type="number" id="kValue" value="100" step="0.1" />
-				</div>
-			</div>
-			<br>
-			
-			<div class="slider-container">
-				<label id="vectorLengthLabelG">Longeur des vecteurs du champ gravitationnel :</label>
-				<br>
-				<input type="range" id="vectorLengthSliderG" min="0.01" max="10" value="1" step="0.01" />
-				<span id="vectorLengthValueG">1</span>
-			</div>
-			<br>
-			
-			<div class="slider-container">
-				<label id="vectorLengthLabelk">Longeur des vecteurs du champ électromagnétique :</label>
-				<br>
-				<input type="range" id="vectorLengthSliderk" min="0.01" max="10" value="1" step="0.01" />
-				<span id="vectorLengthValuek">1</span>
-			</div>
-			<br>
-			
-			<div>
-				<input type="checkbox" id="devMod" name="devMod" />
-				<label for="devMod" id="devModLabel">Mode développeur</label>
-			</div>
-		</div>
-		
-		<div id="advancedControlsToggle">|</div>
-	</div>
 
     <canvas id="simulationCanvas"></canvas>	
 
@@ -173,11 +128,11 @@
 			<img id="helpImg" src="image/help-icon.png" alt="Help">
 		</button>
 
-		<div id="controlsToggle">&#x25B6;</div>
+		<button id="controlsToggleBtn">
+			<img id="controlsToggle" src="image/U+25B6.svg" alt="close controls">
+		</button>
 				
 		<div id="controls">
-			
-			<!-- Sélection de langue -->
 			<select id="languageSelect">
 				<option value="fr">Français</option>
 				<option value="en">English</option>
@@ -193,136 +148,191 @@
 				<option value="LabelName">LabelName</option>
 			</select>
 			
-			<label id="simulationSettings">Réglages de simulation :</label>
-
-			<!-- Intervalle de temps -->
-			<div class="control-group">
-				<label for="dt" id="dtLabel">dt (Intervalle de temps) :</label>
-				<input type="number" id="dt" value="0.24" step="0.01">
-			</div>
-
-			<!-- Options physiques -->
-			<div>
-				<input type="checkbox" id="collisionToggle" name="collisionToggle"/>
-				<label for="collisionToggle" id="collisionToggleLabel">Activer les collisions</label>
-			</div>
-			
-			<div>
-				<input type="checkbox" id="mergeToggle" name="mergeToggle"/>
-				<label for="mergeToggle" id="mergeToggleLabel">Activer la fusion d'objet</label>
-			</div>
-
-			<div>
-				<input type="checkbox" id="gravityToggle" name="gravityToggle" checked />
-				<label for="gravityToggle" id="gravityToggleLabel">Activer la gravité</label>
-			</div>
-
-			<div>
-				<input type="checkbox" id="magneticToggle" name="magneticToggle"/>
-				<label for="magneticToggle" id="magneticToggleLabel">Activer la force électromagnétique</label>
-			</div>
-
-			<div>
-				<input type="checkbox" id="frictionToggle" name="frictionToggle"/>
-				<label for="frictionToggle" id="frictionToggleLabel">Activer les frottements</label>
-			</div>
-
-			<!-- Coefficient de frottement -->
-			<div id="frictionCoefficientContainer" style="display: none;">
-				<label for="frictionCoefficient" id="frictionCoefficientLabel">Coefficient de frottement :</label>
-				<input type="number" id="frictionCoefficient" value="0.1" step="0.01">
-			</div>
-
-			<!-- Champs d'affichage -->
-			<div>
-				<input type="checkbox" id="showGravityField" name="showGravityField"/>
-				<label for="showGravityField" id="showGravityFieldLabel">Afficher le champ de gravité</label>
-			</div>
-
-			<div>
-				<input type="checkbox" id="showMagneticField" name="showMagneticField"/>
-				<label for="showMagneticField" id="showMagneticFieldLabel">Afficher le champ électromagnétique</label>
-			</div>
-				
 			<hr style="width:100%;text-align:center;color:#444" id="hr1">
-
-			<!-- Options d'affichage -->
-			<label id="displaySettings">Réglages d'affichages :</label>
 			
-			<div>
-				<input type="checkbox" id="showSize" name="showSize" />
-				<label for="showSize" id="showSizeLabel">Tailles réelles I / constantes O</label>
+			<!-- <label id="simulationSettings">Réglages de simulation :</label> -->
+			<div class="toggle-header">
+				<button class="toggle-btn">▼</button>
+				<label id="simulationSettings">Réglages de simulation</label>
 			</div>
-
-			<!-- Vecteurs et trail -->
-			<div>
-				<input type="checkbox" id="showVelocities" name="showVelocities"/>
-				<label for="showVelocities" id="showVelocitiesLabel">Afficher les vecteurs de vitesse</label>
-			</div>
-
-			<!-- Grille -->
-			<div>
-				<input type="checkbox" id="showGrid" name="showGrid" />
-				<label for="showGrid" id="showGridLabel">Afficher la grille</label>
-			</div>
-
-			<!-- Focus et zoom -->
-			<div class="control-group">
-				<label for="focusSelect" id="focusSelectLabel">Centre de la vue :</label>
-				<select id="focusSelect">
-					<option value="" id="selectViewOption">choose</option>
-				</select>
-				
-				<label for="zooming-tool" id="zoomingToolLabel">Zoom manuel :</label>
-				<div id="zooming-tool" class="btn-group mrgn-bttm-lg">
-					<button type="button" id="zoomOut10" class="btn btn-default">/10</button>
-					<button type="button" id="zoomOut2" class="btn btn-default">/2</button>
-					<button type="button" id="zoomIn2" class="btn btn-default">x2</button>
-					<button type="button" id="zoomIn10" class="btn btn-default">x10</button>
+			
+			<div class="control-group-1">
+				<!-- Intervalle de temps -->
+				<div class="control-group">
+					<label for="dt" id="dtLabel">dt (Intervalle de temps) :</label>
+					<input type="number" id="dt" value="0.24" step="0.01">
 				</div>
-			
+
+				<!-- Options physiques -->
 				<div>
-					<input type="checkbox" id="autoZoomToggle" name="autoZoomToggle" checked/>
-					<label for="autoZoomToggle" id="autoZoomToggleLabel">Zoom automatique</label>
+					<input type="checkbox" id="collisionToggle" name="collisionToggle"/>
+					<label for="collisionToggle" id="collisionToggleLabel">Activer les collisions</label>
+				</div>
+				
+				<div>
+					<input type="checkbox" id="mergeToggle" name="mergeToggle"/>
+					<label for="mergeToggle" id="mergeToggleLabel">Activer la fusion d'objet</label>
+				</div>
+
+				<div>
+					<input type="checkbox" id="gravityToggle" name="gravityToggle" checked />
+					<label for="gravityToggle" id="gravityToggleLabel">Activer la gravité</label>
+				</div>
+
+				<div>
+					<input type="checkbox" id="magneticToggle" name="magneticToggle"/>
+					<label for="magneticToggle" id="magneticToggleLabel">Activer la force électromagnétique</label>
+				</div>
+
+				<div>
+					<input type="checkbox" id="frictionToggle" name="frictionToggle"/>
+					<label for="frictionToggle" id="frictionToggleLabel">Activer les frottements</label>
+				</div>
+
+				<!-- Coefficient de frottement -->
+				<div id="frictionCoefficientContainer" style="display: none;">
+					<label for="frictionCoefficient" id="frictionCoefficientLabel">Coefficient de frottement :</label>
+					<input type="number" id="frictionCoefficient" value="0.1" step="0.01">
+				</div>
+
+				<!-- Champs d'affichage -->
+				<div>
+					<input type="checkbox" id="showGravityField" name="showGravityField"/>
+					<label for="showGravityField" id="showGravityFieldLabel">Afficher le champ de gravité</label>
+				</div>
+
+				<div>
+					<input type="checkbox" id="showMagneticField" name="showMagneticField"/>
+					<label for="showMagneticField" id="showMagneticFieldLabel">Afficher le champ électromagnétique</label>
 				</div>
 			</div>
-			
-			<div>
-				<input type="checkbox" id="activateSound" name="activateSound" />
-				<label for="activateSound" id="activateSoundLabel">Activer le son</label>
-			</div>
+				
+			<hr style="width:100%;text-align:center;color:#444" id="hr1">
 
-			<!-- Slider du trail -->
-			<div class="control-group">
-				<label for="trailLimit" id="trailLimitLabel">Nombre de points du trail (puiss. 10)</label>
-				<div class="slider-container">
-					<input type="range" id="trailLimit" name="trailLimit" min="0" max="10" value="4" step="1" class="slider" />
-					<div id="sliderTooltip" class="tooltip"></div>
+			<div class="toggle-header">
+				<button class="toggle-btn">▼</button>
+				<label id="displaySettings">Réglages d'affichages</label>
+			</div>
+			<div class="control-group-1">
+				<div>
+					<input type="checkbox" id="showSize" name="showSize" />
+					<label for="showSize" id="showSizeLabel">Tailles réelles I / constantes O</label>
 				</div>
-			</div>
 
-			<!-- Presets -->
-			<div class="control-group">
-				<label for="presetSelect" id="presetSelectLabel">Charger un preset :</label>
-				<select id="presetSelect"></select>
-				<button id="loadPresetBtn" class="rounded">Charger le preset</button>
-				<button id="savePresetBtn" class="rounded">Sauvegarder le preset</button>
-				<input type="text" id="presetName" placeholder="Nom du preset (vide pour nom par défaut)" class="rounded">
+				<div>
+					<input type="checkbox" id="showVelocities" name="showVelocities"/>
+					<label for="showVelocities" id="showVelocitiesLabel">Afficher les vecteurs de vitesse</label>
+				</div>
+
+				<div>
+					<input type="checkbox" id="showGrid" name="showGrid" />
+					<label for="showGrid" id="showGridLabel">Afficher la grille</label>
+				</div>
+
+				<div class="control-group">
+					<label for="focusSelect" id="focusSelectLabel">Centre de la vue :</label>
+					<select id="focusSelect">
+						<option value="" id="selectViewOption">choose</option>
+					</select>
+					
+					<label for="zooming-tool" id="zoomingToolLabel">Zoom manuel :</label>
+					<div id="zooming-tool" class="btn-group mrgn-bttm-lg">
+						<button type="button" id="zoomOut10" class="btn btn-default">/10</button>
+						<button type="button" id="zoomOut2" class="btn btn-default">/2</button>
+						<button type="button" id="zoomIn2" class="btn btn-default">x2</button>
+						<button type="button" id="zoomIn10" class="btn btn-default">x10</button>
+					</div>
+				
+					<div>
+						<input type="checkbox" id="autoZoomToggle" name="autoZoomToggle" checked/>
+						<label for="autoZoomToggle" id="autoZoomToggleLabel">Zoom automatique</label>
+					</div>
+				</div>
+				
+				<div>
+					<input type="checkbox" id="activateSound" name="activateSound" />
+					<label for="activateSound" id="activateSoundLabel">Activer le son</label>
+				</div>
+
+				<!-- Slider du trail -->
+				<div class="control-group">
+					<label for="trailLimit" id="trailLimitLabel">Nombre de points du trail (puiss. 10)</label>
+					<div class="slider-container">
+						<input type="range" id="trailLimit" name="trailLimit" min="0" max="10" value="4" step="1" class="slider" />
+						<div id="sliderTooltip" class="tooltip"></div>
+					</div>
+				</div>
 			</div>
 
 			<hr style="width:100%;text-align:center;color:#444" id="hr1">
 
-			<!-- Contrôles des objets -->
-			<label id="objectSettings">Réglages des objets :</label>
-			
-			<div id="object-controls">
-				<!-- Controls for each object will be generated dynamically -->
+			<div class="toggle-header">
+				<button class="toggle-btn">▼</button>
+				<label id="objectSettings">Réglages des objets</label>
+			</div>
+			<div class="control-group-1">
+
+				<div class="control-group">
+					<label for="presetSelect" id="presetSelectLabel">Charger un preset :</label>
+					<select id="presetSelect"></select>
+					<button id="loadPresetBtn" class="rounded">Charger le preset</button>
+					<button id="savePresetBtn" class="rounded">Sauvegarder le preset</button>
+					<input type="text" id="presetName" placeholder="Nom du preset (vide pour nom par défaut)" class="rounded">
+				</div>
+				
+				<div id="object-controls">
+					<!-- Controls for each object will be generated dynamically -->
+				</div>
+
+				<button id="addBodyBtn" class="rounded" style="cursor:copy">Ajouter un objet</button>
 			</div>
 
-			<!-- Ajouter un objet -->
-			<button id="addBodyBtn" class="rounded" style="cursor:copy">Ajouter un objet</button>
+			<hr style="width:100%;text-align:center;color:#444" id="hr1">
+			
+			<div class="toggle-header">
+				<button class="toggle-btn">▶</button>
+				<label id="advancedSimulationSettings">Réglages avancés</label>
+			</div>
+			<div class="control-group-1 collapsed">
+				
+				<div class="control-group">
+					<div>
+						<input type="checkbox" id="ConstVal" name="ConstVal" />
+						<label for="ConstVal" id="ConstValLabel">Valeur des constantes réelles</label>
+					</div>
 
-			<hr style="width:0%;color:#2c2c2c">
+					<div id="customConstants">
+						<label for="GValue" id="GValueLabel">Constante Gravitationnelle (G) :</label>
+						<input type="number" id="GValue" value="0.1" step="0.1" style="margin-left:25px"/>
+						<br>
+						<label for="kValue" id="kValueLabel">Constante de Coulomb (k) :</label>
+						<input type="number" id="kValue" value="100" step="0.1" style="margin-left:25px"/>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label id="vectorLengthLabelG">Longueur des vecteurs du champ gravitationnel :</label>
+					<div class="slider-container">
+						<input type="range" id="vectorLengthSliderG" min="0.01" max="10" value="1" step="0.01" />
+						<span id="vectorLengthValueG">1</span>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label id="vectorLengthLabelk">Longueur des vecteurs du champ électromagnétique :</label>
+					<div class="slider-container">
+						<input type="range" id="vectorLengthSliderk" min="0.01" max="10" value="1" step="0.01" />
+						<span id="vectorLengthValuek">1</span>
+					</div>
+				</div>
+				
+				<div>
+					<input type="checkbox" id="devMod" name="devMod" />
+					<label for="devMod" id="devModLabel">Mode développeur</label>
+				</div>
+			</div>
+
+			<hr style="width:100%;text-align:center;color:#444" id="hr1">
 		</div>
 
 	</div>
