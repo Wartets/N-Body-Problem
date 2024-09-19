@@ -63,6 +63,7 @@ const vectorLengthSliderG = document.getElementById('vectorLengthSliderG');
 const vectorLengthDisplayG = document.getElementById('vectorLengthValueG');
 const vectorLengthSliderk = document.getElementById('vectorLengthSliderk');
 const vectorLengthDisplayk = document.getElementById('vectorLengthValuek');
+const toggleButtons = document.querySelectorAll('.toggle-btn');
 const bodies = initialBodies.map(body => ({
 	...body,
 	acceleration: { x: 0, y: 0 },
@@ -70,6 +71,7 @@ const bodies = initialBodies.map(body => ({
 	show: true,
 	points: []
 }));
+
 
 canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
@@ -94,6 +96,20 @@ frictionToggle.addEventListener('change', () => {
 });
 
 constValCheckbox.addEventListener('change', updateConstants);
+
+toggleButtons.forEach((button, index) => {
+    button.addEventListener('click', function () {
+        const controlGroup = this.parentElement.nextElementSibling;
+        
+        if (controlGroup.classList.contains('collapsed')) {
+            controlGroup.classList.remove('collapsed');
+            this.textContent = '▼';
+        } else {
+            controlGroup.classList.add('collapsed');
+            this.textContent = '▶';
+        }
+    });
+});
 
 GInput.addEventListener('input', updateConstants);
 kInput.addEventListener('input', updateConstants);
@@ -2074,20 +2090,4 @@ document.addEventListener('DOMContentLoaded', function() {
 	if (devModenabled) {
 		console.log('Starting...');
 	}
-});
-
-const toggleButtons = document.querySelectorAll('.toggle-btn');
-
-toggleButtons.forEach((button, index) => {
-    button.addEventListener('click', function () {
-        const controlGroup = this.parentElement.nextElementSibling;
-        
-        if (controlGroup.classList.contains('collapsed')) {
-            controlGroup.classList.remove('collapsed');
-            this.textContent = '▼';
-        } else {
-            controlGroup.classList.add('collapsed');
-            this.textContent = '▶';
-        }
-    });
 });
