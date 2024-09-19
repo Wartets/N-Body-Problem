@@ -89,3 +89,38 @@
   - v1.3 Spanish translation (thanks to Arthur Loubeau)
   - v1.1 Italian translation (thanks to Christian Abou)
   - v1.1 Latin translation
+
+## v1.2.0 - 19/09/2024
+
+### Added
+
+- Added a more comprehensive information-menu for analysis and comparison on two simulation objects: #18 #19 
+- Advanced settings category added:
+  - Added developer mode for console information
+  - Added controls for modifying the size of gravitational and electromagnetic field vectors
+  - Constants can now be modified
+- Auto zoom can now be enabled or disabled
+- Sound can be activated or deactivated
+- Several barycenters are available to center the view (geometric, mass, charge, and surface)
+- Everything that can be done on a computer can now be done on a touch phone
+- Added a mode to merge objects when they touch each other, if the mode is enabled
+- Adding a merging sound
+- It is possible to view the canvas grid and the X and Y axes
+- Added metadata to the page
+- Added information on fps and calculation saturation
+- Added new presets
+
+### Changed
+
+- UI changes, settings categorized
+- Big clean-up and code reorganization
+- Fixed issue #23 
+- Updated translations to add field parameters :
+  - v1.4 English translation
+  - v1.4 French translation
+  - v1.4 German translation
+  - v1.4 Spanish translation
+  - v1.2 Italian translation
+- Correction of friction calculation, to be able to play with lower values
+- It is now impossible to input values without physical meaning (mass and radius strictly positive)
+- The buttons on the canvas have been replaced by images
