@@ -4,7 +4,7 @@
 
 This project simulates the motion of multiple bodies (N-bodies) under the influence of gravitational forces, electromagnetic forces, fluid friction, and collision physics. It is implemented as an HTML5 web application, using CSS for styling and JavaScript for the simulation logic.
 
-## Features
+## Main Features
 
 - **Dynamic Object Addition**: You can add an unlimited number of objects, constrained only by your computer's processing power.
 - **Field visualization**: You can observe the force fields applied to the simulation, changing according to the objects.
@@ -26,10 +26,10 @@ Here’s some examples of the simulation in action: (images from v1.1.2)
 ## Compatibility
 
 The simulation has been tested on:
-- **Firefox**: Version 129.0.2 (64-bit) (very good)
+- **Firefox**: Version 130.0.1 (64-bit) (very good)
 - **Chromium**: Version 122.0.6250.0 (Dev Build, 64-bit) (very good)
-- **Safari**: iOS 16.4.1 (20E252) (okay, could be better: unworking pinch-to-zoom controls and impractical object size)
-- **Firefox Beta**: Version 130.0 44595 (Dev Build on iOS 16.4.1) (well, could be better: impractical object size)
+- **Safari**: iOS 16.4.1 (20E252) (okay)
+- **Firefox Beta**: Version 131.0 45403 (Dev Build on iOS 16.4.1) (well)
 
 ## Changelog
 
