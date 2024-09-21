@@ -82,11 +82,24 @@ body {
 }
 
 .color-indicator {
-	width: 10px;
-	height: 10px;
-	border-radius: 50%;
+	opacity: 1;
+	padding: 8px;
 	display: inline-block;
-	margin-right: 5px;
+    object-fit: contain;
+	border-radius: 50%;
+	cursor: pointer;
+	margin: 5px;
+    transition: opacity 0.2s ease;
+}
+
+.color-indicator:hover {
+	opacity: 0.45;
+    transition: opacity 0.2s ease;
+}
+
+.hoverOpct:hover {
+	opacity: 0.45;
+    transition: opacity 0.2s ease;
 }
 
 #dt,
@@ -148,7 +161,7 @@ button:hover {
 .checkbox-group {
 	display: flex;
 	align-items: center;
-	gap: 5%;
+	margin-top: 0px;
 }
 
 .checkbox-group input {
@@ -355,7 +368,8 @@ button:hover {
 .hidden #timer,
 .hidden #fpsDisplay,
 .hidden #UsageDisplay,
-.hidden #mouseCoords {
+.hidden #mouseCoords,
+.hidden #barycenterCoords {
     transition: opacity 0.3s ease;
 	opacity: 0.3;
 }
@@ -363,7 +377,8 @@ button:hover {
 #timer,
 #fpsDisplay,
 #UsageDisplay,
-#mouseCoords {
+#mouseCoords,
+#barycenterCoords {
 	font-family: 'Lexend Deca', sans-serif;
 	left: 18px;
 	-webkit-text-stroke: .5px gray;

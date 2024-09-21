@@ -1,31 +1,31 @@
 let isPaused = true;
-let collisionsEnabled = document.getElementById('collisionToggle').checked;
-let soundEnabled = document.getElementById('activateSound').checked;
-let mergingEnabled = document.getElementById('mergeToggle').checked;
-let focusObject = 'barycenter-mass';
-let selectedBody = null;
 let isDragging = false;
+let isPlaying = false;
+let chartInitialized = false;
+let showWindow = false;
+let selectedBody = null;
+let hoveredBody = null;
 let initialPinchDistance = null;
 let lastPinchZoom = null;
 let manualMoveTimeout = null;
+let collisionsEnabled = document.getElementById('collisionToggle').checked;
+let mergingEnabled = document.getElementById('mergeToggle').checked;
+let doZoom = document.getElementById('autoZoomToggle').checked;;
+let soundEnabled = document.getElementById('activateSound').checked;
+let devModenabled = document.getElementById('devMod').checked;
+let focusObject = 'barycenter-mass';
+let chart;
+let G, k;
 let scale = 1;
 let scrollZoom = 1;
-let G, k;
 let timeElapsed = 0;
 let lastTime = 0;
-let isPlaying = false;
 let lastImpactTime = 0;
 let lastMergeTime = 0;
 let fps = 0;
 let frameCount = 0;
 let fpsTime = 0;
-let doZoom = document.getElementById('autoZoomToggle').checked;;
-let showWindow = false;
-let hoveredBody = null;
-let chart;
-let chartInitialized = false;
 let updateCounter = 0;
-let devModenabled = false
 
 const canvas = document.getElementById('simulationCanvas');
 const ctx = canvas.getContext('2d');
@@ -93,6 +93,9 @@ frictionToggle.addEventListener('change', () => {
 	} else {
 		frictionCoefficientContainer.style.display = 'none';
 	}
+	if (devModenabled) {
+		console.log('friction activated:', frictionToggle.checked);
+	}
 });
 
 constValCheckbox.addEventListener('change', updateConstants);
@@ -128,6 +131,9 @@ helpBtn.addEventListener('click', () => {
 	isPaused = true
 	updateButtonImage();
 	modal.style.display = 'block';
+	if (devModenabled) {
+		console.log('helpBtn pressed');
+	}
 });
 
 helpBtn.addEventListener('touchstart', (e) => {
@@ -154,6 +160,9 @@ window.addEventListener('click', (event) => {
 
 document.getElementById('autoZoomToggle').addEventListener('change', (e) => {
 	doZoom = e.target.checked;
+	if (devModenabled) {
+		console.log('auto-zoom:', doZoom);
+	}
 });
 
 controlsToggle.addEventListener('click', () => {;
@@ -228,18 +237,13 @@ window.addEventListener('resize', () => {
 });
 
 document.addEventListener('keydown', (event) => {
+	document.activeElement.blur();
 	switch (event.key) {
 		case ' ':
 			Pause();
 			break;
 		case 'r':
 			resetView();
-			break;
-		case '+':
-			scale *= 1;
-			break;
-		case '-':
-			scale /= 1;
 			break;
 		case 'c':
 			collisionsEnabled = !collisionsEnabled;
@@ -281,11 +285,17 @@ document.addEventListener('keydown', (event) => {
 objectASelect.addEventListener('change', (e) => {
 	objectASelect = e.target.value;
 	clearChart();
+	if (devModenabled) {
+		console.log('A object selectionned', objectASelect);
+	}
 });
 
 objectBSelect.addEventListener('change', (e) => {
 	objectBSelect = e.target.value;
 	clearChart();
+	if (devModenabled) {
+		console.log('B object selectionned', objectBSelect);
+	}
 });
 
 dragElement(document.getElementById('infoWindow'));
@@ -296,10 +306,12 @@ document.getElementById('infoWindowBtn').addEventListener('click', function() {
     showWindow = !showWindow;
     if (showWindow) {
         document.getElementById('infoWindow').style.display = 'block';
-		initChart();
     } else {
         document.getElementById('infoWindow').style.display = 'none';
     }
+	if (devModenabled) {
+		console.log('infoWindow showed:', showWindow);
+	}
 });
 
 document.getElementById('closeInfoWindowBtn').addEventListener('click', function() {
@@ -355,6 +367,9 @@ document.getElementById('addBodyBtn').addEventListener('click', () => {
 		updateControlValues();
 		updateWellControlValues();
 		translate();
+		if (devModenabled) {
+			console.log('Body added');
+		}
 	} else {
 		alert(`ERROR: no space for an object with a radius of ${rdradius} m`)
 	}
@@ -369,13 +384,16 @@ document.getElementById('addWellBtn').addEventListener('click', () => {
 			mass: 500 + Math.random() * 1000,
 			charge: Math.round((Math.random() * 3 - 1.5) * 10) / 10,
 			position: rdposition,
-			color: '#' + Math.floor(Math.random() * 16777215).toString(16),
+			color: rgbToHex(Math.round(Math.random() * 170 + 85), Math.round(Math.random() * 100 + 155), Math.round(Math.random() * 150 + 105)),
 			show: true,
 		};
 		wells.push(newWell);
 		updateControlValues();
 		updateWellControlValues();
 		translate();
+		if (devModenabled) {
+			console.log('Well added');
+		}
 	} else {
 		alert(`ERROR: no space for a Well with a radius of ${rdradius} m`)
 	}
@@ -427,6 +445,9 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 		updateWellControlValues();
 		resetView();
 		startTimer();
+		if (devModenabled) {
+			console.log('Preset loaded:', selectedPresetName);
+		}
 	}
 });
 
@@ -452,6 +473,9 @@ document.getElementById('savePresetBtn').addEventListener('click', () => {
 
 	updatePresetSelect();
 	presetNameInput.value = '';
+	if (devModenabled) {
+		console.log('Preset saved:', presetName);
+	}
 });
 
 document.getElementById('collisionToggle').addEventListener('change', (e) => {
@@ -460,6 +484,9 @@ document.getElementById('collisionToggle').addEventListener('change', (e) => {
 		mergingEnabled = false;
 		document.getElementById('mergeToggle').checked = mergingEnabled;
 		}
+	if (devModenabled) {
+		console.log('collision enabled:', collisionsEnabled);
+	}
 });
 
 document.getElementById('devMod').addEventListener('change', (e) => {
@@ -479,6 +506,9 @@ document.getElementById('mergeToggle').addEventListener('change', (e) => {
 		collisionsEnabled = false;
 		document.getElementById('collisionToggle').checked = collisionsEnabled;
 		}
+	if (devModenabled) {
+		console.log('merging enabled:', mergingEnabled);
+	}
 });
 
 document.getElementById('paramXSelect').addEventListener('change', clearChart);
@@ -503,6 +533,13 @@ function getRadius(mean, stdDev, min) {
 	let const1 = gaussianRandom(mean, stdDev);
 	let const2 = const1 < min ? stdDev : const1;
 	return const2;
+}
+
+const barycenterDisplay = document.getElementById('barycenterCoords');
+
+function updateBarycenterCoord() {
+    const barycenter = calculateBarycenter();
+    barycenterDisplay.textContent = `Barycenter Coord : (${barycenter.x.toFixed(2)}; ${barycenter.y.toFixed(2)})`;
 }
 
 function updateCoord() {
@@ -643,9 +680,9 @@ function updateControlValues() {
                 <input type="checkbox" id="show${index + 1}" ${body.show ? 'checked' : ''}>
                 
                 <label for="info${index + 1}">
-                    <span class="color-indicator" id="color${index}" style="background-color: ${body.color}; cursor: pointer;"></span>
-                    <input type="text" id="name${index}" value="${body.name || `Object ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 90%;">
-                    <img src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Delete" style="filter: brightness(4); cursor:pointer;">
+                    <span class="color-indicator" id="color${index}" style="background-color: ${body.color}"></span>
+                    <input type="text" id="name${index}" value="${body.name || `Object ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 80%;">
+                    <img class="hoverOpct" src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Delete" style="filter: brightness(4); cursor:pointer; margin: 5px">
                 </label>
             </div>
             
@@ -711,11 +748,15 @@ function updateControlValues() {
                 <button onclick="adjustValue('vy${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('vy${index + 1}', 10)">x10</button>
             </div>
-            
-            <hr style="width:100%;text-align:center;color:#444">
-            
-            <br>
         `;
+		
+		if (index < bodies.length - 1) {
+			group.innerHTML += `
+			<br>
+            <hr style="width:100%;text-align:center;color:#444">
+			`;
+		}
+		
 		controlsContainer.appendChild(group);
 
 		document.getElementById(`show${index + 1}`).addEventListener('change', (e) => {
@@ -845,9 +886,9 @@ function updateWellControlValues() {
                 <input type="checkbox" id="showWell${index + 1}" ${well.show ? 'checked' : ''}>
                 
                 <label for="info${index + 1}">
-                    <span class="color-indicator" id="colorWell${index}" style="background-color: ${well.color}; cursor: pointer;"></span>
-                    <input type="text" id="nameWell${index}" value="${well.name || `Well ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 90%;">
-                    <img src="image/trash-icon.png" id="trashWell${index}" class="trash-icon" alt="Delete" style="filter: brightness(4); cursor:pointer;">
+                    <span class="color-indicator" id="colorWell${index}" style="background-color: ${well.color}"></span>
+                    <input type="text" id="nameWell${index}" value="${well.name || `Well ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 80%;">
+                    <img class="hoverOpct"  src="image/trash-icon.png" id="trashWell${index}" class="trash-icon" alt="Delete" style="filter: brightness(4); cursor:pointer; margin: 5px">
                 </label>
             </div>
             
@@ -886,11 +927,15 @@ function updateWellControlValues() {
                 <button onclick="adjustValue('yWell${index + 1}', 2)">x2</button>
                 <button onclick="adjustValue('yWell${index + 1}', 10)">x10</button>
             </div>
-            
-            <hr style="width:100%;text-align:center;color:#444">
-            
-            <br>
         `;
+		
+		if (index < wells.length - 1) {
+			group.innerHTML += `
+			<br>
+            <hr style="width:100%;text-align:center;color:#444">
+			`;
+		}
+		
 		wellControlsContainer.appendChild(group);
 
 		document.getElementById(`showWell${index + 1}`).addEventListener('change', (e) => {
@@ -1587,6 +1632,8 @@ function animate(currentTime) {
     const startTime = performance.now();
 
     displayFPS(currentTime);
+	
+	updateBarycenterCoord();
 
 	const objectA = bodies[parseInt(objectASelect)];
 	const objectB = bodies[parseInt(objectBSelect)];
@@ -2276,15 +2323,6 @@ function populateParameterDropdowns() {
     addOptionsToSelect(paramYSelect, 'Object B Parameters', params.objectB, 'Y');
 }
 
-function stopChart() {
-	const ctx = document.getElementById('parameterChart');
-    chart = new Chart(ctx, {});
-    chartInitialized = false;
-	if (devModenabled && !chartInitialized) {
-		console.log('Chart stopped');
-	}
-};
-
 function initChart() {
     const ctx = document.getElementById('parameterChart');
     chart = new Chart(ctx, {
@@ -2402,19 +2440,26 @@ function clearChart() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-	if (devModenabled) {
-		console.log('Starting...');
-	}
+/* Démarrage de la simulation avec l'appel des fonctions */
+
+function initiate() {
 	startTimer();
 	updateConstants();
 	simulate();
 	updateControlValues();
 	updateWellControlValues();
 	animate();
+	initChart();
 	updatePresetSelect();
 	populateParameterDropdowns();
 	translate();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+	if (devModenabled) {
+		console.log('Starting...');
+	}
+	initiate();
 	if (devModenabled) {
 		console.log('Start succes!');
 	}

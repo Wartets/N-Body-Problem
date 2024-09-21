@@ -4,6 +4,10 @@ function translate() {
     function applyTranslations(language) {
         const trans = translations[language];
 		
+		if (devModenabled) {
+			console.log('Translations:', language);
+		}
+		
 		timerLng = trans.timeLabel;
 		
         document.getElementById('dtLabel').textContent = trans.dt;
@@ -1195,10 +1199,4 @@ const translations = {
 		"relativeSpeedRadialchoiceEntree": "relativeSpeedRadialchoiceEntree",
 		"relativeAccelerationRadialchoiceEntree": "relativeAccelerationRadialchoiceEntree",
 	},
-}
-
-function applyTranslations() {
-	if (devModenabled) {
-		console.log('Translations:', translations);
-	}
 }
