@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+function translate() {
     const languageSelect = document.getElementById('languageSelect');
 
     function applyTranslations(language) {
@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('displaySettings').textContent = trans.displaySettingsValue;
         document.getElementById('objectSettings').textContent = trans.objectSettingsValue;
         document.getElementById('advancedSimulationSettings').textContent = trans.advancedSimulationSettingsValue;
+        document.getElementById('byObjectSettings').textContent = trans.byObjectSettingsValue;
+        document.getElementById('byWellSettings').textContent = trans.byWellSettingsValue;
+		
         document.getElementById('ConstValLabel').textContent = trans.adaptiveValue;
         document.getElementById('mergeToggleLabel').textContent = trans.enableMerging;
         document.getElementById('collisionToggleLabel').textContent = trans.enableCollisions;
@@ -66,6 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			document.getElementById(`PosYEntree${i + 1}`).textContent = trans.PosYValue;
 			document.getElementById(`SpeedXEntree${i + 1}`).textContent = trans.SpeedXValue;
 			document.getElementById(`SpeedYEntree${i + 1}`).textContent = trans.SpeedYValue;
+		}
+		
+		for (let i = 0; i < wells.length; i++) {
+			document.getElementById(`MassEntreeWell${i + 1}`).textContent = trans.MassValue;
+			document.getElementById(`ChargeEntreeWell${i + 1}`).textContent = trans.ChargeValue;
+			document.getElementById(`PosXEntreeWell${i + 1}`).textContent = trans.PosXValue;
+			document.getElementById(`PosYEntreeWell${i + 1}`).textContent = trans.PosYValue;
 		}
 		
         document.getElementById('objectASelectLabel').textContent = trans.objectASelectEntree;
@@ -143,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     applyTranslations(languageSelect.value || 'en');
-});
+}
 
 const translations = {
     "fr": {
@@ -157,6 +167,8 @@ const translations = {
 		"displaySettingsValue": "Réglages d'affichages",
 		"objectSettingsValue": "Réglages des objets",
 		"advancedSimulationSettingsValue": "Réglages avancés",
+		"byObjectSettingsValue": "Objets",
+		"byWellSettingsValue": "Puits",
         "adaptiveSize": "Tailles réelles I / constantes O",
 		"adaptiveValue": "Valeurs des constantes réelles",
         "enableCollisions": "Activer les collisions",
@@ -245,6 +257,8 @@ const translations = {
 		"displaySettingsValue": "Display settings",
 		"objectSettingsValue": "Object settings",
 		"advancedSimulationSettingsValue": "Advanced settings",
+		"byObjectSettingsValue": "Objects",
+		"byWellSettingsValue": "Wells",
         "adaptiveSize": "Actual sizes I / constant O",
 		"adaptiveValue": "Actual const. I / normalized O",
         "enableCollisions": "Enable Collisions",
@@ -330,6 +344,8 @@ const translations = {
 		"displaySettingsValue": "Ajustes de visualización",
 		"objectSettingsValue": "Ajustes del objeto",
 		"advancedSimulationSettingsValue": "Configuración avanzada",
+		"byObjectSettingsValue": "Objetos",
+		"byWellSettingsValue": "Pozos",
         "adaptiveSize": "Tamaños reales I / constante",
 		"adaptiveValue": "Const. reales I / normalizadas O",
 		"enableMerging": "Activar la fusión de objetos",
@@ -415,6 +431,8 @@ const translations = {
 		"displaySettingsValue": "Einstellungen für die Anzeige",
 		"objectSettingsValue": "Einstellungen für Objekte",
 		"advancedSimulationSettingsValue": "Erweiterte Einstellungen",
+		"byObjectSettingsValue": "Gegenstände",
+		"byWellSettingsValue": "Brunnen",
         "adaptiveSize": "Reale Größen I / Konstante Größen O",
 		"adaptiveValue": "Konstanten real I / normalisiert O",
         "enableCollisions": "Kollisionen aktivieren",
@@ -500,6 +518,8 @@ const translations = {
 		"displaySettingsValue": "Impostazioni di visualizzazione",
 		"objectSettingsValue": "Impostazioni oggetto",
 		"advancedSimulationSettingsValue": "Impostazioni avanzate",
+		"byObjectSettingsValue": "Oggetti",
+		"byWellSettingsValue": "Pozzi",
 		"adaptiveSize": "Dimensioni reali I / costante O",
 		"adaptiveValue": "Costanti reali I / normalizzate O",
 		"enableCollisions": "Attiva collisioni",
@@ -584,6 +604,8 @@ const translations = {
 		"displaySettingsValue": "Regulae Expositionis",
 		"objectSettingsValue": "Regulae Obiectorum",
 		"advancedSimulationSettingsValue": "",
+		"byObjectSettingsValue": "",
+		"byWellSettingsValue": "",
 		"adaptiveSize": "Magnitudines Reales I / Constantes Ø",
 		"adaptiveValue": "Constantes Reales I / Normalizatae Ø",
 		"enableCollisions": "Permitte collisiones",
@@ -668,6 +690,8 @@ const translations = {
 		"displaySettingsValue": "Regrés d'afeichage",
 		"objectSettingsValue": "Regrés des objets",
 		"advancedSimulationSettingsValue": "",
+		"byObjectSettingsValue": "",
+		"byWellSettingsValue": "",
 		"adaptiveSize": "Tailles réelles I / constans O",
 		"adaptiveValue": "Constans réelles I / normalisées O",
 		"enableCollisions": "Activer les collisiouns",
@@ -752,6 +776,8 @@ const translations = {
 		"displaySettingsValue": "Réglages de l'voyance à bord",
 		"objectSettingsValue": "Réglages des babioles à l'abordage",
 		"advancedSimulationSettingsValue": "",
+		"byObjectSettingsValue": "",
+		"byWellSettingsValue": "",
 		"adaptiveSize": "Grands formats I / constantes O",
 		"adaptiveValue": "Constantes d'vraie vie I / normalisées O",
 		"enableCollisions": "Activer les abordages",
@@ -836,6 +862,8 @@ const translations = {
 		"displaySettingsValue": "Settings of the Display",
 		"objectSettingsValue": "Settings of the Objects",
 		"advancedSimulationSettingsValue": "",
+		"byObjectSettingsValue": "",
+		"byWellSettingsValue": "",
 		"adaptiveSize": "True Sizes I / Constants O",
 		"adaptiveValue": "True Constants I / Normalised O",
 		"enableCollisions": "Engage the Collisions True",
@@ -920,6 +948,8 @@ const translations = {
 		"displaySettingsValue": "Obj-tata réglatata",
 		"objectSettingsValue": "Disp-tata réglatata",
 		"advancedSimulationSettingsValue": "",
+		"byObjectSettingsValue": "",
+		"byWellSettingsValue": "",
 		"adaptiveSize": "Biggy I / Const-tata O",
 		"adaptiveValue": "Consta-tata I / Norm-tata O",
 		"enableCollisions": "Banana collisions ON!",
@@ -1004,6 +1034,8 @@ const translations = {
 		"displaySettingsValue": "",
 		"objectSettingsValue": "",
 		"advancedSimulationSettingsValue": "",
+		"byObjectSettingsValue": "",
+		"byWellSettingsValue": "",
 		"adaptiveSize": "",
 		"adaptiveValue": "",
 		"enableCollisions": "",
@@ -1088,6 +1120,8 @@ const translations = {
 		"displaySettingsValue": "displaySettingsValue",
 		"objectSettingsValue": "objectSettingsValue",
 		"advancedSimulationSettingsValue": "advancedSimulationSettingsValue",
+		"byObjectSettingsValue": "byObjectSettingsValue",
+		"byWellSettingsValue": "byWellSettingsValue",
 		"adaptiveSize": "adaptiveSize",
 		"adaptiveValue": "adaptiveValue",
 		"enableCollisions": "enableCollisions",

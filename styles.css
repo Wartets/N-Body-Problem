@@ -71,6 +71,12 @@ body {
 	gap: 18px;
 }
 
+.control-group-2 {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
 #hr1 {
 	font-size: 1px;
 }
@@ -483,8 +489,15 @@ li, ul {
     align-items: center;
 	background-color: #444;
     border-radius: 7.5px;
-    border-radius: 7.5px;
 	border: 1px solid #555;
+}
+
+.toggle-header-small {
+    display: flex;
+    align-items: center;
+	width: 80%;
+	background-color: #222;
+    border-radius: 7.5px;
 }
 
 .toggle-btn {
@@ -500,7 +513,9 @@ li, ul {
 #displaySettings,
 #simulationSettings,
 #objectSettings,
-#advancedSimulationSettings {
+#advancedSimulationSettings,
+#byObjectSettings,
+#byWellSettings {
     padding-left: 10px;
 	font-style : italic;
 }

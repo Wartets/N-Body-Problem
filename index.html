@@ -258,7 +258,7 @@
 				<div class="control-group">
 					<label for="trailLimit" id="trailLimitLabel">Nombre de points du trail (puiss. 10)</label>
 					<div class="slider-container">
-						<input type="range" id="trailLimit" name="trailLimit" min="0" max="10" value="4" step="1" class="slider" />
+						<input type="range" id="trailLimit" name="trailLimit" min="0" max="5" value="3" step="0.5" class="slider" />
 						<div id="sliderTooltip" class="tooltip"></div>
 					</div>
 				</div>
@@ -280,11 +280,31 @@
 					<input type="text" id="presetName" placeholder="Nom du preset (vide pour nom par défaut)" class="rounded">
 				</div>
 				
-				<div id="object-controls">
-					<!-- Controls for each object will be generated dynamically -->
+				<div class="toggle-header-small">
+					<button class="toggle-btn">▼</button>
+					<label id="byObjectSettings">Objets</label>
 				</div>
 
-				<button id="addBodyBtn" class="rounded" style="cursor:copy">Ajouter un objet</button>
+				<div class="control-group-1">
+					<div id="object-controls">
+						<!-- Controls for each object will be generated dynamically -->
+					</div>
+
+					<button id="addBodyBtn" class="rounded" style="cursor:copy">Ajouter un objet</button>
+				</div>
+				
+				<div class="toggle-header-small">
+					<button class="toggle-btn">▶</button>
+					<label id="byWellSettings">Puits</label>
+				</div>
+
+				<div class="control-group-1 collapsed">
+					<div id="well-controls">
+						<!-- Controls for each wells will be generated dynamically -->
+					</div>
+					
+					<button id="addWellBtn" class="rounded" style="cursor:copy">Ajouter un puits</button>
+				</div>
 			</div>
 
 			<hr style="width:100%;text-align:center;color:#444" id="hr1">

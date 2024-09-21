@@ -71,7 +71,7 @@ const bodies = initialBodies.map(body => ({
 	show: true,
 	points: []
 }));
-
+const wells = [];
 
 canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
@@ -296,6 +296,7 @@ document.getElementById('infoWindowBtn').addEventListener('click', function() {
     showWindow = !showWindow;
     if (showWindow) {
         document.getElementById('infoWindow').style.display = 'block';
+		initChart();
     } else {
         document.getElementById('infoWindow').style.display = 'none';
     }
@@ -352,8 +353,31 @@ document.getElementById('addBodyBtn').addEventListener('click', () => {
 		};
 		bodies.push(newBody);
 		updateControlValues();
+		updateWellControlValues();
+		translate();
 	} else {
 		alert(`ERROR: no space for an object with a radius of ${rdradius} m`)
+	}
+});
+
+document.getElementById('addWellBtn').addEventListener('click', () => {
+	let rdradius = 2.5
+	let rdposition = getRandomPosition(rdradius)
+	if (rdposition !== null) {
+	const newWell = {
+            name: `Well ${wells.length + 1}`,
+			mass: 500 + Math.random() * 1000,
+			charge: Math.round((Math.random() * 3 - 1.5) * 10) / 10,
+			position: rdposition,
+			color: '#' + Math.floor(Math.random() * 16777215).toString(16),
+			show: true,
+		};
+		wells.push(newWell);
+		updateControlValues();
+		updateWellControlValues();
+		translate();
+	} else {
+		alert(`ERROR: no space for a Well with a radius of ${rdradius} m`)
 	}
 });
 
@@ -400,6 +424,7 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 		clearTrails();
         chart.update();
 		updateControlValues();
+		updateWellControlValues();
 		resetView();
 		startTimer();
 	}
@@ -460,6 +485,7 @@ document.getElementById('paramXSelect').addEventListener('change', clearChart);
 document.getElementById('paramYSelect').addEventListener('change', clearChart);
 
 function createRdPreset() {
+	createRandomPreset("Random preset (10 objects)", 10, 165, 114);
 	createRandomPreset("Random preset (25 objects)", 25, 200, 130);
 	createRandomPreset("Random preset (40 objects)", 40, 230, 150);
 	createRandomPreset("Random preset (60 objects)", 60, 255, 166);
@@ -520,8 +546,18 @@ function resetView() {
 function deleteBody(index) {
 	bodies.splice(index, 1);
 	updateControlValues();
+	updateWellControlValues();
 	if (devModenabled) {
 		console.log('Body deleted');
+	}
+}
+
+function deleteWell(index) {
+	wells.splice(index, 1);
+	updateControlValues();
+	updateWellControlValues();
+	if (devModenabled) {
+		console.log('Well deleted');
 	}
 }
 
@@ -530,8 +566,19 @@ function setupTrashIcons() {
 		const trashIcon = document.getElementById(`trash${index}`);
 		if (trashIcon) {
 			trashIcon.addEventListener('click', () => {
-				if (confirm('Are you sure you want to delete this Object ')) {
+				if (confirm('Are you sure you want to delete this Object ?')) {
 					deleteBody(index);
+				}
+			});
+		}
+	});
+	
+	wells.forEach((well, index) => {
+		const trashIcon = document.getElementById(`trashWell${index}`);
+		if (trashIcon) {
+			trashIcon.addEventListener('click', () => {
+				if (confirm('Are you sure you want to delete this Well ?')) {
+					deleteWell(index);
 				}
 			});
 		}
@@ -587,7 +634,7 @@ function updateControlValues() {
 		objectASelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
 		objectBSelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
 		
-		focusSelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
+		focusSelect.innerHTML += `<option value="body-${index}">${body.name || `Objet ${index + 1}`}</option>`;
 
 		const group = document.createElement('div');
 		group.className = 'control-group';
@@ -693,6 +740,7 @@ function updateControlValues() {
 			colorPicker.addEventListener('input', (event) => {
 				body.color = event.target.value;
 				updateControlValues();
+				updateWellControlValues();
 			});
 			colorPicker.addEventListener('change', () => {
 				document.body.removeChild(colorPicker);
@@ -783,6 +831,141 @@ function updateControlValues() {
 	setupTrashIcons();
 }
 
+function updateWellControlValues() {
+    const wellControlsContainer = document.getElementById('well-controls');
+	wellControlsContainer.innerHTML = '';
+	
+	wells.forEach((well, index) => {
+		focusSelect.innerHTML += `<option value="well-${index}">${well.name || `Well ${index + 1}`}</option>`;
+
+		const group = document.createElement('div');
+		group.className = 'control-group';
+        group.innerHTML = `
+            <div class="checkbox-group">
+                <input type="checkbox" id="showWell${index + 1}" ${well.show ? 'checked' : ''}>
+                
+                <label for="info${index + 1}">
+                    <span class="color-indicator" id="colorWell${index}" style="background-color: ${well.color}; cursor: pointer;"></span>
+                    <input type="text" id="nameWell${index}" value="${well.name || `Well ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 90%;">
+                    <img src="image/trash-icon.png" id="trashWell${index}" class="trash-icon" alt="Delete" style="filter: brightness(4); cursor:pointer;">
+                </label>
+            </div>
+            
+            <label for="massWell${index + 1}" id="MassEntreeWell${index + 1}">Mass:</label>
+            <div class="btn-group mrgn-bttm-lg">
+                <button onclick="adjustValue('massWell${index + 1}', 0.1)">/10</button>
+                <button onclick="adjustValue('massWell${index + 1}', 0.5)">/2</button>
+                <input type="number" id="massWell${index + 1}" value="${well.mass.toExponential(2)}" step="5">
+                <button onclick="adjustValue('massWell${index + 1}', 2)">x2</button>
+                <button onclick="adjustValue('massWell${index + 1}', 10)">x10</button>
+            </div>
+            
+            <label for="chargeWell${index + 1}" id="ChargeEntreeWell${index + 1}">Charge:</label>
+            <div class="btn-group mrgn-bttm-lg">
+                <button onclick="adjustValue('chargeWell${index + 1}', 0.1)">/10</button>
+                <button onclick="adjustValue('chargeWell${index + 1}', 0.5)">/2</button>
+                <input type="number" id="chargeWell${index + 1}" value="${well.charge.toExponential(1)}" step="1">
+                <button onclick="adjustValue('chargeWell${index + 1}', 2)">x2</button>
+                <button onclick="adjustValue('chargeWell${index + 1}', 10)">x10</button>
+            </div>
+            
+            <label for="xWell${index + 1}" id="PosXEntreeWell${index + 1}">X Position:</label>
+            <div class="btn-group mrgn-bttm-lg">
+                <button onclick="adjustValue('xWell${index + 1}', 0.1)">/10</button>
+                <button onclick="adjustValue('xWell${index + 1}', 0.5)">/2</button>
+                <input type="number" id="xWell${index + 1}" value="${well.position.x.toExponential(2)}" step="1">
+                <button onclick="adjustValue('xWell${index + 1}', 2)">x2</button>
+                <button onclick="adjustValue('xWell${index + 1}', 10)">x10</button>
+            </div>
+            
+            <label for="yWell${index + 1}" id="PosYEntreeWell${index + 1}">Y Position:</label>
+            <div class="btn-group mrgn-bttm-lg">
+                <button onclick="adjustValue('yWell${index + 1}', 0.1)">/10</button>
+                <button onclick="adjustValue('yWell${index + 1}', 0.5)">/2</button>
+                <input type="number" id="yWell${index + 1}" value="${well.position.y.toExponential(2)}" step="0.5">
+                <button onclick="adjustValue('yWell${index + 1}', 2)">x2</button>
+                <button onclick="adjustValue('yWell${index + 1}', 10)">x10</button>
+            </div>
+            
+            <hr style="width:100%;text-align:center;color:#444">
+            
+            <br>
+        `;
+		wellControlsContainer.appendChild(group);
+
+		document.getElementById(`showWell${index + 1}`).addEventListener('change', (e) => {
+			well.show = e.target.checked;
+		});
+
+		const nameInput = document.getElementById(`nameWell${index}`);
+		nameInput.addEventListener('input', (e) => {
+			well.name = e.target.value;
+		});
+
+		const colorIndicator = document.getElementById(`colorWell${index}`);
+		colorIndicator.addEventListener('click', () => {
+			const colorPicker = document.createElement('input');
+			colorPicker.type = 'color';
+			colorPicker.value = well.color;
+			colorPicker.style.position = 'absolute';
+			colorPicker.style.left = `${colorIndicator.getBoundingClientRect().left}px`;
+			colorPicker.style.top = `${colorIndicator.getBoundingClientRect().top}px`;
+
+			colorPicker.addEventListener('input', (event) => {
+				well.color = event.target.value;
+				updateControlValues();
+				updateWellControlValues();
+			});
+			colorPicker.addEventListener('change', () => {
+				document.well.removeChild(colorPicker);
+			});
+
+			document.addEventListener('click', function handler(event) {
+				if (!colorPicker.contains(event.target) && event.target !== colorIndicator) {
+					document.well.removeChild(colorPicker);
+					document.removeEventListener('click', handler);
+				}
+			}, { once: true });
+
+			colorPicker.click();
+		});
+
+		const massInput = document.getElementById(`massWell${index + 1}`);
+		const xInput = document.getElementById(`xWell${index + 1}`);
+		const yInput = document.getElementById(`yWell${index + 1}`);
+		const chargeInput = document.getElementById(`chargeWell${index + 1}`);
+
+		massInput.addEventListener('input', (e) => {
+			let value = parseFloat(e.target.value);
+
+			if (value < 0) {
+				value = Math.abs(value);
+			}
+
+			well.mass = value;
+			e.target.value = value.toExponential(2);
+		});
+	
+		xInput.addEventListener('input', (e) => {
+			well.position.x = parseFloat(e.target.value);
+			well.trail = [];
+			well.points = [];
+		});
+    
+		yInput.addEventListener('input', (e) => {
+			well.position.y = parseFloat(e.target.value);
+			well.trail = [];
+			well.points = [];
+		});
+		
+		chargeInput.addEventListener('input', (e) => {
+			well.charge = parseFloat(e.target.value);
+		});
+	});
+
+	setupTrashIcons();
+}
+
 function adjustValue(inputId, factor) {
     const input = document.getElementById(inputId);
     if (input) {
@@ -817,22 +1000,46 @@ function playMergeSound() {
 function calculateForces() {
     const gravityEnabled = document.getElementById('gravityToggle').checked;
     const magneticEnabled = document.getElementById('magneticToggle').checked;
-
+	
     bodies.forEach(body => {
         body.acceleration.x = 0;
         body.acceleration.y = 0;
     });
-
+	
     for (let i = 0; i < bodies.length; i++) {
         let fx = 0;
         let fy = 0;
+
+		for (const well of wells) {
+			const dx = well.position.x - bodies[i].position.x;
+			const dy = well.position.y - bodies[i].position.y;
+                
+			if ((isNaN(dx) || isNaN(dy)) && DevMod) {
+				console.error(`Les positions de l'objets ${i + 1} ou du puit ${well} sont invalides.`);
+				continue;
+			}
+			
+			const distance = Math.sqrt(dx * dx + dy * dy);
+			
+			if (gravityEnabled) {
+				const forceG = (G * well.mass * bodies[i].mass) / distance;
+				fx += (dx / distance) * forceG;
+				fy += (dy / distance) * forceG;
+			}
+			
+			if (magneticEnabled) {
+                const forceEM = (k * well.charge * bodies[i].charge) / distance;
+				fx += (dx / distance) * forceEM;
+				fy += (dy / distance) * forceEM;
+			}
+		}
 
         for (let j = 0; j < bodies.length; j++) {
             if (i !== j) {
                 const dx = bodies[j].position.x - bodies[i].position.x;
                 const dy = bodies[j].position.y - bodies[i].position.y;
                 
-                if (isNaN(dx) || isNaN(dy)) {
+                if ((isNaN(dx) || isNaN(dy)) && DevMod) {
                     console.error(`Les positions des objets ${i + 1} ou ${j + 1} sont invalides.`);
                     continue;
                 }
@@ -852,8 +1059,6 @@ function calculateForces() {
                         fx += forceEM * (-dx / distance);
                         fy += forceEM * (-dy / distance);
                     }
-                } else {
-                    console.warn(`Les objets ${i + 1} et ${j + 1} se chevauchent ou sont à la même position.`);
                 }
             }
         }
@@ -977,11 +1182,17 @@ function calculateBarycenter() {
 				barycenter.x /= totalRadius;
 				barycenter.y /= totalRadius;
 			}
-		} else {
-			const selectedBody = bodies[parseInt(focusObject)];
+		} else if (focusObject.startsWith('body-')) {
+			// Centrer sur un corps spécifique (code existant)
+			const selectedBodyIndex = parseInt(focusObject.split('-')[1]);
+			const selectedBody = bodies[selectedBodyIndex];
 			return { x: selectedBody.position.x, y: selectedBody.position.y };
+		} else if (focusObject.startsWith('well-')) {
+			// Centrer sur un puits spécifique
+			const selectedWellIndex = parseInt(focusObject.split('-')[1]);
+			const selectedWell = wells[selectedWellIndex];
+			return { x: selectedWell.position.x, y: selectedWell.position.y };
 		}
-		
 	}
 
 	const maxDistance = Math.max(...bodies.map(body => 
@@ -989,7 +1200,7 @@ function calculateBarycenter() {
 	));
 	
 	const maxRadius = showSizeCheckbox.checked ? 10 / scale : 10;
-	const minCanvasSize = 1.02 * Math.min(canvas.width, canvas.height);
+	const minCanvasSize = 0.98 * Math.min(canvas.width, canvas.height);
 
     if (doZoom) {
         scale = Math.min(
@@ -1070,27 +1281,59 @@ function drawBodies(barycenter) {
 
 			ctx.fill();
 			ctx.closePath();
-
-			body.points.forEach(point => {
-				ctx.beginPath();
-				const pointSize = radius * 0;
-				ctx.arc(point.x, point.y, pointSize, 0, 2 * Math.PI);
-				ctx.fillStyle = body.color;
-				ctx.fill();
-				ctx.closePath();
-			});
-
-			body.trail.forEach((point, i) => {
-				if (i > 0) {
+			
+			const tracedTrail = slider.value
+			
+			if (tracedTrail > 0) {
+				body.points.forEach(point => {
 					ctx.beginPath();
-					ctx.moveTo(body.trail[i - 1].x, body.trail[i - 1].y);
-					ctx.lineTo(point.x, point.y);
-					ctx.strokeStyle = body.color;
-					ctx.lineWidth = 1 / scale;
-					ctx.stroke();
+					const pointSize = radius * 0;
+					ctx.arc(point.x, point.y, pointSize, 0, 2 * Math.PI);
+					ctx.fillStyle = body.color;
+					ctx.fill();
 					ctx.closePath();
-				}
-			});
+				});
+			
+				body.trail.forEach((point, i) => {
+					if (i > 0) {
+						ctx.beginPath();
+						ctx.moveTo(body.trail[i - 1].x, body.trail[i - 1].y);
+						ctx.lineTo(point.x, point.y);
+						ctx.strokeStyle = body.color;
+						ctx.lineWidth = 1 / scale;
+						ctx.stroke();
+						ctx.closePath();
+					}
+				});
+			}
+		}
+	});
+
+	wells.forEach(well => {
+		if (well.show) {
+			ctx.beginPath();
+			ctx.arc(well.position.x, well.position.y, 7 / scale, 0, 2 * Math.PI);
+			ctx.strokeStyle = well.color || 'white';
+			ctx.lineWidth = 1 / scale;
+			if (hoveredBody === well) {
+				ctx.globalAlpha = 0.4;
+			} else {
+				ctx.globalAlpha = 0.8;
+			}
+			ctx.stroke();
+			ctx.closePath();
+			
+			ctx.beginPath();
+			ctx.arc(well.position.x, well.position.y, 3.25 / scale, 0, 2 * Math.PI);
+			ctx.strokeStyle = well.color || 'white';
+			ctx.lineWidth = 1 / scale;
+			if (hoveredBody === well) {
+				ctx.globalAlpha = 0.45;
+			} else {
+				ctx.globalAlpha = 0.9;
+			}
+			ctx.stroke();
+			ctx.closePath();
 		}
 	});
 
@@ -1357,7 +1600,8 @@ function animate(currentTime) {
         updatePositions(dt);
         const barycenter = calculateBarycenter();
         drawBodies(barycenter);
-        updateControlValues();
+		updateControlValues();
+		updateWellControlValues();
 
     } else {
         drawBodies(calculateBarycenter());
@@ -1385,6 +1629,7 @@ function getRandomSpeed() {
 }
 
 function handleMouseDown(event) {
+	doZoom = false
 	const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
 	const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
 
@@ -1393,6 +1638,17 @@ function handleMouseDown(event) {
 		const dy = mouseY - body.position.y;
 		if (Math.sqrt(dx * dx + dy * dy) < (showSizeCheckbox.checked ? 10 / scale : 10)) {
 			selectedBody = body;
+			isPaused = true;
+			updateButtonImage();
+			break;
+		}
+	}
+
+	for (const well of wells) {
+		const dx = mouseX - well.position.x;
+		const dy = mouseY - well.position.y;
+		if (Math.sqrt(dx * dx + dy * dy) < (showSizeCheckbox.checked ? 10 / scale : 10)) {
+			selectedBody = well;
 			isPaused = true;
 			updateButtonImage();
 			break;
@@ -1417,10 +1673,22 @@ function handleMouseMove(event) {
 		}
 	});
 
+	wells.forEach(well => {
+		const dx = well.position.x - mouseX;
+		const dy = well.position.y - mouseY;
+		const distance = Math.sqrt(dx * dx + dy * dy);
+
+		const radius = 7 / scale
+		if (distance < radius) {
+			hoveredBody = well;
+		}
+	});
+
 	if (selectedBody) {
 		selectedBody.position.x = mouseX;
 		selectedBody.position.y = mouseY;
 		updateControlValues();
+		updateWellControlValues();
 		clearTimeout(manualMoveTimeout);
 		manualMoveTimeout = setTimeout(() => {
 			isPaused = true;
@@ -1437,10 +1705,12 @@ function handleMouseMove(event) {
 
 function handleMouseUp() {
 	selectedBody = null;
+	doZoom = document.getElementById('autoZoomToggle').checked;;
 }
 
 function handleTouchStart(event) {
     if (event.touches.length === 1) {
+		doZoom = false
         const touch = event.touches[0];
         const touchX = (touch.clientX - canvas.width / 2) / scale + calculateBarycenter().x;
         const touchY = (touch.clientY - canvas.height / 2) / scale + calculateBarycenter().y;
@@ -1452,6 +1722,20 @@ function handleTouchStart(event) {
 			const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius
             if (distance < radius) {
                 selectedBody = body;
+                isDragging = true;
+                isPaused = true;
+                updateButtonImage();
+                break;
+            }
+        }
+
+        for (const well of wells) {
+            const dx = touchX - well.position.x;
+            const dy = touchY - well.position.y;
+			const distance = Math.sqrt(dx * dx + dy * dy);
+			const radius = 7 / scale
+            if (distance < radius) {
+                selectedBody = well;
                 isDragging = true;
                 isPaused = true;
                 updateButtonImage();
@@ -1475,12 +1759,14 @@ function handleTouchMove(event) {
 
         selectedBody.position.x = touchX;
         selectedBody.position.y = touchY;
-        updateControlValues();
+		updateControlValues();
+		updateWellControlValues();
         clearTimeout(manualMoveTimeout);
         manualMoveTimeout = setTimeout(() => {
             isPaused = true;
             updateButtonImage();
         }, 0);
+		
     } else if (event.touches.length === 2) {
         event.preventDefault();
         const touch1 = event.touches[0];
@@ -1497,6 +1783,7 @@ function handleTouchMove(event) {
 }
 
 function handleTouchEnd(event) {
+	doZoom = document.getElementById('autoZoomToggle').checked;;
     if (event.touches.length < 2) {
         initialPinchDistance = null;
 
@@ -1595,6 +1882,20 @@ function drawGravityField() {
                 }
             });
 
+            wells.forEach(well => {
+                const dx = well.position.x - x;
+                const dy = well.position.y - y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance !== 0) {
+                    if (showGravityField) {
+                        const forceG = (0.1 * well.mass) / (distance * distance);
+                        fx += forceG * (dx / distance);
+                        fy += forceG * (dy / distance);
+                    }
+                }
+            });
+
             const forceMagnitude = Math.sqrt(fx * fx + fy * fy);
 
             if (forceMagnitude !== 0) {
@@ -1659,6 +1960,20 @@ function drawMagneticField() {
                 if (distance !== 0) {
                     if (showMagneticField) {
                         const forceEM = (10 * body.charge) / (distance * distance);
+                        fx += forceEM * (-dx / distance);
+                        fy += forceEM * (-dy / distance);
+                    }
+                }
+            });
+
+            wells.forEach(well => {
+                const dx = well.position.x - x;
+                const dy = well.position.y - y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance !== 0) {
+                    if (showMagneticField) {
+                        const forceEM = (10 * well.charge) / (distance * distance);
                         fx += forceEM * (-dx / distance);
                         fy += forceEM * (-dy / distance);
                     }
@@ -1961,6 +2276,15 @@ function populateParameterDropdowns() {
     addOptionsToSelect(paramYSelect, 'Object B Parameters', params.objectB, 'Y');
 }
 
+function stopChart() {
+	const ctx = document.getElementById('parameterChart');
+    chart = new Chart(ctx, {});
+    chartInitialized = false;
+	if (devModenabled && !chartInitialized) {
+		console.log('Chart stopped');
+	}
+};
+
 function initChart() {
     const ctx = document.getElementById('parameterChart');
     chart = new Chart(ctx, {
@@ -2079,15 +2403,19 @@ function clearChart() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    initChart();
+	if (devModenabled) {
+		console.log('Starting...');
+	}
 	startTimer();
 	updateConstants();
 	simulate();
 	updateControlValues();
+	updateWellControlValues();
 	animate();
 	updatePresetSelect();
 	populateParameterDropdowns();
+	translate();
 	if (devModenabled) {
-		console.log('Starting...');
+		console.log('Start succes!');
 	}
 });
