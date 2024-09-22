@@ -89,6 +89,7 @@ body {
 	border-radius: 50%;
 	cursor: pointer;
 	margin: 5px;
+	border: 2px solid #444;
     transition: opacity 0.2s ease;
 }
 

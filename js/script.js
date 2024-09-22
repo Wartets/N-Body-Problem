@@ -13,9 +13,10 @@ let mergingEnabled = document.getElementById('mergeToggle').checked;
 let doZoom = document.getElementById('autoZoomToggle').checked;;
 let soundEnabled = document.getElementById('activateSound').checked;
 let devModenabled = document.getElementById('devMod').checked;
+let relativistMod = document.getElementById('mergeToggle').checked;
 let focusObject = 'barycenter-mass';
 let chart;
-let G, k;
+let G, k, c;
 let scale = 1;
 let scrollZoom = 1;
 let timeElapsed = 0;
@@ -39,10 +40,12 @@ const mouseCoordsDisplay = document.getElementById('mouseCoords');
 const controls = document.getElementById('controls');
 const controlsToggle = document.getElementById('controlsToggle');
 const advancedControls = document.getElementById('advancedControls');
+const barycenterDisplay = document.getElementById('barycenterCoords');
 const constValCheckbox = document.getElementById('ConstVal');
 const customConstantsDiv = document.getElementById('customConstants');
 const GInput = document.getElementById('GValue');
 const kInput = document.getElementById('kValue');
+const cInput = document.getElementById('cValue');
 const fullscreenBtn = document.getElementById('fullscreenBtn');
 const frictionToggle = document.getElementById('frictionToggle');
 const frictionCoefficientContainer = document.getElementById('frictionCoefficientContainer');
@@ -50,10 +53,6 @@ const frictionCoefficientInput = document.getElementById('frictionCoefficient');
 const slider = document.getElementById('trailLimit');
 const tooltip = document.getElementById('sliderTooltip');
 const timerDisplay = document.getElementById('timer');
-const impactSound = new Audio('sound/impact-sound.mp3');
-const mergeSound = new Audio('sound/merge-sound.mp3');
-const impactDelay = 1;
-const mergeDelay = 1;
 const helpBtn = document.getElementById('helpBtn');
 const modal = document.getElementById('helpModal');
 const closeBtn = document.querySelector('.close');
@@ -64,6 +63,10 @@ const vectorLengthDisplayG = document.getElementById('vectorLengthValueG');
 const vectorLengthSliderk = document.getElementById('vectorLengthSliderk');
 const vectorLengthDisplayk = document.getElementById('vectorLengthValuek');
 const toggleButtons = document.querySelectorAll('.toggle-btn');
+const impactSound = new Audio('sound/impact-sound.mp3');
+const mergeSound = new Audio('sound/merge-sound.mp3');
+const impactDelay = 1;
+const mergeDelay = 1;
 const bodies = initialBodies.map(body => ({
 	...body,
 	acceleration: { x: 0, y: 0 },
@@ -98,8 +101,6 @@ frictionToggle.addEventListener('change', () => {
 	}
 });
 
-constValCheckbox.addEventListener('change', updateConstants);
-
 toggleButtons.forEach((button, index) => {
     button.addEventListener('click', function () {
         const controlGroup = this.parentElement.nextElementSibling;
@@ -116,6 +117,9 @@ toggleButtons.forEach((button, index) => {
 
 GInput.addEventListener('input', updateConstants);
 kInput.addEventListener('input', updateConstants);
+cInput.addEventListener('input', updateConstants);
+
+constValCheckbox.addEventListener('change', updateConstants);
 
 vectorLengthSliderG.addEventListener('input', function() {
     vectorLengthDisplayG.textContent = vectorLengthSliderG.value;
@@ -237,9 +241,9 @@ window.addEventListener('resize', () => {
 });
 
 document.addEventListener('keydown', (event) => {
-	document.activeElement.blur();
 	switch (event.key) {
 		case ' ':
+			document.activeElement.blur();
 			Pause();
 			break;
 		case 'r':
@@ -274,6 +278,7 @@ document.addEventListener('keydown', (event) => {
 			frictionToggle.checked = !frictionToggle.checked;
 			break;
 		case 'Enter':
+			document.activeElement.blur();
 			Pause();
 			break;
 	}
@@ -376,7 +381,7 @@ document.getElementById('addBodyBtn').addEventListener('click', () => {
 });
 
 document.getElementById('addWellBtn').addEventListener('click', () => {
-	let rdradius = 2.5
+	let rdradius = 2.5 / scale
 	let rdposition = getRandomPosition(rdradius)
 	if (rdposition !== null) {
 	const newWell = {
@@ -514,6 +519,18 @@ document.getElementById('mergeToggle').addEventListener('change', (e) => {
 document.getElementById('paramXSelect').addEventListener('change', clearChart);
 document.getElementById('paramYSelect').addEventListener('change', clearChart);
 
+document.getElementById('simulationMod').addEventListener('change', (e) => {
+	relativistMod = e.target.checked;
+	if (!relativistMod) {
+		const constValCheckbox = true;
+	}
+	document.getElementById('ConstVal').checked = constValCheckbox;
+	updateConstants();
+	if (devModenabled) {
+		console.log('Relativist mod enabled:', relativistMod);
+	}
+});
+
 function createRdPreset() {
 	createRandomPreset("Random preset (10 objects)", 10, 165, 114);
 	createRandomPreset("Random preset (25 objects)", 25, 200, 130);
@@ -534,8 +551,6 @@ function getRadius(mean, stdDev, min) {
 	let const2 = const1 < min ? stdDev : const1;
 	return const2;
 }
-
-const barycenterDisplay = document.getElementById('barycenterCoords');
 
 function updateBarycenterCoord() {
     const barycenter = calculateBarycenter();
@@ -558,17 +573,19 @@ function updateCoord() {
 
 function updateConstants() {
     if (constValCheckbox.checked) {
+		c = 299792458;			// Speed of light in m/s
         G = 6.67430e-11;		// Constante gravitationnelle (réelle)
         k = 8.9875517923e9;		// Constante de Coulomb (réelle)
         customConstantsDiv.style.display = 'none';
     } else {
         // Utiliser les valeurs personnalisées
+		c = parseFloat(GInput.value);
         G = parseFloat(GInput.value);
         k = parseFloat(kInput.value);
         customConstantsDiv.style.display = 'block';
     }
 	if (devModenabled) {
-		console.log('G:', G, 'k:', k);
+		console.log('G:', G, 'k:', k, 'c:', c);
 	}
 }
 
@@ -1113,6 +1130,68 @@ function calculateForces() {
     }
 }
 
+function calculateRelativisticForces() {
+    const gravityEnabled = document.getElementById('gravityToggle').checked;
+    const magneticEnabled = document.getElementById('magneticToggle').checked;
+
+    bodies.forEach(body => {
+        body.acceleration.x = 0;
+        body.acceleration.y = 0;
+    });
+
+    for (let i = 0; i < bodies.length; i++) {
+        let fx = 0;
+        let fy = 0;
+
+        for (const well of wells) {
+            const dx = well.position.x - bodies[i].position.x;
+            const dy = well.position.y - bodies[i].position.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (gravityEnabled && distance > 0) {
+                const velocityMagnitude = Math.sqrt(bodies[i].velocity.x ** 2 + bodies[i].velocity.y ** 2);
+                const relativisticCorrection = 1 + (3 * (velocityMagnitude / c) ** 2) / 2;
+
+                const forceG = (G * well.mass * bodies[i].mass) / (distance * distance) * relativisticCorrection;
+                fx += (dx / distance) * forceG;
+                fy += (dy / distance) * forceG;
+            }
+
+            if (magneticEnabled) {
+                const forceEM = (k * well.charge * bodies[i].charge) / (distance * distance);
+                fx += (dx / distance) * forceEM;
+                fy += (dy / distance) * forceEM;
+            }
+        }
+
+        for (let j = 0; j < bodies.length; j++) {
+            if (i !== j) {
+                const dx = bodies[j].position.x - bodies[i].position.x;
+                const dy = bodies[j].position.y - bodies[i].position.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (gravityEnabled && distance > 0) {
+                    const velocityMagnitude = Math.sqrt(bodies[i].velocity.x ** 2 + bodies[i].velocity.y ** 2);
+                    const relativisticCorrection = 1 + (3 * (velocityMagnitude / c) ** 2) / 2;
+
+                    const forceG = (G * bodies[i].mass * bodies[j].mass) / (distance * distance) * relativisticCorrection;
+                    fx += (forceG * (dx / distance));
+                    fy += (forceG * (dy / distance));
+                }
+
+                if (magneticEnabled) {
+                    const forceEM = (k * bodies[i].charge * bodies[j].charge) / (distance * distance);
+                    fx += (forceEM * (-dx / distance));
+                    fy += (forceEM * (-dy / distance));
+                }
+            }
+        }
+
+        bodies[i].acceleration.x = fx / bodies[i].mass;
+        bodies[i].acceleration.y = fy / bodies[i].mass;
+    }
+}
+
 function applyFriction() {
 	if (frictionToggle.checked) {
 		const coefficient = parseFloat(frictionCoefficientInput.value);
@@ -1121,14 +1200,6 @@ function applyFriction() {
 			body.velocity.y *= (1 - coefficient ** 3);
 		});
 	}
-}
-
-function simulate() {
-	if (!isPaused) {
-		calculateForces();
-		applyFriction(); 
-	}
-	requestAnimationFrame(simulate);
 }
 
 function adjustTrails(trailMaxPoints) {
@@ -1165,10 +1236,46 @@ function updatePositions(dt) {
 	}
 }
 
+function updateRelativisticPositions(dt) {
+    const trailLimitInput = document.getElementById('trailLimit');
+    const trailMaxPoints = Math.pow(10, trailLimitInput.value);
+
+    bodies.forEach(body => {
+        const velocityMagnitude = Math.sqrt(body.velocity.x ** 2 + body.velocity.y ** 2);
+        const lorentzFactor = 1 / Math.sqrt(1 - (velocityMagnitude ** 2 / c ** 2));
+
+        // Apply Lorentz factor to velocity
+        const newVelocityX = body.velocity.x * lorentzFactor;
+        const newVelocityY = body.velocity.y * lorentzFactor;
+
+        body.velocity.x += body.acceleration.x * dt;
+        body.velocity.y += body.acceleration.y * dt;
+
+        const totalVelocity = Math.sqrt(body.velocity.x ** 2 + body.velocity.y ** 2);
+        if (totalVelocity > c) {
+            const scalingFactor = c / totalVelocity;
+            body.velocity.x *= scalingFactor;
+            body.velocity.y *= scalingFactor;
+        }
+
+        body.position.x += body.velocity.x * dt;
+        body.position.y += body.velocity.y * dt;
+
+        body.trail.push({ x: body.position.x, y: body.position.y });
+        if (body.trail.length > trailMaxPoints) {
+            body.trail.shift();
+        }
+
+        body.points.push({ x: body.position.x, y: body.position.y });
+        if (body.points.length > trailMaxPoints) {
+            body.points.shift();
+        }
+    });
+}
+
 function calculateBarycenter() {
 	let barycenter = { x: 0, y: 0 };
 	if (focusObject !== 'noObject') {
-		
 		if (focusObject == 'barycenter-mass') {
 			let totalMass = 0;
 			bodies.forEach(body => {
@@ -1183,7 +1290,8 @@ function calculateBarycenter() {
 				barycenter.x /= totalMass;
 				barycenter.y /= totalMass;
 			}
-		} else if (focusObject == 'barycenter-charge') {
+		}
+		else if (focusObject == 'barycenter-charge') {
 			let totalCharge = 0;
 	
 			bodies.forEach(body => {
@@ -1199,7 +1307,8 @@ function calculateBarycenter() {
 				barycenter.x /= totalCharge;
 				barycenter.y /= totalCharge;
 			}
-		} else if (focusObject == 'barycenter-geometric') {
+		}
+		else if (focusObject == 'barycenter-geometric') {
 			let number = 0;
 	
 			bodies.forEach(body => {
@@ -1212,7 +1321,8 @@ function calculateBarycenter() {
 				barycenter.x /= number;
 				barycenter.y /= number;
 			}
-		} else if (focusObject == 'barycenter-surfacique') {
+		}
+		else if (focusObject == 'barycenter-surfacique') {
 			let totalRadius = 0;
 	
 			bodies.forEach(body => {
@@ -1227,31 +1337,31 @@ function calculateBarycenter() {
 				barycenter.x /= totalRadius;
 				barycenter.y /= totalRadius;
 			}
-		} else if (focusObject.startsWith('body-')) {
-			// Centrer sur un corps spécifique (code existant)
+		}
+		else if (focusObject.startsWith('body-')) {
 			const selectedBodyIndex = parseInt(focusObject.split('-')[1]);
 			const selectedBody = bodies[selectedBodyIndex];
 			return { x: selectedBody.position.x, y: selectedBody.position.y };
-		} else if (focusObject.startsWith('well-')) {
-			// Centrer sur un puits spécifique
+		}
+		else if (focusObject.startsWith('well-')) {
 			const selectedWellIndex = parseInt(focusObject.split('-')[1]);
 			const selectedWell = wells[selectedWellIndex];
 			return { x: selectedWell.position.x, y: selectedWell.position.y };
 		}
 	}
 
-	const maxDistance = Math.max(...bodies.map(body => 
-		Math.sqrt(Math.pow(body.position.x - barycenter.x, 2) + Math.pow(body.position.y - barycenter.y, 2))
-	));
-	
-	const maxRadius = showSizeCheckbox.checked ? 10 / scale : 10;
-	const minCanvasSize = 0.98 * Math.min(canvas.width, canvas.height);
-
     if (doZoom) {
+		const maxDistance = Math.max(...bodies.map(body => 
+			Math.sqrt(Math.pow(body.position.x - barycenter.x, 2) + Math.pow(body.position.y - barycenter.y, 2))
+		));
+		
+		const maxRadius = showSizeCheckbox.checked ? 10 / scale : 10;
+		const minCanvasSize = 0.98 * Math.min(canvas.width, canvas.height);
+		
         scale = Math.min(
             minCanvasSize / (maxDistance * 2),
             minCanvasSize / (maxRadius * 2)
-        ) * scrollZoom * 0.95;
+        ) * scrollZoom;
     } else {scrollZoom = 1}
 
 	return barycenter;
@@ -1474,7 +1584,7 @@ function rgbToHex(r, g, b) {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
 
-function mixColors(color1, color2, surface1, surface2, threshold = 10) {
+function mixColors(color1, color2, surface1, surface2, threshold = 30) {
     const rgb1 = hexToRgb(color1);
     const rgb2 = hexToRgb(color2);
 
@@ -1632,19 +1742,27 @@ function animate(currentTime) {
     const startTime = performance.now();
 
     displayFPS(currentTime);
-	
 	updateBarycenterCoord();
 
 	const objectA = bodies[parseInt(objectASelect)];
 	const objectB = bodies[parseInt(objectBSelect)];
+	
 
     if (!isPaused) {
         const dt = parseFloat(dtInput.value);
-        calculateForces();
+		if (relativistMod) {
+			calculateRelativisticForces();
+		} else {
+			calculateForces();
+		}
         if (collisionsEnabled || mergingEnabled) {
             detectProximity();
         }
-        updatePositions(dt);
+		if (relativistMod) {
+			updateRelativisticPositions(dt);
+		} else {
+			updatePositions(dt);
+		}
         const barycenter = calculateBarycenter();
         drawBodies(barycenter);
 		updateControlValues();
@@ -2220,6 +2338,128 @@ function getAttractionForce(objectA, objectB) {
     return 0;
 }
 
+function getAngularMomentum(objectA, objectB) {
+    const rx = objectB.position.x - objectA.position.x;
+    const ry = objectB.position.y - objectA.position.y;
+	
+    const vx = objectB.velocity.x - objectA.velocity.x;
+    const vy = objectB.velocity.y - objectA.velocity.y;
+    const angularMomentum = Math.abs(rx * vy - ry * vx);
+	
+	return angularMomentum;
+}
+
+function getKineticEnergy(objectA, objectB) {
+    const kineticEnergy = 0.5 * (getRelativeRadialSpeed(objectA, objectB)) ** 2;
+	
+	return kineticEnergy;
+}
+
+function getPotentialEnergy(objectA, objectB) {
+    const totalMass = objectA.mass + objectB.mass;
+    const potentialEnergy = -G * totalMass / getDistanceBetweenObjects(objectA, objectB);
+	
+	return potentialEnergy;
+}
+
+function getSpecificOrbitalEnergy(objectA, objectB) {
+    const specificOrbitalEnergy = getKineticEnergy(objectA, objectB) + getPotentialEnergy(objectA, objectB);
+	
+	return specificOrbitalEnergy;
+}
+
+function getSemiMajorAxis(objectA, objectB) {
+    const totalMass = objectA.mass + objectB.mass;
+    const semiMajorAxis = -G * totalMass / (2 * getSpecificOrbitalEnergy(objectA, objectB));
+	
+	return semiMajorAxis;
+}
+
+function getEccentricity(objectA, objectB) {
+    const totalMass = objectA.mass + objectB.mass;
+    const eccentricity = Math.sqrt(1 + (2 * getSpecificOrbitalEnergy(objectA, objectB) * Math.pow(getAngularMomentum(objectA, objectB), 2)) / (G * G * totalMass * totalMass));
+	
+	return eccentricity;
+}
+
+function getOrbitalPeriod(objectA, objectB) {
+    const semiMajorAxis = getSemiMajorAxis(objectA, objectB);
+    const totalMass = objectA.mass + objectB.mass;
+    const orbitalPeriod = 2 * Math.PI * Math.sqrt(Math.pow(semiMajorAxis, 3) / (G * totalMass));
+    return orbitalPeriod;
+}
+
+function getMeanOrbitalSpeed(objectA, objectB) {
+    const semiMajorAxis = getSemiMajorAxis(objectA, objectB);
+    const totalMass = objectA.mass + objectB.mass;
+    const meanOrbitalSpeed = Math.sqrt(G * totalMass / semiMajorAxis);
+    return meanOrbitalSpeed;
+}
+
+function getOrbitalParameter(objectA, objectB) {
+    const angularMomentum = getAngularMomentum(objectA, objectB);
+    const totalMass = objectA.mass + objectB.mass;
+    const orbitalParameter = (angularMomentum * angularMomentum) / (G * totalMass);
+    return orbitalParameter;
+}
+
+function getAphelion(objectA, objectB) {
+    const semiMajorAxis = getSemiMajorAxis(objectA, objectB);
+    const eccentricity = getEccentricity(objectA, objectB);
+    return semiMajorAxis * (1 + eccentricity);
+}
+
+function getPerihelion(objectA, objectB) {
+    const semiMajorAxis = getSemiMajorAxis(objectA, objectB);
+    const eccentricity = getEccentricity(objectA, objectB);
+    return semiMajorAxis * (1 - eccentricity);
+}
+
+function getTrueAnomaly(objectA, objectB) {
+    const distance = getDistanceBetweenObjects(objectA, objectB);
+    const orbitalParameter = getOrbitalParameter(objectA, objectB);
+    const eccentricity = getEccentricity(objectA, objectB);
+
+    const cosTrueAnomaly = (orbitalParameter / distance - 1) / eccentricity;
+    return Math.acos(cosTrueAnomaly);
+}
+
+function getLongitudeOfAscendingNode(objectA, objectB) {
+    const dx = objectB.position.x - objectA.position.x;
+    const dy = objectB.position.y - objectA.position.y;
+    return Math.atan2(dy, dx);
+}
+
+function getMeanAnomaly(objectA, objectB, time) {
+    const orbitalPeriod = getOrbitalPeriod(objectA, objectB);
+    const eccentricity = getEccentricity(objectA, objectB);
+    const meanMotion = 2 * Math.PI / orbitalPeriod;
+
+    const meanAnomaly = meanMotion * time;
+    return meanAnomaly;
+}
+
+function solveKeplerEquation(objectA, objectB, time) {
+    const eccentricity = getEccentricity(objectA, objectB);
+    const meanAnomaly = getMeanAnomaly(objectA, objectB, time);
+
+    let E = meanAnomaly;
+    let delta = 1e-6;
+    let iterations = 0;
+
+    while (iterations < 100) {
+        let f = E - eccentricity * Math.sin(E) - meanAnomaly;
+        let fPrime = 1 - eccentricity * Math.cos(E);
+        let ratio = f / fPrime;
+
+        if (Math.abs(ratio) < delta) break;
+        E = E - ratio;
+        iterations++;
+    }
+
+    return E;
+}
+
 function updateObjectInfo(objectA, objectB) {
     document.getElementById('massA').textContent = formatScientific(objectA.mass, 2) + ' kg';
     document.getElementById('chargeA').textContent = formatScientific(objectA.charge, 1) + ' C';
@@ -2291,9 +2531,25 @@ function populateParameterDropdowns() {
             { label: 'Distance Between A and B', value: 'distanceBetween' },
             { label: 'Relative Radial Speed', value: 'relativeSpeedRadial' },
             { label: 'Relative Radial Acceleration', value: 'relativeAccelerationRadial' }
+        ],
+        orbital: [
+            { label: 'Angular Momentum', value: 'orbitalAngularMomentum' },
+            { label: 'Kinetic Energy', value: 'orbitalKineticEnergy' },
+            { label: 'Specific Orbital Energy', value: 'orbitalSpecificOrbitalEnergy' },
+            { label: 'Semi Major Axis', value: 'orbitalSemiMajorAxis' },
+            { label: 'Eccentricity', value: 'orbitalEccentricity' },
+            { label: 'Orbital Period', value: 'orbitalPeriod' },
+            { label: 'Mean Orbital Speed', value: 'meanOrbitalSpeed' },
+            { label: 'Orbital Parameter', value: 'orbitalParameter' },
+            { label: 'Aphelion', value: 'aphelion' },
+            { label: 'Perihelion', value: 'perihelion' },
+            { label: 'True Anomaly', value: 'trueAnomaly' },
+            { label: 'Longitude of Ascending Node', value: 'longitudeOfAscendingNode' },
+            { label: 'Mean Anomaly', value: 'meanAnomaly' },
+            { label: 'Kepler Equation Solver', value: 'keplerEquation' }
         ]
     };
-
+	
     const paramXSelect = document.getElementById('paramXSelect');
     const paramYSelect = document.getElementById('paramYSelect');
 
@@ -2317,10 +2573,12 @@ function populateParameterDropdowns() {
     addOptionsToSelect(paramXSelect, 'Relative Parameters', params.relative, 'X');
     addOptionsToSelect(paramXSelect, 'Object A Parameters', params.objectA, 'X');
     addOptionsToSelect(paramXSelect, 'Object B Parameters', params.objectB, 'X');
+    addOptionsToSelect(paramXSelect, 'Orbital Parameters', params.orbital, 'X');
 
     addOptionsToSelect(paramYSelect, 'Relative Parameters', params.relative, 'Y');
     addOptionsToSelect(paramYSelect, 'Object A Parameters', params.objectA, 'Y');
     addOptionsToSelect(paramYSelect, 'Object B Parameters', params.objectB, 'Y');
+    addOptionsToSelect(paramYSelect, 'Orbital Parameters', params.orbital, 'Y');
 }
 
 function initChart() {
@@ -2399,6 +2657,21 @@ function getSelectedParameterValue(parameter, objectA, objectB) {
         case 'relativeSpeedRadial': return Math.abs(getRadialSpeed(objectA) - getRadialSpeed(objectB));
         case 'relativeAccelerationRadial': return Math.abs(getRadialAcceleration(objectA) - getRadialAcceleration(objectB));
         case 'timeElapsed': return timeElapsed;
+		case 'orbitalAngularMomentum': return getAngularMomentum(objectA, objectB);
+		case 'orbitalKineticEnergy': return getKineticEnergy(objectA, objectB);
+		case 'orbitalSpecificOrbitalEnergy': return getSpecificOrbitalEnergy(objectA, objectB);
+		case 'orbitalSemiMajorAxis': return getSemiMajorAxis(objectA, objectB);
+		case 'orbitalEccentricity': return getEccentricity(objectA, objectB);
+		case 'orbitalPeriod': return getOrbitalPeriod(objectA, objectB);
+		case 'meanOrbitalSpeed': return getMeanOrbitalSpeed(objectA, objectB);
+		case 'orbitalParameter': return getOrbitalParameter(objectA, objectB);
+		case 'aphelion': return getAphelion(objectA, objectB);
+		case 'perihelion': return getPerihelion(objectA, objectB);
+		case 'trueAnomaly': return getTrueAnomaly(objectA, objectB);
+		case 'longitudeOfAscendingNode': return getLongitudeOfAscendingNode(objectA, objectB);
+		case 'meanAnomaly': return getMeanAnomaly(objectA, objectB);
+		case 'keplerEquation': return solveKeplerEquation(objectA, objectB);
+		
         default: return 0;
     }
 }
@@ -2445,7 +2718,6 @@ function clearChart() {
 function initiate() {
 	startTimer();
 	updateConstants();
-	simulate();
 	updateControlValues();
 	updateWellControlValues();
 	animate();
