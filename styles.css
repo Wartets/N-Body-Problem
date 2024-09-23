@@ -366,20 +366,12 @@ button:hover {
 .hidden #fullscreenBtn,
 .hidden #resetViewBtn,
 .hidden #infoWindowBtn,
-.hidden #timer,
-.hidden #fpsDisplay,
-.hidden #UsageDisplay,
-.hidden #mouseCoords,
-.hidden #barycenterCoords {
+.hidden .canvas-text {
     transition: opacity 0.3s ease;
 	opacity: 0.3;
 }
 
-#timer,
-#fpsDisplay,
-#UsageDisplay,
-#mouseCoords,
-#barycenterCoords {
+.canvas-text {
 	font-family: 'Lexend Deca', sans-serif;
 	left: 18px;
 	-webkit-text-stroke: .5px gray;

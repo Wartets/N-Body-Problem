@@ -177,7 +177,7 @@ document.getElementById('autoZoomToggle').addEventListener('change', (e) => {
 	}
 });
 
-controlsToggle.addEventListener('click', () => {;
+controlsToggle.addEventListener('click', () => {
 	const isHidden = !controls.classList.toggle('hidden');
 	controlsToggle.src = isHidden ? 'image/U+25C0.svg' : 'image/U+25B6.svg';
 	controlsToggle.alt = isHidden ? 'open controls' : 'close controls';
@@ -244,6 +244,7 @@ window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
     }
     canvas.height = window.innerHeight;
+    drawBodies(calculateBarycenter());
 	if (devModenabled) {
         console.log('Canvas width :', canvas.width);
 	}
@@ -1778,6 +1779,8 @@ function displayFPS(currentTime) {
 	else {
 		frameInterval = 11
 	}
+	
+	document.getElementById('skipDisplay').textContent = `Skipped: ${frameInterval}`;
 }
 
 function animate(currentTime) {
