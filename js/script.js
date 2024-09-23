@@ -26,7 +26,7 @@ let lastMergeTime = 0;
 let fps = 0;
 let frameCount = 0;
 let fpsTime = 0;
-let updateCounter = 0;
+let frameInterval = 2;
 
 const canvas = document.getElementById('simulationCanvas');
 const ctx = canvas.getContext('2d');
@@ -117,10 +117,9 @@ toggleButtons.forEach((button, index) => {
     });
 });
 
-GInput.addEventListener('input', updateConstants);
-epsi0Input.addEventListener('input', updateConstants);
-cInput.addEventListener('input', updateConstants);
-piInput.addEventListener('input', updateConstants);
+[GInput, epsi0Input, cInput, piInput].forEach(input => {
+    input.addEventListener('input', updateConstants);
+});
 
 constValCheckbox.addEventListener('change', updateConstants);
 
@@ -190,6 +189,7 @@ controlsToggle.addEventListener('touchstart', (e) => {
 	e.preventDefault();
 	const isHidden = !controls.classList.toggle('hidden');
 	controlsToggle.src = isHidden ? 'image/U+25C0.svg' : 'image/U+25B6.svg';
+	controlsToggle.alt = isHidden ? 'open controls' : 'close controls';
 	document.body.classList.toggle('hidden');
 	window.dispatchEvent(new Event('resize'));
 });
@@ -1759,17 +1759,31 @@ function displayFPS(currentTime) {
     }
 
 	document.getElementById('fpsDisplay').textContent = `fps: ${fps}`;
+	
+	if (fps > 60) {
+		frameInterval = 1
+	}
+	else if (fps > 30) {
+		frameInterval = 2
+	}
+	else if (fps > 15) {
+		frameInterval = 3
+	}
+	else if (fps > 8) {
+		frameInterval = 5
+	}
+	else if (fps > 4) {
+		frameInterval = 7
+	}
+	else {
+		frameInterval = 11
+	}
 }
 
 function animate(currentTime) {
     const startTime = performance.now();
 
     displayFPS(currentTime);
-	updateBarycenterCoord();
-
-	const objectA = bodies[parseInt(objectASelect)];
-	const objectB = bodies[parseInt(objectBSelect)];
-	
 
     if (!isPaused) {
         const dt = parseFloat(dtInput.value);
@@ -1786,20 +1800,24 @@ function animate(currentTime) {
 		} else {
 			updatePositions(dt);
 		}
-        const barycenter = calculateBarycenter();
-        drawBodies(barycenter);
-		updateControlValues();
-		updateWellControlValues();
 
-    } else {
-        drawBodies(calculateBarycenter());
+        if (frameCount % frameInterval === 0) {
+			updateBarycenterCoord();
+			const barycenter = calculateBarycenter();
+            drawBodies(barycenter);
+			updateControlValues();
+			updateWellControlValues();
+        }
+		
     }
 	
-    if (objectA && objectB) {
-        updateObjectInfo(objectA, objectB);
-        updateGraphWithParameters(objectA, objectB);
-    }
-    
+	const objectA = bodies[parseInt(objectASelect)];
+	const objectB = bodies[parseInt(objectBSelect)];
+	if (objectA && objectB) {
+		updateObjectInfo(objectA, objectB);
+		updateGraphWithParameters(objectA, objectB);
+	}
+
     const endTime = performance.now();
     const frameTime = endTime - startTime;
     
@@ -2720,9 +2738,8 @@ function updateGraphWithParameters(objectA, objectB, currentTime) {
     chart.update();
 
     if (xValue !== null && yValue !== null) {
-        updateCounter++;
-		const doconst = Math.min(Math.ceil(cpuUsage ** 2 / 1e4), 7)
-        if (updateCounter % doconst === 0) {
+		const doconst = Math.ceil(Math.min(cpuUsage ** 2 / 1e4, 7))
+        if (frameCount % doconst === 0) {
             updateChart(xValue, yValue, currentTime);
         }
     }
@@ -2742,13 +2759,22 @@ function clearChart() {
 
 function initiate() {
 	startTimer();
+	
 	updateConstants();
+	
 	updateControlValues();
 	updateWellControlValues();
+	
 	animate();
+	
 	initChart();
+	
 	updatePresetSelect();
+	
 	populateParameterDropdowns();
+	
+	drawBodies(calculateBarycenter());
+	
 	translate();
 }
 
@@ -2756,7 +2782,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	if (devModenabled) {
 		console.log('Starting...');
 	}
+	
 	initiate();
+	
 	if (devModenabled) {
 		console.log('Start succes!');
 	}
