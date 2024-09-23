@@ -334,11 +334,14 @@
 						<label for="GValue" id="GValueLabel">Constante Gravitationnelle (G) :</label>
 						<input type="number" id="GValue" value="0.1" step="0.1" style="margin-left:25px"/>
 						<br>
-						<label for="kValue" id="kValueLabel">Constante de Coulomb (k) :</label>
-						<input type="number" id="kValue" value="100" step="0.1" style="margin-left:25px"/>
+						<label for="epsi0Value" id="epsi0ValueLabel">Permittivité du vide (epsilon_0) :</label>
+						<input type="number" id="epsi0Value" value="1.25663706144" step="0.1" style="margin-left:25px"/>
 						<br>
 						<label for="cValue" id="cValueLabel">Vitesse de la lumière (c) :</label>
 						<input type="number" id="cValue" value="299792458" step="10" style="margin-left:25px"/>
+						<br>
+						<label for="piValue" id="piValueLabel">Constante d'Archimède (pi) :</label>
+						<input type="number" id="piValue" value="3.141592653589793" step="0.01" style="margin-left:25px"/>
 					</div>
 				</div>
 
@@ -355,6 +358,14 @@
 					<div class="slider-container">
 						<input type="range" id="vectorLengthSliderk" min="0.01" max="10" value="1" step="0.01" />
 						<span id="vectorLengthValuek">1</span>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label id="vectorFieldDistanceLabel">Écartement des vecteurs des champs magnétiques</label>
+					<div class="slider-container">
+						<input type="range" id="vectorFieldDistance" min="3.75" max="37.5" value="17.5" step="1.25" />
+						<span id="vectorFieldDistanceD">17.5</span>
 					</div>
 				</div>
 				

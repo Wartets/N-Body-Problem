@@ -16,7 +16,7 @@ let devModenabled = document.getElementById('devMod').checked;
 let relativistMod = document.getElementById('mergeToggle').checked;
 let focusObject = 'barycenter-mass';
 let chart;
-let G, k, c;
+let G, epsi0, c, pi, k;
 let scale = 1;
 let scrollZoom = 1;
 let timeElapsed = 0;
@@ -44,8 +44,9 @@ const barycenterDisplay = document.getElementById('barycenterCoords');
 const constValCheckbox = document.getElementById('ConstVal');
 const customConstantsDiv = document.getElementById('customConstants');
 const GInput = document.getElementById('GValue');
-const kInput = document.getElementById('kValue');
+const epsi0Input = document.getElementById('epsi0Value');
 const cInput = document.getElementById('cValue');
+const piInput = document.getElementById('piValue');
 const fullscreenBtn = document.getElementById('fullscreenBtn');
 const frictionToggle = document.getElementById('frictionToggle');
 const frictionCoefficientContainer = document.getElementById('frictionCoefficientContainer');
@@ -60,12 +61,13 @@ const isHidden = controls.classList.toggle('hidden');
 const isShownControl = controls.classList.toggle('shownControl');
 const vectorLengthSliderG = document.getElementById('vectorLengthSliderG');
 const vectorLengthDisplayG = document.getElementById('vectorLengthValueG');
+const vectorFieldDistanceDisplay = document.getElementById('vectorFieldDistance');
 const vectorLengthSliderk = document.getElementById('vectorLengthSliderk');
 const vectorLengthDisplayk = document.getElementById('vectorLengthValuek');
 const toggleButtons = document.querySelectorAll('.toggle-btn');
 const impactSound = new Audio('sound/impact-sound.mp3');
 const mergeSound = new Audio('sound/merge-sound.mp3');
-const impactDelay = 1;
+const impactDelay = 10;
 const mergeDelay = 1;
 const bodies = initialBodies.map(body => ({
 	...body,
@@ -116,14 +118,21 @@ toggleButtons.forEach((button, index) => {
 });
 
 GInput.addEventListener('input', updateConstants);
-kInput.addEventListener('input', updateConstants);
+epsi0Input.addEventListener('input', updateConstants);
 cInput.addEventListener('input', updateConstants);
+piInput.addEventListener('input', updateConstants);
 
 constValCheckbox.addEventListener('change', updateConstants);
 
 vectorLengthSliderG.addEventListener('input', function() {
     vectorLengthDisplayG.textContent = vectorLengthSliderG.value;
     drawGravityField();
+});
+
+vectorFieldDistanceDisplay.addEventListener('input', function() {
+    vectorFieldDistanceD.textContent = vectorFieldDistance.value;
+    drawGravityField();
+    drawMagneticField();
 });
 
 vectorLengthSliderk.addEventListener('input', function() {
@@ -542,7 +551,7 @@ function createRdPreset() {
 function gaussianRandom(mean, stdDev) {
     let u1 = Math.random();
     let u2 = Math.random();
-    let z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    let z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * pi * u2);
     return z * stdDev + mean;
 }
 
@@ -575,17 +584,20 @@ function updateConstants() {
     if (constValCheckbox.checked) {
 		c = 299792458;			// Speed of light in m/s
         G = 6.67430e-11;		// Constante gravitationnelle (réelle)
-        k = 8.9875517923e9;		// Constante de Coulomb (réelle)
+        epsi0 = 8.85418782e-12;	// Permittivité du vide (réelle)
+		pi = Math.PI;			// Constante d'Archimède (réelle)
         customConstantsDiv.style.display = 'none';
     } else {
         // Utiliser les valeurs personnalisées
 		c = parseFloat(GInput.value);
         G = parseFloat(GInput.value);
-        k = parseFloat(kInput.value);
+        epsi0 = parseFloat(epsi0Input.value);
+		pi = parseFloat(piInput.value);
         customConstantsDiv.style.display = 'block';
     }
+	k = 1 / (4 * pi * epsi0);
 	if (devModenabled) {
-		console.log('G:', G, 'k:', k, 'c:', c);
+		console.log('G:', G, 'epsi0:', epsi0, 'k:', k, 'c:', c, 'pi:', pi);
 	}
 }
 
@@ -1037,12 +1049,23 @@ function adjustValue(inputId, factor) {
     }
 }
 
-function playImpactSound() {
+function playImpactSound(objectA, objectB) {
 	if (soundEnabled) {
 		const currentTime = Date.now();
-		if (currentTime - lastImpactTime > impactDelay) {
+		const vardt = (currentTime - lastImpactTime) * parseFloat(dtInput.value) * 100;
+		
+		const restitution1 = (pi * Math.pow(objectA.radius, 2)) / Math.sqrt(objectA.mass);
+		const restitution2 = (pi * Math.pow(objectB.radius, 2)) / Math.sqrt(objectB.mass);
+		
+		const restitution = 1 - Math.sqrt(restitution1 * restitution1 + restitution2 * restitution2) / getRelativeRadialSpeed(objectA, objectB);
+		
+		if (vardt > impactDelay) {
 			lastImpactTime = currentTime;
 			const impactSound = new Audio('sound/impact-sound.mp3');
+			const restitutionf = 1 - 1 / Math.log(restitution * Math.E + Math.E);
+			const volume = Math.max(Math.max(Math.min(1 - restitutionf / 10, 1), 0) * restitution, 0);
+			console.log(volume)
+            impactSound.volume = volume
 			impactSound.play();
 		}
 	}
@@ -1394,8 +1417,8 @@ function drawVelocityVectors() {
 			const angle = Math.atan2(body.velocity.y, body.velocity.x);
 			ctx.beginPath();
 			ctx.moveTo(endX, endY);
-			ctx.lineTo(endX - arrowSize * Math.cos(angle - Math.PI / 6), endY - arrowSize * Math.sin(angle - Math.PI / 6));
-			ctx.lineTo(endX - arrowSize * Math.cos(angle + Math.PI / 6), endY - arrowSize * Math.sin(angle + Math.PI / 6));
+			ctx.lineTo(endX - arrowSize * Math.cos(angle - pi / 6), endY - arrowSize * Math.sin(angle - pi / 6));
+			ctx.lineTo(endX - arrowSize * Math.cos(angle + pi / 6), endY - arrowSize * Math.sin(angle + pi / 6));
 			ctx.lineTo(endX, endY);
 			ctx.fillStyle = 'darkgray';
 			ctx.fill();
@@ -1425,7 +1448,7 @@ function drawBodies(barycenter) {
 		if (body.show) {
 			ctx.beginPath();
 			const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
-			ctx.arc(body.position.x, body.position.y, radius, 0, 2 * Math.PI);
+			ctx.arc(body.position.x, body.position.y, radius, 0, 2 * pi);
 			ctx.fillStyle = body.color;
 			
 			if (hoveredBody === body) {
@@ -1443,7 +1466,7 @@ function drawBodies(barycenter) {
 				body.points.forEach(point => {
 					ctx.beginPath();
 					const pointSize = radius * 0;
-					ctx.arc(point.x, point.y, pointSize, 0, 2 * Math.PI);
+					ctx.arc(point.x, point.y, pointSize, 0, 2 * pi);
 					ctx.fillStyle = body.color;
 					ctx.fill();
 					ctx.closePath();
@@ -1467,7 +1490,7 @@ function drawBodies(barycenter) {
 	wells.forEach(well => {
 		if (well.show) {
 			ctx.beginPath();
-			ctx.arc(well.position.x, well.position.y, 7 / scale, 0, 2 * Math.PI);
+			ctx.arc(well.position.x, well.position.y, 7 / scale, 0, 2 * pi);
 			ctx.strokeStyle = well.color || 'white';
 			ctx.lineWidth = 1 / scale;
 			if (hoveredBody === well) {
@@ -1479,7 +1502,7 @@ function drawBodies(barycenter) {
 			ctx.closePath();
 			
 			ctx.beginPath();
-			ctx.arc(well.position.x, well.position.y, 3.25 / scale, 0, 2 * Math.PI);
+			ctx.arc(well.position.x, well.position.y, 3.25 / scale, 0, 2 * pi);
 			ctx.strokeStyle = well.color || 'white';
 			ctx.lineWidth = 1 / scale;
 			if (hoveredBody === well) {
@@ -1501,7 +1524,7 @@ function drawBodies(barycenter) {
             const radiusA = showSizeCheckbox.checked ? objectA.radius / scale : objectA.radius;
             const highlightedradiusA = (showSizeCheckbox.checked ? (Math.min(objectA.radius * 2.5, 7)) / scale * 1.7 : Math.min(Math.max(1.8 * radiusA, 2.5 + radiusA), 2.5 + radiusA));
 			ctx.globalAlpha = 0.2;
-            ctx.arc(objectA.position.x, objectA.position.y, highlightedradiusA, 0, 2 * Math.PI);
+            ctx.arc(objectA.position.x, objectA.position.y, highlightedradiusA, 0, 2 * pi);
             ctx.strokeStyle = objectA.color;
             ctx.lineWidth = showSizeCheckbox.checked ? 1.1 / scale : 1.1;
             ctx.stroke();
@@ -1513,7 +1536,7 @@ function drawBodies(barycenter) {
             const radiusB = showSizeCheckbox.checked ? objectB.radius / scale : objectB.radius;
             const highlightedradiusB = (showSizeCheckbox.checked ? (Math.min(objectB.radius * 2.5, 7)) / scale * 1.7 : Math.min(Math.max(1.8 * radiusB, 2.5 + radiusB), 2.5 + radiusB));
 			ctx.globalAlpha = 0.2;
-            ctx.arc(objectB.position.x, objectB.position.y, highlightedradiusB, 0, 2 * Math.PI);
+            ctx.arc(objectB.position.x, objectB.position.y, highlightedradiusB, 0, 2 * pi);
             ctx.strokeStyle = objectB.color;
             ctx.lineWidth = showSizeCheckbox.checked ? 1 / scale : 1.1;
             ctx.stroke();
@@ -1523,7 +1546,7 @@ function drawBodies(barycenter) {
 
 	ctx.beginPath();
 	if (document.getElementById('showVelocities').checked) {
-		ctx.arc(barycenter.x, barycenter.y, barycenterPointSize, 0, 2 * Math.PI);
+		ctx.arc(barycenter.x, barycenter.y, barycenterPointSize, 0, 2 * pi);
 	}
 	ctx.fillStyle = 'gray';
 	ctx.fill();
@@ -1680,10 +1703,10 @@ function mergeBodies(body1, body2) {
         y: (body1.acceleration.y + body2.acceleration.y) / 2
     };
 
-    const surface1 = Math.PI * Math.pow(body1.radius, 2);
-    const surface2 = Math.PI * Math.pow(body2.radius, 2);
+    const surface1 = pi * Math.pow(body1.radius, 2);
+    const surface2 = pi * Math.pow(body2.radius, 2);
     const newSurface = surface1 + surface2;
-    const newRadius = Math.sqrt(newSurface / Math.PI);
+    const newRadius = Math.sqrt(newSurface / pi);
     const newColor = mixColors(body1.color, body2.color, surface1, surface2)
 
     const massPosition = {
@@ -2002,6 +2025,7 @@ function updatePresetSelect() {
 function drawGravityField() {
     const vectorLengthSliderG = document.getElementById('vectorLengthSliderG');
     const vectorLengthValueG = parseFloat(vectorLengthSliderG.value);
+	const vectorFieldDistance =  parseFloat(vectorFieldDistanceDisplay.value);
     const showGravityField = document.getElementById('showGravityField').checked;
 
     if (!showGravityField) return;
@@ -2020,8 +2044,8 @@ function drawGravityField() {
     const startX = visibleCenterX - (canvasWidth / 2 / scale);
     const startY = visibleCenterY - (canvasHeight / 2 / scale);
 
-    const numVectorsX = Math.floor(canvasWidth / 15);
-    const numVectorsY = Math.floor(canvasHeight / 15);
+    const numVectorsX = Math.floor(canvasWidth / vectorFieldDistance);
+    const numVectorsY = Math.floor(canvasHeight / vectorFieldDistance);
 
     const maxMass = Math.max(...bodies.map(body => body.mass));
 
@@ -2087,6 +2111,7 @@ function drawMagneticField() {
     const vectorLengthSliderk = document.getElementById('vectorLengthSliderk');
     const vectorLengthValuek = parseFloat(vectorLengthSliderk.value);
     const showMagneticField = document.getElementById('showMagneticField').checked;
+	const vectorFieldDistance =  parseFloat(vectorFieldDistanceDisplay.value);
 
     if (!showMagneticField) return;
 
@@ -2104,8 +2129,8 @@ function drawMagneticField() {
     const startX = visibleCenterX - (canvasWidth / 2 / scale);
     const startY = visibleCenterY - (canvasHeight / 2 / scale);
 
-    const numVectorsX = Math.floor(canvasWidth / 15);
-    const numVectorsY = Math.floor(canvasHeight / 15);
+    const numVectorsX = Math.floor(canvasWidth / vectorFieldDistance);
+    const numVectorsY = Math.floor(canvasHeight / vectorFieldDistance);
 
 	const maxCharge = bodies.reduce((max, body) => Math.max(max, Math.abs(body.charge)), 0) || 1;
 
@@ -2385,7 +2410,7 @@ function getEccentricity(objectA, objectB) {
 function getOrbitalPeriod(objectA, objectB) {
     const semiMajorAxis = getSemiMajorAxis(objectA, objectB);
     const totalMass = objectA.mass + objectB.mass;
-    const orbitalPeriod = 2 * Math.PI * Math.sqrt(Math.pow(semiMajorAxis, 3) / (G * totalMass));
+    const orbitalPeriod = 2 * pi * Math.sqrt(Math.pow(semiMajorAxis, 3) / (G * totalMass));
     return orbitalPeriod;
 }
 
@@ -2433,7 +2458,7 @@ function getLongitudeOfAscendingNode(objectA, objectB) {
 function getMeanAnomaly(objectA, objectB, time) {
     const orbitalPeriod = getOrbitalPeriod(objectA, objectB);
     const eccentricity = getEccentricity(objectA, objectB);
-    const meanMotion = 2 * Math.PI / orbitalPeriod;
+    const meanMotion = 2 * pi / orbitalPeriod;
 
     const meanAnomaly = meanMotion * time;
     return meanAnomaly;
@@ -2464,7 +2489,7 @@ function updateObjectInfo(objectA, objectB) {
     document.getElementById('massA').textContent = formatScientific(objectA.mass, 2) + ' kg';
     document.getElementById('chargeA').textContent = formatScientific(objectA.charge, 1) + ' C';
     document.getElementById('radiusA').textContent = formatScientific(objectA.radius, 1) + ' m';
-    document.getElementById('surface1').textContent = formatScientific(Math.PI * Math.pow(objectA.radius, 2), 2) + ' m²';
+    document.getElementById('surface1').textContent = formatScientific(pi * Math.pow(objectA.radius, 2), 2) + ' m²';
     document.getElementById('positionA').textContent = `(${formatScientific(objectA.position.x, 2)}, ${formatScientific(objectA.position.y, 2)})`;
     document.getElementById('distanceBary1').textContent = formatScientific(getDistanceFromBarycenter(objectA), 2) + ' m';
     document.getElementById('speedRadial1').textContent = formatScientific(getRadialSpeed(objectA), 4) + ' m/s';
@@ -2474,7 +2499,7 @@ function updateObjectInfo(objectA, objectB) {
     document.getElementById('massB').textContent = formatScientific(objectB.mass, 2) + ' kg';
     document.getElementById('chargeB').textContent = formatScientific(objectB.charge, 1) + ' C';
     document.getElementById('radiusB').textContent = formatScientific(objectB.radius, 1) + ' m';
-    document.getElementById('surface2').textContent = formatScientific(Math.PI * Math.pow(objectB.radius, 2), 2) + ' m²';
+    document.getElementById('surface2').textContent = formatScientific(pi * Math.pow(objectB.radius, 2), 2) + ' m²';
     document.getElementById('positionB').textContent = `(${formatScientific(objectB.position.x, 2)}, ${formatScientific(objectB.position.y, 2)})`;
     document.getElementById('distanceBary2').textContent = formatScientific(getDistanceFromBarycenter(objectB), 2) + ' m';
     document.getElementById('speedRadial2').textContent = formatScientific(getRadialSpeed(objectB), 4) + ' m/s';
