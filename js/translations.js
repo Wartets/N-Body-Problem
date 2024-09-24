@@ -265,7 +265,7 @@ const translations = {
 		"piValueLabelEntree": "Constante d'Archimède (pi) :",
 		"vectorLengthLabelGEntree": "Longueur des vecteurs du champ gravitationnel :",
 		"vectorLengthLabelkEntree": "Longueur des vecteurs du champ électromagnétique :",
-		"vectorFieldDistanceLabelEntree": "Écartement des vecteurs des champs magnétiques",
+		"vectorFieldDistanceLabelEntree": "Écartement des vecteurs des champs",
 		"devModLabelEntree": "Mode développeur",
     },
     "en": {
@@ -362,7 +362,7 @@ const translations = {
 		"piValueLabelEntree": "Archimedean constant (pi):",
 		"vectorLengthLabelGEntree": "Length of gravitational field vectors:",
 		"vectorLengthLabelkEntree": "Length of electromagnetic field vectors:",
-		"vectorFieldDistanceLabelEntree": "Distance between magnetic field vectors:",
+		"vectorFieldDistanceLabelEntree": "Distance between field vectors:",
 		"devModLabelEntree": "Developer mode",
     },
     "es": {

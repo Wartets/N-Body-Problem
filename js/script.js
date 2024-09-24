@@ -90,7 +90,6 @@ canvas.addEventListener('touchend', handleTouchEnd);
 
 focusSelect.addEventListener('change', (e) => {
 	focusObject = e.target.value;
-	updateAll();
 });
 
 frictionToggle.addEventListener('change', () => {
@@ -126,18 +125,14 @@ constValCheckbox.addEventListener('change', updateConstants);
 
 vectorLengthSliderG.addEventListener('input', function() {
     vectorLengthDisplayG.textContent = vectorLengthSliderG.value;
-    drawGravityField();
 });
 
 vectorFieldDistanceDisplay.addEventListener('input', function() {
     vectorFieldDistanceD.textContent = vectorFieldDistance.value;
-    drawGravityField();
-    drawMagneticField();
 });
 
 vectorLengthSliderk.addEventListener('input', function() {
     vectorLengthDisplayk.textContent = vectorLengthSliderk.value;
-    drawMagneticField();
 });
 
 helpBtn.addEventListener('click', () => {
@@ -166,7 +161,6 @@ closeBtn.addEventListener('touchstart', (e) => {
 });
 
 window.addEventListener('click', (event) => {
-	let frameInterval = 1;
 	if (event.target === modal) {
 		modal.style.display = 'none';
 	}
@@ -191,7 +185,6 @@ controlsToggle.addEventListener('touchstart', (e) => {
 	e.preventDefault();
 	const isHidden = !controls.classList.toggle('hidden');
 	controlsToggle.src = isHidden ? 'image/U+25C0.svg' : 'image/U+25B6.svg';
-	controlsToggle.alt = isHidden ? 'open controls' : 'close controls';
 	document.body.classList.toggle('hidden');
 	window.dispatchEvent(new Event('resize'));
 });
@@ -249,7 +242,6 @@ window.addEventListener('resize', () => {
 	if (devModenabled) {
         console.log('Canvas width :', canvas.width);
 	}
-	updateAll();
 });
 
 document.addEventListener('keydown', (event) => {
@@ -339,35 +331,29 @@ document.getElementById('closeInfoWindowBtn').addEventListener('click', function
 document.getElementById('zoomOut10').addEventListener('click', () => {
 	scrollZoom /= 10;
 	scale = scale * scrollZoom;
-	updateAll();
 });
 
 document.getElementById('zoomOut2').addEventListener('click', () => {
 	scrollZoom /= 2;
 	scale = scale * scrollZoom;
-	updateAll();
 });
 
 document.getElementById('zoomIn2').addEventListener('click', () => {
 	scrollZoom *= 2;
 	scale = scale * scrollZoom;
-	updateAll();
 });
 
 document.getElementById('zoomIn10').addEventListener('click', () => {
 	scrollZoom *= 10;
 	scale = scale * scrollZoom;
-	updateAll();
 });
 
 document.getElementById('resetViewBtn').addEventListener('click', () => {
 	resetView();
-	updateAll();
 });
 
 document.getElementById('resetChartBtn').addEventListener('click', () => {
 	clearChart();
-	updateAll();
 });
 
 document.getElementById('addBodyBtn').addEventListener('click', () => {
@@ -396,7 +382,6 @@ document.getElementById('addBodyBtn').addEventListener('click', () => {
 	} else {
 		alert(`ERROR: no space for an object with a radius of ${rdradius} m`)
 	}
-	updateAll();
 });
 
 document.getElementById('addWellBtn').addEventListener('click', () => {
@@ -421,7 +406,6 @@ document.getElementById('addWellBtn').addEventListener('click', () => {
 	} else {
 		alert(`ERROR: no space for a Well with a radius of ${rdradius} m`)
 	}
-	updateAll();
 });
 
 document.getElementById('loadPresetBtn').addEventListener('click', () => {
@@ -474,7 +458,6 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 			console.log('Preset loaded:', selectedPresetName);
 		}
 	}
-	updateAll();
 });
 
 document.getElementById('savePresetBtn').addEventListener('click', () => {
@@ -502,7 +485,6 @@ document.getElementById('savePresetBtn').addEventListener('click', () => {
 	if (devModenabled) {
 		console.log('Preset saved:', presetName);
 	}
-	updateAll();
 });
 
 document.getElementById('collisionToggle').addEventListener('change', (e) => {
@@ -1443,15 +1425,6 @@ function drawVelocityVectors() {
 }
 
 function drawBodies(barycenter) {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (document.getElementById('showGravityField').checked || document.getElementById('showMagneticField').checked) {
-        drawGravityField();
-		drawMagneticField();
-    }
-
-    drawGrid();
-
 	ctx.save();
 	ctx.translate(canvas.width / 2, canvas.height / 2);
 	ctx.scale(scale, scale);
@@ -1566,8 +1539,6 @@ function drawBodies(barycenter) {
 	ctx.closePath();
 
 	ctx.restore();
-	
-	drawVelocityVectors();
 }
 
 function clearTrails() {
@@ -1773,66 +1744,66 @@ function displayFPS(currentTime) {
 
 	document.getElementById('fpsDisplay').textContent = `fps: ${fps}`;
 	
-	if (fps > 60) {
-		frameInterval = 1
-	}
-	else if (fps > 30) {
-		frameInterval = 2
-	}
-	else if (fps > 15) {
-		frameInterval = 3
-	}
-	else if (fps > 8) {
-		frameInterval = 5
-	}
-	else if (fps > 4) {
-		frameInterval = 7
-	}
-	else {
-		frameInterval = 11
-	}
+	frameInterval = fps > 60 ? 1 :
+					fps > 30 ? 2 :
+					fps > 15 ? 3 :
+					fps > 12 ? 4 :
+					fps > 8  ? 5 :
+					fps > 6  ? 6 :
+					fps > 4  ? 7 : 11;
 	
 	document.getElementById('skipDisplay').textContent = `Skipped: ${frameInterval}`;
 }
 
-function updateAll() {
-	barycenter = calculateBarycenter();
-	drawBodies(barycenter);
-	updateControlValues();
-	updateWellControlValues();
+function draw() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	const barycenter = calculateBarycenter();
 	drawGrid();
+	if (document.getElementById('showGravityField').checked || document.getElementById('showMagneticField').checked) {
+        drawGravityField();
+		drawMagneticField();
+    }
+	drawBodies(barycenter);
+	drawVelocityVectors();
 }
 
 function animate(currentTime) {
     const startTime = performance.now();
 
     displayFPS(currentTime);
-
+	const dt = parseFloat(dtInput.value);
+	
     if (!isPaused) {
-        const dt = parseFloat(dtInput.value);
 		if (relativistMod) {
 			calculateRelativisticForces();
 		} else {
 			calculateForces();
 		}
+		
         if (collisionsEnabled || mergingEnabled) {
             detectProximity();
         }
+		
 		if (relativistMod) {
 			updateRelativisticPositions(dt);
 		} else {
 			updatePositions(dt);
 		}
-    }
-
-	if (frameCount % frameInterval === 0) {
-		updateBarycenterCoord();
-		updateAll();
-	}
 		
+		updateControlValues();
+		updateWellControlValues();
+
+        if (frameCount % frameInterval === 0) {
+			draw();
+        }
+    }
+	
+	updateBarycenterCoord();
+	draw();
 	
 	const objectA = bodies[parseInt(objectASelect)];
 	const objectB = bodies[parseInt(objectBSelect)];
+	
 	if (objectA && objectB) {
 		updateObjectInfo(objectA, objectB);
 		updateGraphWithParameters(objectA, objectB);
@@ -1841,8 +1812,13 @@ function animate(currentTime) {
     const endTime = performance.now();
     const frameTime = endTime - startTime;
     
-    cpuUsage = Math.min((frameTime / 16.67 / 2) * 100, 500);
-    document.getElementById('UsageDisplay').textContent = `Usage: ${cpuUsage.toFixed(0)}%`;
+    cpuUsage = Math.min((frameTime / 16.67 / 2.25) * 100, 500);
+	if (cpuUsage >= 500) {
+		document.getElementById('UsageDisplay').textContent = `Usage: +500%`;
+	}
+	else {
+		document.getElementById('UsageDisplay').textContent = `Usage: ${cpuUsage.toFixed(0).padStart(3, '0')}%`;
+	}
     
     requestAnimationFrame(animate);
 }
@@ -1880,9 +1856,6 @@ function handleMouseDown(event) {
 			break;
 		}
 	}
-	drawBodies(calculateBarycenter());
-	updateControlValues();
-	updateWellControlValues();
 }
 
 function handleMouseMove(event) {
@@ -1907,7 +1880,7 @@ function handleMouseMove(event) {
 		const dy = well.position.y - mouseY;
 		const distance = Math.sqrt(dx * dx + dy * dy);
 
-		const radius = 7 / scale
+		const radius = 7 / scale;
 		if (distance < radius) {
 			hoveredBody = well;
 		}
@@ -1925,22 +1898,21 @@ function handleMouseMove(event) {
 		}, 0);
 	}
 	
-    if (hoveredBody) {
-        canvas.style.cursor = 'pointer';
-    } else {
-        canvas.style.cursor = 'crosshair';
-    }
-	drawBodies(calculateBarycenter());
-	updateControlValues();
-	updateWellControlValues();
+	if (cpuUsage >= 500) {
+        canvas.style.cursor = 'wait';
+	}
+	else {
+		if (hoveredBody) {
+			canvas.style.cursor = 'pointer';
+		} else {
+			canvas.style.cursor = 'crosshair';
+		}
+	}
 }
 
 function handleMouseUp() {
 	selectedBody = null;
 	doZoom = document.getElementById('autoZoomToggle').checked;;
-	drawBodies(calculateBarycenter());
-	updateControlValues();
-	updateWellControlValues();
 }
 
 function handleTouchStart(event) {
@@ -1983,9 +1955,6 @@ function handleTouchStart(event) {
         initialPinchDistance = getDistance(touch1, touch2);
         lastPinchZoom = scrollZoom;
     }
-	drawBodies(calculateBarycenter());
-	updateControlValues();
-	updateWellControlValues();
 }
 
 function handleTouchMove(event) {
@@ -2018,9 +1987,6 @@ function handleTouchMove(event) {
             scale = scrollZoom;
         }
     }
-	drawBodies(calculateBarycenter());
-	updateControlValues();
-	updateWellControlValues();
 }
 
 function handleTouchEnd(event) {
@@ -2033,16 +1999,12 @@ function handleTouchEnd(event) {
             selectedBody = null;
         }
     }
-	drawBodies(calculateBarycenter());
-	updateControlValues();
-	updateWellControlValues();
 }
 
 function handleMouseWheel(event) {
 	event.preventDefault();
 	scrollZoom *= (1 + event.deltaY * -0.001);
 	scale *= scrollZoom;
-	drawBodies(calculateBarycenter());
 }
 
 function Pause() {
@@ -2812,7 +2774,7 @@ function initiate() {
 	
 	populateParameterDropdowns();
 	
-	drawBodies(calculateBarycenter());
+	draw();
 	
 	translate();
 }
@@ -2823,7 +2785,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	initiate();
-	
+
 	if (devModenabled) {
 		console.log('Start succes!');
 	}
