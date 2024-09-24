@@ -1,0 +1,525 @@
+body {
+	margin: 0;
+	display: flex;
+    width: 100vw;
+    height: 100vh;
+	overflow: hidden;
+	font-family: 'Arial', sans-serif;
+	background-color: #1c1c1c;
+	font-size: 14px;
+	color: #fff;
+}
+
+#simulationCanvas {
+    height: auto;
+    flex: 1;
+    background-color: #000;
+    overflow: hidden;
+    object-fit: contain;
+	cursor: crosshair;
+}
+
+#controls {
+	width: 250px;
+    height: 100%;
+	padding: 20px;
+	background-color: #1c1c1c;
+	background-image: var(--background-image-url);
+	flex-direction: column;
+	display: flex;
+	gap: 18px;
+	overflow-y: auto;
+}
+
+.hidden #controls {
+	display: none;
+}
+
+#controlsToggleBtn {
+	right: 298px;
+    position: absolute;
+    top: 49%;
+    cursor: e-resize;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+#controlsToggle {
+	height: 20px;
+}
+
+.hidden #controlsToggleBtn {
+    right: 5px;
+    cursor: w-resize;
+}
+
+.control-group {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.control-group-1 {
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+}
+
+.control-group-2 {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+#hr1 {
+	font-size: 1px;
+}
+
+.color-indicator {
+	opacity: 1;
+	padding: 8px;
+	display: inline-block;
+    object-fit: contain;
+	border-radius: 50%;
+	cursor: pointer;
+	margin: 5px;
+	border: 2px solid #444;
+    transition: opacity 0.2s ease;
+}
+
+.color-indicator:hover {
+	opacity: 0.45;
+    transition: opacity 0.2s ease;
+}
+
+.hoverOpct:hover {
+	opacity: 0.45;
+    transition: opacity 0.2s ease;
+}
+
+#dt,
+#frictionCoefficient {
+	border-radius: 4px;
+}
+
+input[type="number"] {
+	text-align: center;
+	width: 35%;
+	padding: 5px;
+	background-color: #393939;
+	border: 1px solid #555;
+	color: #fff;
+}
+
+input[type="text"] {
+	background-color: #dedede;
+}
+
+select {
+	background-color: #dedede;
+	border-radius: 7.5px;
+	text-align: center;
+}
+
+input[type="checkbox"] {
+	margin-right: 1.1%;
+}
+
+input[type="range"] {
+    transition: all 1.3s ease;
+}
+
+button {
+	padding: 10px;
+	background-color: #444;
+	border: 1px solid #555;
+	color: #fff;
+	cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 0;
+}
+
+button:first-child {
+    border-top-left-radius: 7.5px;
+    border-bottom-left-radius: 7.5px;
+}
+
+button:last-child {
+    border-top-right-radius: 7.5px;
+    border-bottom-right-radius: 7.5px;
+}
+
+button:hover {
+	background-color: #666;
+}
+
+.checkbox-group {
+	display: flex;
+	align-items: center;
+	margin-top: 0px;
+}
+
+.checkbox-group input {
+	width: auto;
+}
+
+.checkbox-group label {
+	display: flex;
+	align-items: center;
+}
+
+.slider-container {
+	opacity: 0.8;
+	position: relative;
+	width: 100%;
+}
+
+.slider {
+	width: 100%;
+	height: 4px;
+	background: #ddd;
+	outline: none;
+	opacity: 0.7;
+	transition: opacity .15s ease-in-out;
+}
+
+.slider:hover {
+	opacity: 0.8;
+}
+
+.tooltip {
+	background: none;
+	color: #fff;
+	font-size: 12px;
+	white-space: nowrap;
+	display: none;
+	text-align: center;
+}
+
+.btn-group {
+	display: flex;
+}
+
+.btn {
+	flex: 1
+}
+
+#startPauseBtn {
+	position: absolute;
+	left: 15px;
+	bottom: 15px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+.hidden #fullscreenBtn {
+    right: 15px;
+}
+
+#fullscreenBtn {
+    display: block;
+	position: absolute;
+	right: 302.5px;
+	bottom: 15px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+#resetViewBtn {
+    display: block;
+	position: absolute;
+	left: 16px;
+	bottom: 70px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+	opacity: 0.85;
+	filter: brightness(1.1);
+}
+
+#infoWindowBtn {
+    display: block;
+	position: absolute;
+	left: 17px;
+	bottom: 124px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+	opacity: 0.85;
+	filter: brightness(0.7);
+}
+
+#helpBtn {
+	position: absolute;
+	right: 302.5px;
+	top: 15px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: help;
+}
+
+.hidden #helpBtn {
+    right: 15px;
+    transition: right 0.1s ease;
+}
+
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 2;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+	top: 10%;
+    position: relative;
+    width: 50%;
+    height: 60%;
+    margin: auto;
+	background-color: #1c1c1c;
+	background-image: var(--background-image-url);
+	color: #adadad;
+    padding: 1.75%;
+    border-radius: 0.85%;
+    overflow-y: auto;
+	font-size: 16px;
+	text-align: justify;
+	text-justify: inter-word;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.close {
+	position: absolute;
+	top: 0.8%;
+	right: 1.6%;
+	color: #aaa;
+	font-size: 34px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.hoverlink {
+    transition: filter 0.2s ease;
+	filter: brightness(0.8);
+	filter: saturate(1);
+}
+
+.hoverlink:hover {
+    transition: filter 0.2s ease;
+	filter: brightness(1.2);
+}
+
+#startPauseImg,
+#helpImg,
+#resetViewImg,
+#infoWindowImg,
+#fullscreenImg {
+    width: 40px;
+    height: auto;
+    display: block;
+}
+
+.hidden #startPauseImg,
+.hidden #helpImg,
+.hidden #button,
+.hidden #controlsToggleBtn,
+.hidden #fullscreenBtn,
+.hidden #resetViewBtn,
+.hidden #infoWindowBtn,
+.hidden .canvas-text {
+    transition: opacity 0.3s ease;
+	opacity: 0.3;
+}
+
+.canvas-text {
+	font-family: 'Lexend Deca', sans-serif;
+	left: 18px;
+	-webkit-text-stroke: .5px gray;
+	cursor: crosshair;
+}
+
+#helpBtn:hover,
+#startPauseBtn:hover,
+#controlsToggleBtn:hover,
+#infoWindowBtn:hover,
+#fullscreenBtn:hover,
+#advancedControlsToggleBtn:hover,
+#resetViewBtn:hover {
+    transition: filter 0.2s ease;
+	filter: brightness(2);
+}
+
+.draggable {
+    z-index: 1;
+}
+
+#containerChart {
+    background-color: #333;
+	border-radius: 10px;
+	width: 100%;
+	height: 300px;
+	text-align:center;
+	filter: brightness(1.5);
+}
+
+#infoWindowTitle {
+	margin-left: 10px
+}
+
+#infoWindow {
+    height: 80%;
+	border-radius: 10px;
+	background-color: #1c1c1c;
+	background-image: var(--background-image-url);
+	border: 1px solid #000;
+    padding: 10px;
+	opacity: 0.50;
+    transition: filter 0.2s ease;
+	filter: brightness(0.8);
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	overflow-y: auto;
+    transition: filter 0.3s ease;
+	font-size: 13.5px;
+}
+
+#infoWindow:hover {
+    transition: filter 0.2s ease;
+	opacity: 0.85;
+	filter: brightness(1);
+}
+
+.hidden #infoWindow {
+    transition: filter 0.3s ease;
+	filter: brightness(0.55);
+	opacity: 0.25;
+}
+
+.hidden #infoWindow:hover {
+    transition: filter 0.3s ease;
+	opacity: 0.85;
+	filter: brightness(0.65);
+}
+
+#infoWindowHeader {
+    background-color: #555;
+	border-radius: 10px;
+    color: white;
+	padding: 5px;
+    cursor: move;
+}
+
+.closeInfoWindowBtn:hover,
+.closeInfoWindowBtn:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.closeInfoWindowBtn {
+	position: absolute;
+	top: 5px;
+	right: 15px;
+	color: #aaa;
+	font-size: 34px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+#parameterChart {
+	cursor: cell;
+}
+
+.resetChartBtn {
+	position: absolute;
+	color: #aaa;
+	padding-top: 5px;
+	right: 17px;
+	font-size: 20px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.rounded {
+	border-radius: 7.5px;
+}
+
+li, ul {
+	list-style: square;
+	margin: 2px;
+	padding: 0;
+	margin-left: 7px;
+}
+
+.toggle-header {
+    display: flex;
+    align-items: center;
+	background-color: #444;
+    border-radius: 7.5px;
+	border: 1px solid #555;
+}
+
+.toggle-header-small {
+    display: flex;
+    align-items: center;
+	width: 80%;
+	background-color: #222;
+    border-radius: 7.5px;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    margin: 0;
+}
+
+.control-group-1.collapsed {
+    display: none;
+}
+
+#displaySettings,
+#simulationSettings,
+#objectSettings,
+#advancedSimulationSettings,
+#byObjectSettings,
+#byWellSettings {
+    padding-left: 10px;
+	font-style : italic;
+}
