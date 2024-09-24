@@ -90,6 +90,7 @@ canvas.addEventListener('touchend', handleTouchEnd);
 
 focusSelect.addEventListener('change', (e) => {
 	focusObject = e.target.value;
+	updateAll();
 });
 
 frictionToggle.addEventListener('change', () => {
@@ -165,6 +166,7 @@ closeBtn.addEventListener('touchstart', (e) => {
 });
 
 window.addEventListener('click', (event) => {
+	let frameInterval = 1;
 	if (event.target === modal) {
 		modal.style.display = 'none';
 	}
@@ -244,10 +246,10 @@ window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
     }
     canvas.height = window.innerHeight;
-    drawBodies(calculateBarycenter());
 	if (devModenabled) {
         console.log('Canvas width :', canvas.width);
 	}
+	updateAll();
 });
 
 document.addEventListener('keydown', (event) => {
@@ -337,29 +339,35 @@ document.getElementById('closeInfoWindowBtn').addEventListener('click', function
 document.getElementById('zoomOut10').addEventListener('click', () => {
 	scrollZoom /= 10;
 	scale = scale * scrollZoom;
+	updateAll();
 });
 
 document.getElementById('zoomOut2').addEventListener('click', () => {
 	scrollZoom /= 2;
 	scale = scale * scrollZoom;
+	updateAll();
 });
 
 document.getElementById('zoomIn2').addEventListener('click', () => {
 	scrollZoom *= 2;
 	scale = scale * scrollZoom;
+	updateAll();
 });
 
 document.getElementById('zoomIn10').addEventListener('click', () => {
 	scrollZoom *= 10;
 	scale = scale * scrollZoom;
+	updateAll();
 });
 
 document.getElementById('resetViewBtn').addEventListener('click', () => {
 	resetView();
+	updateAll();
 });
 
 document.getElementById('resetChartBtn').addEventListener('click', () => {
 	clearChart();
+	updateAll();
 });
 
 document.getElementById('addBodyBtn').addEventListener('click', () => {
@@ -388,6 +396,7 @@ document.getElementById('addBodyBtn').addEventListener('click', () => {
 	} else {
 		alert(`ERROR: no space for an object with a radius of ${rdradius} m`)
 	}
+	updateAll();
 });
 
 document.getElementById('addWellBtn').addEventListener('click', () => {
@@ -412,6 +421,7 @@ document.getElementById('addWellBtn').addEventListener('click', () => {
 	} else {
 		alert(`ERROR: no space for a Well with a radius of ${rdradius} m`)
 	}
+	updateAll();
 });
 
 document.getElementById('loadPresetBtn').addEventListener('click', () => {
@@ -464,6 +474,7 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 			console.log('Preset loaded:', selectedPresetName);
 		}
 	}
+	updateAll();
 });
 
 document.getElementById('savePresetBtn').addEventListener('click', () => {
@@ -491,6 +502,7 @@ document.getElementById('savePresetBtn').addEventListener('click', () => {
 	if (devModenabled) {
 		console.log('Preset saved:', presetName);
 	}
+	updateAll();
 });
 
 document.getElementById('collisionToggle').addEventListener('change', (e) => {
@@ -1783,6 +1795,14 @@ function displayFPS(currentTime) {
 	document.getElementById('skipDisplay').textContent = `Skipped: ${frameInterval}`;
 }
 
+function updateAll() {
+	barycenter = calculateBarycenter();
+	drawBodies(barycenter);
+	updateControlValues();
+	updateWellControlValues();
+	drawGrid();
+}
+
 function animate(currentTime) {
     const startTime = performance.now();
 
@@ -1803,16 +1823,13 @@ function animate(currentTime) {
 		} else {
 			updatePositions(dt);
 		}
-
-        if (frameCount % frameInterval === 0) {
-			updateBarycenterCoord();
-			const barycenter = calculateBarycenter();
-            drawBodies(barycenter);
-			updateControlValues();
-			updateWellControlValues();
-        }
-		
     }
+
+	if (frameCount % frameInterval === 0) {
+		updateBarycenterCoord();
+		updateAll();
+	}
+		
 	
 	const objectA = bodies[parseInt(objectASelect)];
 	const objectB = bodies[parseInt(objectBSelect)];
@@ -1863,6 +1880,9 @@ function handleMouseDown(event) {
 			break;
 		}
 	}
+	drawBodies(calculateBarycenter());
+	updateControlValues();
+	updateWellControlValues();
 }
 
 function handleMouseMove(event) {
@@ -1910,11 +1930,17 @@ function handleMouseMove(event) {
     } else {
         canvas.style.cursor = 'crosshair';
     }
+	drawBodies(calculateBarycenter());
+	updateControlValues();
+	updateWellControlValues();
 }
 
 function handleMouseUp() {
 	selectedBody = null;
 	doZoom = document.getElementById('autoZoomToggle').checked;;
+	drawBodies(calculateBarycenter());
+	updateControlValues();
+	updateWellControlValues();
 }
 
 function handleTouchStart(event) {
@@ -1957,6 +1983,9 @@ function handleTouchStart(event) {
         initialPinchDistance = getDistance(touch1, touch2);
         lastPinchZoom = scrollZoom;
     }
+	drawBodies(calculateBarycenter());
+	updateControlValues();
+	updateWellControlValues();
 }
 
 function handleTouchMove(event) {
@@ -1989,6 +2018,9 @@ function handleTouchMove(event) {
             scale = scrollZoom;
         }
     }
+	drawBodies(calculateBarycenter());
+	updateControlValues();
+	updateWellControlValues();
 }
 
 function handleTouchEnd(event) {
@@ -2001,12 +2033,16 @@ function handleTouchEnd(event) {
             selectedBody = null;
         }
     }
+	drawBodies(calculateBarycenter());
+	updateControlValues();
+	updateWellControlValues();
 }
 
 function handleMouseWheel(event) {
 	event.preventDefault();
 	scrollZoom *= (1 + event.deltaY * -0.001);
 	scale *= scrollZoom;
+	drawBodies(calculateBarycenter());
 }
 
 function Pause() {
