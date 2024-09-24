@@ -415,11 +415,10 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 		const preset = presets[selectedPresetName];
 		dtInput.value = preset.dt;
 
-		
 		while (bodies.length > preset.bodies.length) {
 			bodies.pop();
 		}
-
+		
 		while (bodies.length < preset.bodies.length) {
 			bodies.push({
 				mass: 1,
@@ -448,6 +447,33 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 			}
 		});
 
+		while (wells.length > preset.wells.length) {
+			wells.pop();
+		}
+		
+		while (wells.length < preset.wells.length) {
+			wells.push({
+				mass: 1,
+				charge: 0,
+				position: { x: 0, y: 0 },
+				color: '#ffffff',
+				trail: [],
+				show: true,
+				points: []
+			});
+		}
+
+		preset.wells.forEach((presetWell, index) => {
+			if (wells[index]) {
+				wells[index].mass = presetWell.mass;
+				wells[index].charge = presetWell.charge;
+				wells[index].position = { ...presetWell.position };
+				wells[index].color = presetWell.color;
+				wells[index].show = presetWell.show;
+				wells[index].name = presetWell.name;
+			}
+		});
+
 		clearTrails();
         chart.update();
 		updateControlValues();
@@ -460,11 +486,42 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 	}
 });
 
+document.getElementById('importPresetBtn').addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/javascript';
+
+    input.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                const content = e.target.result;
+                
+                try {
+                    eval(content);
+                    
+                    updatePresetSelect();
+                    alert('Preset importé avec succès.');
+                } catch (err) {
+                    console.error('Erreur lors de l\'importation du preset:', err);
+                    alert('Échec de l\'importation du preset.');
+                }
+            };
+
+            reader.readAsText(file);
+        }
+    });
+
+    input.click();
+});
+
 document.getElementById('savePresetBtn').addEventListener('click', () => {
 	const presetNameInput = document.getElementById('presetName');
 	let presetName = presetNameInput.value.trim();
 	if (!presetName) {
-		presetName = 'preset ' + Date.now();
+		presetName = 'preset-' + Date.now();
 	}
 
 	presets[presetName] = {
@@ -477,11 +534,31 @@ document.getElementById('savePresetBtn').addEventListener('click', () => {
 			velocity: { x: body.velocity.x, y: body.velocity.y },
 			color: body.color,
 			show: body.show
+		})),
+		wells: wells.map(well => ({
+			mass: well.mass,
+			charge: well.charge,
+			position: { x: well.position.x, y: well.position.y },
+			color: well.color,
+			show: well.show
 		}))
 	};
 
 	updatePresetSelect();
 	presetNameInput.value = '';
+	
+    const fileContent = `presets['${presetName}'] = ${JSON.stringify(presets[presetName], null, 2)};`;
+
+    const blob = new Blob([fileContent], { type: 'application/javascript' });
+
+    const downloadLink = document.createElement('a');
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = `${presetName}.js`;
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+	
 	if (devModenabled) {
 		console.log('Preset saved:', presetName);
 	}
@@ -686,6 +763,7 @@ function updateControlValues() {
 	focusSelect.innerHTML += '<option value="barycenter-charge" id="barycenterLabelcharge">Barycentre de Charge</option>';
 	focusSelect.innerHTML += '<option value="barycenter-geometric" id="barycenterLabelgeo">Barycentre Géométrique</option>';
 	focusSelect.innerHTML += '<option value="barycenter-surfacique" id="barycenterLabelrad">Barycentre Surfacique</option>';
+	focusSelect.innerHTML += '<option value="barycenter-well" id="barycenterLabelwell">Barycentre des Puits</option>';
 	
 	objectASelect.innerHTML = `<option value="null">-</option>`;
 	objectBSelect.innerHTML = `<option value="null">-</option>`;
@@ -1224,8 +1302,6 @@ function adjustTrails(trailMaxPoints) {
 	bodies.forEach(body => {
 		while (body.trail.length > trailMaxPoints) {
 			body.trail.shift();
-		}
-		while (body.points.length > trailMaxPoints) {
 			body.points.shift();
 		}
 	});
@@ -1354,6 +1430,20 @@ function calculateBarycenter() {
 			if (totalRadius !== 0) {
 				barycenter.x /= totalRadius;
 				barycenter.y /= totalRadius;
+			}
+		}
+		else if (focusObject == 'barycenter-well') {
+			let number = 0;
+	
+			wells.forEach(well => {
+				number += 1;
+				barycenter.x += well.position.x;
+				barycenter.y += well.position.y;
+			});
+
+			if (number !== 0) {
+				barycenter.x /= number;
+				barycenter.y /= number;
 			}
 		}
 		else if (focusObject.startsWith('body-')) {
@@ -2032,6 +2122,7 @@ function updateButtonImage() {
 
 function updatePresetSelect() {
 	const presetSelect = document.getElementById('presetSelect');
+    presetSelect.innerHTML = '';
 	createRdPreset();
 	Object.keys(presets).forEach(presetName => {
 		const option = document.createElement('option');
