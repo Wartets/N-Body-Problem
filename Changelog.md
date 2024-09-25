@@ -124,3 +124,42 @@
 - Correction of friction calculation, to be able to play with lower values
 - It is now impossible to input values without physical meaning (mass and radius strictly positive)
 - The buttons on the canvas have been replaced by images
+
+# Changelog
+
+## v1.3.0 - 26/09/2024
+
+### Added
+
+- It is now possible to export a file containing the saved preset
+- Potential wells added, objects always return to the wells:
+  - Two presets containing wells have been added
+  - Wells are categorized in the same way as objects, they can be moved by touch or mouse, they can be renamed, their colour changed, their parameters changed and so on.
+- Improved the way trails are managed
+- Reduced camera movements when moving an object with the mouse
+- infoWindow chart now only initializes if infoWindow is opened for the first time
+- Added functions to calculate additional information for the infoWindow menu; mainly focused on orbital parameters
+- Addition of console returns
+- Addition of a relativistic physic's mode (in beta for the moment, can be activated from the advanced settings menu)
+- Speed of light ($c$), Archimedes' constant ($\pi$) and vacuum permittivity ($\epsilon_0$) added as modifiable constants
+- Added the ability to manage field vector spacing
+
+### Changed
+
+- Fixed a shortcut key bug: pressing the space key will no longer click on the last button selected
+- Categorizing objects
+- Changed the way sound is handled on impact, issue https://github.com/Wartets/N-Body-Problem/issues/21
+- From now on, when a word is not translated, the term ‘Not yet translated’ will be used instead
+- English is now the default language on the website (unless there is a major translation problem, in which case it will revert to French)
+- Updated translations :
+  - v1.5 English translation
+  - v1.5 French translation
+  - v1.5 German translation
+  - v1.5 Spanish translation
+  - v1.3 Italian translation
+
+### Removed
+
+- Removed the simulate() function, which was never used for anything other than adding lag
+- Removal of the Coulomb constant ($K$), which was no longer useful as it was expressed with other constants defined in the simulation.
+- Removal of collision test and electromagnetic force presets
