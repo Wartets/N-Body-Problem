@@ -274,7 +274,6 @@ button:hover {
 
 .hidden #helpBtn {
     right: 15px;
-    transition: right 0.1s ease;
 }
 
 .modal {
@@ -372,6 +371,8 @@ button:hover {
 	left: 18px;
 	-webkit-text-stroke: .5px gray;
 	cursor: crosshair;
+    transition: opacity 0.3s ease;
+	opacity: 0.8;
 }
 
 #helpBtn:hover,
@@ -428,12 +429,14 @@ button:hover {
 
 .hidden #infoWindow {
     transition: filter 0.3s ease;
+    transition: opacity 0.2s ease;
 	filter: brightness(0.55);
 	opacity: 0.25;
 }
 
 .hidden #infoWindow:hover {
     transition: filter 0.3s ease;
+    transition: opacity 0.2s ease;
 	opacity: 0.85;
 	filter: brightness(0.65);
 }

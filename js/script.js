@@ -1338,7 +1338,6 @@ function updateRelativisticPositions(dt) {
         const velocityMagnitude = Math.sqrt(body.velocity.x ** 2 + body.velocity.y ** 2);
         const lorentzFactor = 1 / Math.sqrt(1 - (velocityMagnitude ** 2 / c ** 2));
 
-        // Apply Lorentz factor to velocity
         const newVelocityX = body.velocity.x * lorentzFactor;
         const newVelocityY = body.velocity.y * lorentzFactor;
 
@@ -1667,18 +1666,6 @@ function getRandomPosition(rdradius) {
 		});
 	}
 	return position;
-}
-
-function hexToRgb(hex) {
-    const bigint = parseInt(hex.slice(1), 16);
-    const r = (bigint >> 16) & 255;
-    const g = (bigint >> 8) & 255;
-    const b = (bigint & 255);
-    return { r, g, b };
-}
-
-function rgbToHex(r, g, b) {
-    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
 
 function mixColors(color1, color2, surface1, surface2, threshold = 30) {

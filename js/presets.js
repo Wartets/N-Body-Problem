@@ -1,3 +1,16 @@
+function hexToRgb(hex) {
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = (bigint & 255);
+    return { r, g, b };
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+}
+
+
 const initialBodies = [
     { name: "Object 1", mass: 250, charge: 4, radius: 2.5, position: { x: -100, y: -100 }, velocity: { x: 0, y: 1 }, color: "red", show: true },
     { name: "Object 2", mass: 300, charge: 3, radius: 2.5, position: { x: 100, y: 100 }, velocity: { x: -1, y: 0 }, color: "green", show: true },
@@ -104,23 +117,24 @@ const presets = {
 		],
 		wells: []
 	},
-	/* ,
-	"Magnetic Force Test": { dt: 0.3,
+	"Potential-Well-Exemple": { dt: 0.1,
 		bodies: [
-			{ name: "Object 1", mass: 40, charge: -2, radius: 2.5, position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
-			{ name: "Object 2", mass: 10, charge: -2, radius: 2.5, position: { x: 5, y: 5 }, velocity: { x: 0, y: 0 }, color: "pink", show: true }
-		],
-		wells: []
+			{ name: "Object 1",mass: 376, charge: 1, radius: 1.3, position: { x: -87, y: -2 }, velocity: { x: -1, y: -2 },color: `${rgbToHex(33, 214, 165)}`, show: true },
+			{ name: "Object 2",mass: 293, charge: 0, radius: 0.95, position: { x: -7, y: -42 }, velocity: { x: -3, y: -2 }, color: `${rgbToHex(153, 247, 188)}`, show: true },
+			{ name: "Object 3",mass: 273, charge: -3, radius: 0.9, position: { x: 21, y: 20 }, velocity: { x: -8, y: 3 }, color: `${rgbToHex(15, 131, 146)}`, show: true },
+			{ name: "Object 4",mass: 455, charge: -4, radius: 1.5, position: { x: 15, y: -2 }, velocity: { x: -4, y: 0 }, color: `${rgbToHex(148, 191, 13)}`, show: true },
+			{ name: "Object 5",mass: 348, charge: 1, radius: 0.55, position: { x: -26, y: 49 }, velocity: { x: -1, y: 4 }, color: `${rgbToHex(227, 226, 236)}`, show: true },
+			{ name: "Object 6",mass: 291, charge: 0, radius: 0.6, position: { x: 11, y: -23 }, velocity: { x: 4, y: 0 }, color: `${rgbToHex(249, 225, 233)}`, show: true },
+			{ name: "Object 7",mass: 154, charge: -4, radius: 0.76, position: { x: -73, y: 18 }, velocity: { x: 0, y: 3 }, color: `${rgbToHex(41, 117, 104)}`, show: true },
+			{ name: "Object 8",mass: 163, charge: 4, radius: 1.7, position: { x: -60, y: -41 }, velocity: { x: -1, y: 3 }, color: `${rgbToHex(173, 112, 192)}`, show: true },
+			{ name: "Object 9",mass: 322, charge: 0, radius: 1.45, position: { x: 1, y: 40 }, velocity: { x: 3, y: 0 }, color: `${rgbToHex(114, 210, 115)}`, show: true }, 
+			{ name: "Object 10",mass: 465, charge: 0, radius: 3, position: { x: -51, y: 30 }, velocity: { x: 4, y: -0 }, color: `${rgbToHex(90, 121, 226)}`, show: true }
+		], 
+		wells: [
+			{ name: "Well 1",mass: 900, charge: 70, position: { x: -16, y: 4 }, color: "#5FF4CA", show: true },
+			{ name: "Well 2",mass: 900, charge: -40, position: { x: -100, y: -30 }, color: "#65DC8E", show: true }
+		]
 	},
-	"Collision test": { dt: 0.001,
-		bodies: [
-			{ name: "Ball 1", mass: 20, charge: 0, radius: 2.5, position: { x: 10, y: 10 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
-			{ name: "Ball 2", mass: 10, charge: 0, radius: 2.5, position: { x: 10.1, y: 20 }, velocity: { x: 0, y: -10 }, color: "gray", show: true },
-			{ name: "else", mass: 0.0001, charge: 0, radius: 2.5, position: { x: -20, y: 12.5 }, velocity: { x: 0, y: 0 }, color: "black", show: true }
-		],
-		wells: []
-	} 
-	*/
 };
 
 function createRandomPreset(presetName, numBodies, frameWidth, frameHeight) {

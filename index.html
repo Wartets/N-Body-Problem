@@ -23,7 +23,7 @@
 	<link rel="icon" href="image\browser-icon.png">
 	
     <link rel="stylesheet" href="css\styles.css"> <!-- CSS style sheet -->
-    <link rel="stylesheet" href="css\background.css">
+    <link rel="stylesheet" href="css\background.css"> <!-- CSS style sheet 2 for background -->
 </head>
 
 <body>
@@ -39,22 +39,21 @@
 
 		<hr style="width:80%;text-align:center;color:#444" id="hr">
 		
-		<!-- Section pour afficher les informations des objets sélectionnés -->
 		<div id="objectInfo" style="display: flex; justify-content: space-between;">
 			<div id="objectAInfo" style="width: 45%; border-right: 1px solid #444; padding: 15px;">
 				<label for="objectASelect" id="objectASelectLabel" style="font-style : italic;">Choix de l'objet 1 : </label>
 				<select id="objectASelect">
 				</select>
 				<ul>
-					<li><span id="massAtext">Masse: </span><span id="massA"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="chargeAtext">Charge: </span><span id="chargeA"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="radiusAtext">Rayon: </span><span id="radiusA"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="surfaceAtext">Surface: </span><span id="surface1"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="posAtext">Position: </span><span id="positionA"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="distAtext">Distance du Barycentre: </span><span id="distanceBary1"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="speedAtext">Vitesse radiale: </span><span id="speedRadial1"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="accAtext">Accélération radiale: </span><span id="accelerationRadial1"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="forceAtext">Force totale radiale: </span><span id="forceTotalRadial1"><b style="color:#555;">&empty;</b></span></li>
+					<li><span id="massAtext">Masse: </span><span id="massA"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="chargeAtext">Charge: </span><span id="chargeA"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="radiusAtext">Rayon: </span><span id="radiusA"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="surfaceAtext">Surface: </span><span id="surface1"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="posAtext">Position: </span><span id="positionA"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="distAtext">Distance du Barycentre: </span><span id="distanceBary1"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="speedAtext">Vitesse radiale: </span><span id="speedRadial1"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="accAtext">Accélération radiale: </span><span id="accelerationRadial1"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="forceAtext">Force totale radiale: </span><span id="forceTotalRadial1"><b style="color:#555;"> &empty;</b></span></li>
 				</ul>
 			</div>
 			<div id="objectBInfo" style="width: 45%; padding: 15px;">
@@ -62,29 +61,27 @@
 				<select id="objectBSelect">
 				</select>
 				<ul>
-					<li><span id="massBtext">Masse: </span><span id="massB"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="chargeBtext">Charge: </span><span id="chargeB"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="radiusBtext">Rayon: </span><span id="radiusB"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="surfaceBtext">Surface: </span><span id="surface2"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="posBtext">Position: </span><span id="positionB"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="distBtext">Distance du Barycentre: </span><span id="distanceBary2"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="speedBtext">Vitesse radiale: </span><span id="speedRadial2"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="accBtext">Accélération radiale: </span><span id="accelerationRadial2"><b style="color:#555;">&empty;</b></span></li>
-					<li><span id="forceBtext">Force totale radiale: </span><span id="forceTotalRadial2"><b style="color:#555;">&empty;</b></span></li>
+					<li><span id="massBtext">Masse: </span><span id="massB"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="chargeBtext">Charge: </span><span id="chargeB"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="radiusBtext">Rayon: </span><span id="radiusB"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="surfaceBtext">Surface: </span><span id="surface2"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="posBtext">Position: </span><span id="positionB"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="distBtext">Distance du Barycentre: </span><span id="distanceBary2"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="speedBtext">Vitesse radiale: </span><span id="speedRadial2"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="accBtext">Accélération radiale: </span><span id="accelerationRadial2"><b style="color:#555;"> &empty;</b></span></li>
+					<li><span id="forceBtext">Force totale radiale: </span><span id="forceTotalRadial2"><b style="color:#555;"> &empty;</b></span></li>
 				</ul>
 			</div>
 		</div>
 		<hr style="width:80%;text-align:center;color:#444" id="hr">
 
-		<!-- Section pour les informations relatives -->
 		<ul style="padding: 15px;">
-			<li><span id="distABtext">Distance entre les deux objets: </span><span id="distanceBetween"><b style="color:#555;">&empty;</b></span></li>
-			<li><span id="speedABtext">Vitesse relative radiale: </span><span id="relativeSpeedRadial"><b style="color:#555;">&empty;</b></span></li>
-			<li><span id="accABtext">Accélération relative radiale: </span><span id="relativeAccelerationRadial"><b style="color:#555;">&empty;</b></span></li>
+			<li><span id="distABtext">Distance entre les deux objets: </span><span id="distanceBetween"><b style="color:#555;"> &empty;</b></span></li>
+			<li><span id="speedABtext">Vitesse relative radiale: </span><span id="relativeSpeedRadial"><b style="color:#555;"> &empty;</b></span></li>
+			<li><span id="accABtext">Accélération relative radiale: </span><span id="relativeAccelerationRadial"><b style="color:#555;"> &empty;</b></span></li>
 		</ul>
 		<hr style="width:80%;text-align:center;color:#444" id="hr">
 		
-		<!-- Ajout des listes déroulantes pour les paramètres -->
 		<div style="padding: 15px;text-align:center;">
 			<label for="paramXSelect">Sélectionner le paramètre X :</label>
 			<select id="paramXSelect"></select>
@@ -93,7 +90,6 @@
 			<select id="paramYSelect"></select>
 		</div>
 
-		<!-- Ajout du graphique -->
 		<div id="containerChart" style="">
 			<span class="resetChartBtn" id="resetChartBtn">&bull;</span>
 			<canvas id="parameterChart"></canvas>
@@ -139,12 +135,13 @@
 				
 		<div id="controls">
 			<select id="languageSelect">
-				<option value="fr">Français</option>
 				<option value="en">English</option>
 				<option value="es">Español</option>
-				<option value="pt">Português</option>
+				<option value="fr">Français</option>
+				<option value="es">Español</option>
 				<option value="de">Deutsh</option>
 				<option value="it">Italiano</option>
+				<option value="pt">Português</option>
 				<option value="la">Latin</option>
 				<option value="vf">Français: Ancien</option>
 				<option value="pirate">Français: Pirate</option>
@@ -155,20 +152,17 @@
 			
 			<hr style="width:100%;text-align:center;color:#444" id="hr1">
 			
-			<!-- <label id="simulationSettings">Réglages de simulation :</label> -->
 			<div class="toggle-header">
 				<button class="toggle-btn">▼</button>
 				<label id="simulationSettings">Réglages de simulation</label>
 			</div>
 			
 			<div class="control-group-1">
-				<!-- Intervalle de temps -->
 				<div class="control-group">
 					<label for="dt" id="dtLabel">dt (Intervalle de temps) :</label>
 					<input type="number" id="dt" value="0.24" step="0.01">
 				</div>
 
-				<!-- Options physiques -->
 				<div>
 					<input type="checkbox" id="collisionToggle" name="collisionToggle"/>
 					<label for="collisionToggle" id="collisionToggleLabel">Activer les collisions</label>
@@ -194,13 +188,11 @@
 					<label for="frictionToggle" id="frictionToggleLabel">Activer les frottements</label>
 				</div>
 
-				<!-- Coefficient de frottement -->
 				<div id="frictionCoefficientContainer" style="display: none;">
 					<label for="frictionCoefficient" id="frictionCoefficientLabel">Coefficient de frottement :</label>
 					<input type="number" id="frictionCoefficient" value="0.1" step="0.01">
 				</div>
 
-				<!-- Champs d'affichage -->
 				<div>
 					<input type="checkbox" id="showGravityField" name="showGravityField"/>
 					<label for="showGravityField" id="showGravityFieldLabel">Afficher le champ de gravité</label>
@@ -259,7 +251,6 @@
 					<label for="activateSound" id="activateSoundLabel">Activer le son</label>
 				</div>
 
-				<!-- Slider du trail -->
 				<div class="control-group">
 					<label for="trailLimit" id="trailLimitLabel">Nombre de points du trail (puiss. 10)</label>
 					<div class="slider-container">
