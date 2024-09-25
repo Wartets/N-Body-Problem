@@ -125,8 +125,6 @@
 - It is now impossible to input values without physical meaning (mass and radius strictly positive)
 - The buttons on the canvas have been replaced by images
 
-# Changelog
-
 ## v1.3.0 - 26/09/2024
 
 ### Added
