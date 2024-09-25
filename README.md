@@ -8,6 +8,7 @@ This project simulates the motion of multiple bodies (N-bodies) under the influe
 
 - **Dynamic Object Addition**: You can add an unlimited number of objects, constrained only by your computer's processing power.
 - **Field visualization**: You can observe the force fields applied to the simulation, changing according to the objects.
+- **Potential wells**: place in the simulation where the potential associated with a force field has a significant minimum, forcing objects to ‘fall back’ towards the wells.
 - **Multi-language Support**: Available in English, French, Spanish, and German, Italian, Latin (also some amusing translations) with additional languages planned for future releases.
 - **Special Thanks**: Appreciation to Arthur Loubeau for contributing the Spanish translation and to Christian Abou for the Italian translation.
 
