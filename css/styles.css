@@ -208,7 +208,7 @@ button:hover {
 
 #startPauseBtn {
 	position: absolute;
-	left: 15px;
+	left: 15.25px;
 	bottom: 15px;
     background: none;
     border: none;
@@ -236,7 +236,7 @@ button:hover {
 #resetViewBtn {
     display: block;
 	position: absolute;
-	left: 15px;
+	left: 18.5px;
 	bottom: 70px;
     background: none;
     border: none;
