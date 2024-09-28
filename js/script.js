@@ -770,10 +770,10 @@ function updateControlValues() {
 	
 
 	bodies.forEach((body, index) => {
-		objectASelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
-		objectBSelect.innerHTML += `<option value="${index}">${body.name || `Objet ${index + 1}`}</option>`;
+		objectASelect.innerHTML += `<option value="${index}">${body.name || `Object ${index + 1}`}</option>`;
+		objectBSelect.innerHTML += `<option value="${index}">${body.name || `Object ${index + 1}`}</option>`;
 		
-		focusSelect.innerHTML += `<option value="body-${index}">${body.name || `Objet ${index + 1}`}</option>`;
+		focusSelect.innerHTML += `<option value="body-${index}">${body.name || `Object ${index + 1}`}</option>`;
 
 		const group = document.createElement('div');
 		group.className = 'control-group';
