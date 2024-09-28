@@ -411,6 +411,16 @@ document.getElementById('addWellBtn').addEventListener('click', () => {
 document.getElementById('loadPresetBtn').addEventListener('click', () => {
 	const selectedPresetName = document.getElementById('presetSelect').value;
 	createRdPreset();
+	
+    if (selectedPresetName === "Sun Earth Moon" || selectedPresetName === "Hydrogens like") {
+        constValCheckbox.checked = true;
+        updateConstants();
+    }
+	else {
+        constValCheckbox.checked = false;
+        updateConstants();
+	}
+	
 	if (selectedPresetName && presets[selectedPresetName]) {
 		const preset = presets[selectedPresetName];
 		dtInput.value = preset.dt;
