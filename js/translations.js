@@ -49,6 +49,7 @@ function translate() {
         document.getElementById('presetName').placeholder = trans.presetNameValue;
 		
         document.getElementById('addBodyBtn').textContent = trans.addObject;
+        document.getElementById('addWellBtn').textContent = trans.addWell;
 		
         document.getElementById('HelpModalTitle').textContent = trans.HelpModalTitleValue;
         document.getElementById('HelpModalIntro').textContent = trans.HelpModalIntroValue;
@@ -240,6 +241,7 @@ const translations = {
 		"presetSelectLabelValue": "",
         "presetNameValue": "Nom du preset (vide pour nom par défaut)",
         "addObject": "Ajouter un objet",
+		"addWell": "Ajouter un puit",
 		"Baryenable": "Barycentre",
 		"MassValue": "Masse :",
 		"radiusValue": "Rayon :",
@@ -354,6 +356,7 @@ const translations = {
 		"presetSelectLabelValue": "",
         "presetNameValue": "Preset Name (empty for default)",
         "addObject": "Add Object",
+		"addWell": "Add Well",
 		"Baryenable": "Barycenter",
 		"MassValue": "Mass:",
 		"radiusValue": "Radius:",
@@ -465,6 +468,7 @@ const translations = {
 		"presetSelectLabelValue": "",
         "presetNameValue": "Nombre del preset (vacío para predeterminado)",
         "addObject": "Añadir objeto",
+		"addWell": "",
 		"Baryenable": "Baricentro",
 		"MassValue": "Masa:",
 		"radiusValue": "Radio:",
@@ -576,6 +580,7 @@ const translations = {
 		"presetSelectLabelValue": "",
         "presetNameValue": "Name der Voreinstellung (leer für Standard)",
         "addObject": "Objekt hinzufügen",
+		"addWell": "",
 		"Baryenable": "Schwerpunkt",
 		"MassValue": "Masse:",
 		"radiusValue": "Radius:",
@@ -686,6 +691,7 @@ const translations = {
 		"savePreset": "Salva il preset",
 		"presetNameValue": "Nome del preset (vuoto per nome predefinito)",
 		"addObject": "Aggiungi un oggetto",
+		"addWell": "",
 		"Baryenable": "Baricentro",
 		"MassValue": "Massa:",
 		"radiusValue": "Raggio:",
@@ -796,6 +802,7 @@ const translations = {
 		"savePreset": "Salva preset",
 		"presetNameValue": "Nomen preset (vacuum pro nomine predefinito)",
 		"addObject": "Adde obiectum",
+		"addWell": "",
 		"Baryenable": "Baricentrum",
 		"MassValue": "Massa:",
 		"radiusValue": "",
@@ -906,6 +913,7 @@ const translations = {
 		"savePreset": "Sauveguarder le preset",
 		"presetNameValue": "Nom du preset (vide pour nom par défaut)",
 		"addObject": "Ajouter ung objet",
+		"addWell": "",
 		"Baryenable": "Baricentrum",
 		"MassValue": "Masse :",
 		"radiusValue": "",
@@ -1016,6 +1024,7 @@ const translations = {
 		"savePreset": "Enterrer l'preset",
 		"presetNameValue": "Nom du trésor (laisser vide pour nom commun)",
 		"addObject": "Ajouter un objet d'butin",
+		"addWell": "",
 		"Baryenable": "Baricentre du trésor",
 		"MassValue": "Masse du butin:",
 		"radiusValue": "",
@@ -1126,6 +1135,7 @@ const translations = {
 		"savePreset": "Safeguard the Preset’s Name",
 		"presetNameValue": "Name the Preset (leave blank for default)",
 		"addObject": "Introduce an Object of Worth",
+		"addWell": "",
 		"Baryenable": "Empower the Barycentre",
 		"MassValue": "Measure of Mass:",
 		"radiusValue": "",
@@ -1236,6 +1246,7 @@ const translations = {
 		"savePreset": "Save banana preset!",
 		"presetNameValue": "Banana preset name:",
 		"addObject": "Add banana object!",
+		"addWell": "",
 		"Baryenable": "Banana barycentre ON!",
 		"MassValue": "Banana mass:",
 		"radiusValue": "",
@@ -1346,6 +1357,7 @@ const translations = {
 		"savePreset": "",
 		"presetNameValue": "",
 		"addObject": "",
+		"addWell": "",
 		"Baryenable": "",
 		"MassValue": "",
 		"radiusValue": "",
@@ -1456,6 +1468,7 @@ const translations = {
 		"savePreset": "savePreset",
 		"presetNameValue": "presetNameValue",
 		"addObject": "addObject",
+		"addWell": "addWell",
 		"Baryenable": "Baryenable",
 		"MassValue": "MassValue",
 		"radiusValue": "radiusValue",
