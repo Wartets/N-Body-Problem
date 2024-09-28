@@ -735,14 +735,14 @@ function setupTrashIcons() {
 
 function startTimer() {
     timeElapsed = 0;
-    timerDisplay.textContent = `Time : 0.00 s`;
+    timerDisplay.textContent = `Time: 0.00 s / 0.00s`;
     lastTime = performance.now(); 
 
     function updateTimer(currentTime) {
         if (!isPaused) {
             const deltaTime = (currentTime - lastTime) / 1000;
-            timeElapsed += deltaTime * parseFloat(dtInput.value);
-            timerDisplay.textContent = `${timerLng} ${formatTime(timeElapsed)}`;
+            timeElapsed += Math.abs(deltaTime * parseFloat(dtInput.value));
+            timerDisplay.textContent = `${timerLng} ${formatTime(Math.abs(timeElapsed))} / ${formatTime(Math.abs(timeElapsed/dtInput.value))}`;
         }
         lastTime = currentTime; 
         requestAnimationFrame(updateTimer);
@@ -1529,6 +1529,35 @@ function drawBodies(barycenter) {
 	ctx.scale(scale, scale);
 	ctx.translate(-barycenter.x, -barycenter.y);
 	const barycenterPointSize = 1.1 / scale;
+
+	wells.forEach(well => {
+		if (well.show) {
+			ctx.beginPath();
+			ctx.arc(well.position.x, well.position.y, 7 / scale, 0, 2 * pi);
+			ctx.strokeStyle = well.color || 'white';
+			ctx.lineWidth = 1 / scale;
+			if (hoveredBody === well) {
+				ctx.globalAlpha = 0.4;
+			} else {
+				ctx.globalAlpha = 0.8;
+			}
+			ctx.stroke();
+			ctx.closePath();
+			
+			ctx.beginPath();
+			ctx.arc(well.position.x, well.position.y, 3.25 / scale, 0, 2 * pi);
+			ctx.strokeStyle = well.color || 'white';
+			ctx.lineWidth = 1 / scale;
+			if (hoveredBody === well) {
+				ctx.globalAlpha = 0.45;
+			} else {
+				ctx.globalAlpha = 0.9;
+			}
+			ctx.stroke();
+			ctx.closePath();
+		}
+	});
+	
 	bodies.forEach(body => {
 		if (body.show) {
 			ctx.beginPath();
@@ -1569,34 +1598,6 @@ function drawBodies(barycenter) {
 					}
 				});
 			}
-		}
-	});
-
-	wells.forEach(well => {
-		if (well.show) {
-			ctx.beginPath();
-			ctx.arc(well.position.x, well.position.y, 7 / scale, 0, 2 * pi);
-			ctx.strokeStyle = well.color || 'white';
-			ctx.lineWidth = 1 / scale;
-			if (hoveredBody === well) {
-				ctx.globalAlpha = 0.4;
-			} else {
-				ctx.globalAlpha = 0.8;
-			}
-			ctx.stroke();
-			ctx.closePath();
-			
-			ctx.beginPath();
-			ctx.arc(well.position.x, well.position.y, 3.25 / scale, 0, 2 * pi);
-			ctx.strokeStyle = well.color || 'white';
-			ctx.lineWidth = 1 / scale;
-			if (hoveredBody === well) {
-				ctx.globalAlpha = 0.45;
-			} else {
-				ctx.globalAlpha = 0.9;
-			}
-			ctx.stroke();
-			ctx.closePath();
 		}
 	});
 

@@ -26,7 +26,7 @@ const presets = {
 		],
 		wells: []
 	},
-	"Initial preset with wells": { dt: 0.24,
+	"Initial preset with wells": { dt: 0.08,
 		bodies: [
 			{ name: "Object 1", mass: 250, charge: 4, radius: 2.5, position: { x: -100, y: -100 }, velocity: { x: 0, y: 1 }, color: "red", show: true },
 			{ name: "Object 2", mass: 300, charge: 3, radius: 2.5, position: { x: 100, y: 100 }, velocity: { x: -1, y: 0 }, color: "green", show: true },
