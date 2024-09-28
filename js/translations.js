@@ -15,7 +15,9 @@ function translate() {
 		}
 
 		timerLng = trans.timeLabel;
-		positiontext = trans.posAtextEntree;
+		positionText = trans.posAtextEntree;
+		hideText = trans.hide;
+		showText = trans.show;
 		
         document.getElementById('dtLabel').textContent = trans.dt;
         document.getElementById('showSizeLabel').textContent = trans.adaptiveSize;
@@ -55,7 +57,7 @@ function translate() {
 		
         document.getElementById('HelpModalTitle').textContent = trans.HelpModalTitleValue;
         document.getElementById('HelpModalIntro').textContent = trans.HelpModalIntroValue;
-		
+	
         document.getElementById('HelpModalGitPageTitle').textContent = trans.HelpModalGitPageTitleValue;
         document.getElementById('HelpModalGitPageText').textContent = trans.HelpModalGitPageTextValue;
         document.getElementById('HelpModalGitPageLink').textContent = trans.HelpModalGitPageLinkValue;
@@ -202,6 +204,13 @@ function translate() {
         document.getElementById('vectorLengthLabelk').textContent = trans.vectorLengthLabelkEntree;
         document.getElementById('vectorFieldDistanceLabel').textContent = trans.vectorFieldDistanceLabelEntree;
         document.getElementById('devModLabel').textContent = trans.devModLabelEntree;
+		
+        document.getElementById('centerView').textContent = trans.centerViewEntree;
+        document.getElementById('duplicateObject').textContent = trans.duplicateObjectEntree;
+        document.getElementById('resetForces').textContent = trans.resetForcesEntree;
+        document.getElementById('resetAllForces').textContent = trans.resetAllForcesEntree;
+        document.getElementById('deleteObject').textContent = trans.deleteObjectEntree;
+        document.getElementById('deleteAll').textContent = trans.deleteAllEntree;
     }
 
     languageSelect.addEventListener('change', () => {
@@ -213,6 +222,14 @@ function translate() {
 
 const translations = {
     "fr": {
+		"show": "Afficher",
+		"hide": "Masquer",
+        "centerViewEntree": "Center la Vue",
+		"duplicateObjectEntree": "Dupliquer",
+		"resetForcesEntree": "Réinitialiser la vitesse",
+		"resetAllForcesEntree": "Réinitialiser toutes les vitesses",
+		"deleteObjectEntree": "Effacer",
+		"deleteAllEntree": "Effacer tous les Objets & Puits",
         "resetView": "Réinitialiser la vue",
         "fullscreen": "Plein écran",
         "startPause": "Lancer la simulation",
@@ -334,6 +351,14 @@ const translations = {
 		"barycenterLabelwellValue": "Barycentre des Puits",
     },
     "en": {
+		"show": "Show",
+		"hide": "Hide",
+        "centerViewEntree": "Center View",
+		"duplicateObjectEntree": "Duplicate",
+		"resetForcesEntree": "Reset Velocity",
+		"resetAllForcesEntree": "Reset all Velocities",
+		"deleteObjectEntree": "Delete",
+		"deleteAllEntree": "Delete all Objects & Wells",
         "resetView": "Reset View",
         "fullscreen": "Fullscreen",
         "startPause": "Start Simulation",
@@ -452,6 +477,14 @@ const translations = {
 		"barycenterLabelwellValue": "Well Barycenter",
     },
     "es": {
+		"show": "Mostrar",
+		"hide": "Ocultar",
+        "centerViewEntree": "Vista central",
+		"duplicateObjectEntree": "Duplicar",
+		"resetForcesEntree": "Restablecer velocidad",
+		"resetAllForcesEntree": "Restablecer todas las velocidades",
+		"deleteObjectEntree": "Borrar",
+		"deleteAllEntree": "Borrar todos los Objetos y Pozos",
         "resetView": "Reiniciar vista",
         "fullscreen": "Pantalla completa",
         "startPause": "Iniciar simulación",
@@ -482,7 +515,7 @@ const translations = {
         "zoomManual": "Zoom manual:",
         "trailLimit": "Puntos del trazado (potencia de 10)",
         "loadPreset": "Cargar preset:",
-		"importPreset": "",
+		"importPreset": "Añadir un pozo",
         "savePreset": "Salvaguardar preset",
 		"presetSelectLabelValue": "",
         "presetNameValue": "Nombre del preset (vacío para predeterminado)",
@@ -569,6 +602,14 @@ const translations = {
 		"barycenterLabelwellValue": "",
     },
 	"de": {
+		"show": "Anzeigen",
+		"hide": "Ausblenden",
+        "centerViewEntree": "Ansicht zentrieren",
+		"duplicateObjectEntree": "Duplizieren",
+		"resetForcesEntree": "Geschwindigkeit zurücksetzen",
+		"resetAllForcesEntree": "Alle Geschwindigkeiten zurücksetzen",
+		"deleteObjectEntree": "Löschen",
+		"deleteAllEntree": "Alle Objekte und Brunnen löschen",
         "resetView": "Ansicht zurücksetzen",
         "fullscreen": "Vollbild",
         "startPause": "Simulation starten",
@@ -604,7 +645,7 @@ const translations = {
 		"presetSelectLabelValue": "",
         "presetNameValue": "Name der Voreinstellung (leer für Standard)",
         "addObject": "Objekt hinzufügen",
-		"addWell": "",
+		"addWell": "Einen Brunnen hinzufügen",
 		"MassValue": "Masse:",
 		"radiusValue": "Radius:",
 		"ChargeValue": "Ladung:",
@@ -686,6 +727,14 @@ const translations = {
 		"barycenterLabelwellValue": "",
     },
 	"it": {
+		"show": "Mostrare",
+		"hide": "Nascondi",
+        "centerViewEntree": "Vista centrale",
+		"duplicateObjectEntree": "Duplicare",
+		"resetForcesEntree": "Azzeramento della velocità",
+		"resetAllForcesEntree": "Azzeramento di tutte le velocità",
+		"deleteObjectEntree": "Cancellare",
+		"deleteAllEntree": "Elimina tutti gli oggetti e i pozzi",
 		"resetView": "Reimposta vista",
 		"fullscreen": "Schermo intero",
 		"startPause": "Avvia la simulazione",
@@ -720,7 +769,7 @@ const translations = {
 		"savePreset": "Salva il preset",
 		"presetNameValue": "Nome del preset (vuoto per nome predefinito)",
 		"addObject": "Aggiungi un oggetto",
-		"addWell": "",
+		"addWell": "Aggiungere un pozzo",
 		"MassValue": "Massa:",
 		"radiusValue": "Raggio:",
 		"ChargeValue": "Carica:",
@@ -802,6 +851,14 @@ const translations = {
 		"barycenterLabelwellValue": "",
 	},
 	"la": {
+		"show": "",
+		"hide": "",
+        "centerViewEntree": "",
+		"duplicateObjectEntree": "",
+		"resetForcesEntree": "",
+		"resetAllForcesEntree": "",
+		"deleteObjectEntree": "",
+		"deleteAllEntree": "",
 		"resetView": "Visum resetare",
 		"fullscreen": "Plenum scrinium",
 		"startPause": "Incipe simulationem",
@@ -918,6 +975,14 @@ const translations = {
 		"barycenterLabelwellValue": "",
 	},
 	"vf": {
+		"show": "",
+		"hide": "",
+        "centerViewEntree": "",
+		"duplicateObjectEntree": "",
+		"resetForcesEntree": "",
+		"resetAllForcesEntree": "",
+		"deleteObjectEntree": "",
+		"deleteAllEntree": "",
 		"resetView": "Réinitialiser la veue",
 		"fullscreen": "Plain escherm",
 		"startPause": "Lancer la simulacion",
@@ -1034,6 +1099,14 @@ const translations = {
 		"barycenterLabelwellValue": "",
 	},
 	"pirate": {
+		"show": "",
+		"hide": "",
+        "centerViewEntree": "",
+		"duplicateObjectEntree": "",
+		"resetForcesEntree": "",
+		"resetAllForcesEntree": "",
+		"deleteObjectEntree": "",
+		"deleteAllEntree": "",
 		"resetView": "Arrr-réinitialiser l'vue",
 		"fullscreen": "Plein mât d'scène",
 		"startPause": "Lancer la simulaaaargh",
@@ -1150,6 +1223,14 @@ const translations = {
 		"barycenterLabelwellValue": "",
 	},
 	"shakespeare": {
+		"show": "",
+		"hide": "",
+        "centerViewEntree": "",
+		"duplicateObjectEntree": "",
+		"resetForcesEntree": "",
+		"resetAllForcesEntree": "",
+		"deleteObjectEntree": "",
+		"deleteAllEntree": "",
 		"resetView": "Recalibrate yon Vision",
 		"fullscreen": "Complete the Theatre Stage",
 		"startPause": "Commence the Noble Simulation",
@@ -1266,6 +1347,14 @@ const translations = {
 		"barycenterLabelwellValue": "",
 	},
 	"minion": {
+		"show": "",
+		"hide": "",
+        "centerViewEntree": "",
+		"duplicateObjectEntree": "",
+		"resetForcesEntree": "",
+		"resetAllForcesEntree": "",
+		"deleteObjectEntree": "",
+		"deleteAllEntree": "",
 		"resetView": "Reset banana view!",
 		"fullscreen": "Banana fullscreen!",
 		"startPause": "Bello! Start simulation!",
@@ -1382,6 +1471,14 @@ const translations = {
 		"barycenterLabelwellValue": "",
 	},
 	"pt": {
+		"show": "",
+		"hide": "",
+        "centerViewEntree": "",
+		"duplicateObjectEntree": "",
+		"resetForcesEntree": "",
+		"resetAllForcesEntree": "",
+		"deleteObjectEntree": "",
+		"deleteAllEntree": "",
 		"resetView": "",
 		"fullscreen": "",
 		"startPause": "",
@@ -1498,6 +1595,14 @@ const translations = {
 		"barycenterLabelwellValue": "",
 	},
 	"LabelName": {
+		"show": "show",
+		"hide": "hide",
+        "centerViewEntree": "centerViewEntree",
+		"duplicateObjectEntree": "duplicateObjectEntree",
+		"resetForcesEntree": "resetForcesEntree",
+		"resetAllForcesEntree": "resetAllForcesEntree",
+		"deleteObjectEntree": "deleteObjectEntree",
+		"deleteAllEntree": "deleteAllEntree",
 		"resetView": "resetView",
 		"fullscreen": "fullscreen",
 		"startPause": "startPause",

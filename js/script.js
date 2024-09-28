@@ -131,8 +131,8 @@ canvas.addEventListener('contextmenu', function(event) {
     if (selectedObject) {
         customMenu.innerHTML = `
             <div style="font-size:15px;padding-bottom: 5px;font-weight: bold;">${selectedObject.name || 'NaN'}</div>
-            <div style="font-size:10px; border-bottom: 1px solid #444">${positiontext} (${selectedObject.position.x.toFixed(2)}; ${selectedObject.position.y.toFixed(2)})</div>
-            <button class="context-menu-button" id="toggleVisibility">${selectedObject.show ? 'Hide' : 'Show'}</button>
+            <div style="font-size:10px; border-bottom: 1px solid #444">${positionText} (${selectedObject.position.x.toFixed(2)}; ${selectedObject.position.y.toFixed(2)})</div>
+            <button class="context-menu-button" id="toggleVisibility">${selectedObject.show ? `${hideText}` : `${showText}`}</button>
             <button class="context-menu-button" id="centerView">Center view</button>
             <button class="context-menu-button" id="duplicateObject">Duplicate</button>
 			<button class="context-menu-button" id="resetForces">Reset Velocity</button>
@@ -140,11 +140,13 @@ canvas.addEventListener('contextmenu', function(event) {
             <button class="context-menu-button" id="deleteObject">Delete</button>
             <button class="context-menu-button" id="deleteAll">Delete all Objects & Wells</button>
         `;
-        
+		
         customMenu.style.display = 'block';
         customMenu.style.left = `${event.pageX}px`;
         customMenu.style.top = `${event.pageY}px`;
-
+		
+		translate();
+		
         document.getElementById('deleteObject').addEventListener('click', () => {
             const index = bodies.indexOf(selectedObject);
             if (index > -1) {
@@ -454,6 +456,12 @@ document.getElementById('infoWindowBtn').addEventListener('click', function() {
 });
 
 document.getElementById('closeInfoWindowBtn').addEventListener('click', function() {
+	showWindow = false
+    document.getElementById('infoWindow').style.display = 'none';
+});
+
+document.getElementById('closeInfoWindowBtn').addEventListener('touchstart', function() {
+	preventDefault();
 	showWindow = false
     document.getElementById('infoWindow').style.display = 'none';
 });
@@ -1598,12 +1606,13 @@ function calculateBarycenter() {
 	}
 
     if (doZoom) {
-		const maxDistance = Math.max(...bodies.map(body => 
+		const visibleBodies = bodies.filter(body => body.show);
+		const maxDistance = Math.max(...visibleBodies.map(body => 
 			Math.sqrt(Math.pow(body.position.x - barycenter.x, 2) + Math.pow(body.position.y - barycenter.y, 2))
 		));
 		
 		const maxRadius = showSizeCheckbox.checked ? 10 / scale : 10;
-		const minCanvasSize = 0.98 * Math.min(canvas.width, canvas.height);
+		const minCanvasSize = Math.min(canvas.width, canvas.height * 0.9);
 		
         scale = Math.min(
             minCanvasSize / (maxDistance * 2),
