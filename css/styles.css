@@ -6,6 +6,7 @@ body {
 	overflow: hidden;
 	font-family: 'Arial', sans-serif;
 	background-color: #1c1c1c;
+	background-image: var(--background-image-url);
 	font-size: 14px;
 	color: #fff;
 }
@@ -30,6 +31,7 @@ body {
 	gap: 18px;
 	overflow-y: auto;
 }
+
 
 .hidden #controls {
 	display: none;
@@ -237,7 +239,7 @@ button:hover {
     display: block;
 	position: absolute;
 	left: 18.5px;
-	bottom: 70px;
+	bottom: 67px;
     background: none;
     border: none;
     padding: 0;
@@ -251,7 +253,7 @@ button:hover {
     display: block;
 	position: absolute;
 	left: 15px;
-	bottom: 124px;
+	bottom: 118px;
     background: none;
     border: none;
     padding: 0;
@@ -366,6 +368,7 @@ button:hover {
 }
 
 .canvas-text {
+	user-select: none;
 	font-family: 'Lexend Deca', sans-serif;
 	left: 18px;
 	-webkit-text-stroke: .5px gray;
@@ -524,4 +527,39 @@ li, ul {
 #byWellSettings {
     padding-left: 10px;
 	font-style : italic;
+}
+
+.context-menu {
+	user-select: none;
+	cursor: default;
+    font-size: 14px;
+    padding: 7px;
+    display: none;
+    position: absolute;
+    z-index: 20;
+    border-radius: 15px;
+    border-top-left-radius: 0;
+	background-color: #2c2c2c;
+	background-image: var(--background-image-url);
+    backdrop-filter: blur(10px);
+	border: 1px solid #000;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+    gap: 10px;
+    max-width: 210px;
+	opacity: 0.8;
+}
+
+.context-menu div {
+    padding: 10px;
+}
+
+.context-menu-button {
+    padding: 7px;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    font-size: 12.5px;
+    color: #eee;
+    text-align: left;
+    border-radius: 7.5px;
 }

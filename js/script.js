@@ -27,8 +27,10 @@ let fps = 0;
 let frameCount = 0;
 let fpsTime = 0;
 let frameInterval = 2;
+let cpuUsage = 0;
 
 const canvas = document.getElementById('simulationCanvas');
+const customMenu = document.getElementById('customMenu');
 const ctx = canvas.getContext('2d');
 const dtInput = document.getElementById('dt');
 const startPauseBtn = document.getElementById('startPauseBtn');
@@ -87,6 +89,132 @@ canvas.addEventListener('wheel', handleMouseWheel);
 canvas.addEventListener('touchstart', handleTouchStart);
 canvas.addEventListener('touchmove', handleTouchMove);
 canvas.addEventListener('touchend', handleTouchEnd);
+
+canvas.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+	
+	function enterUpdate() {
+		customMenu.style.display = 'none';
+		updateControlValues();
+		updateWellControlValues();
+	}
+    
+    const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
+    const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
+    
+    selectedObject = null;
+	selectedType = null;
+	
+    bodies.forEach(body => {
+        const dx = body.position.x - mouseX;
+        const dy = body.position.y - mouseY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
+        
+        if (distance < radius) {
+            selectedObject = body;
+			selectedType = "body";
+        }
+    });
+    
+    wells.forEach(well => {
+        const dx = well.position.x - mouseX;
+        const dy = well.position.y - mouseY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < 7 / scale) {
+            selectedObject = well;
+			selectedType = "well";
+        }
+    });
+    
+    if (selectedObject) {
+        customMenu.innerHTML = `
+            <div style="font-size:15px;padding-bottom: 5px;font-weight: bold;">${selectedObject.name || 'NaN'}</div>
+            <div style="font-size:10px; border-bottom: 1px solid #444">${positiontext} (${selectedObject.position.x.toFixed(2)}; ${selectedObject.position.y.toFixed(2)})</div>
+            <button class="context-menu-button" id="toggleVisibility">${selectedObject.show ? 'Hide' : 'Show'}</button>
+            <button class="context-menu-button" id="centerView">Center view</button>
+            <button class="context-menu-button" id="duplicateObject">Duplicate</button>
+			<button class="context-menu-button" id="resetForces">Reset Velocity</button>
+			<button class="context-menu-button" id="resetAllForces">Reset all Velocities</button>
+            <button class="context-menu-button" id="deleteObject">Delete</button>
+            <button class="context-menu-button" id="deleteAll">Delete all Objects & Wells</button>
+        `;
+        
+        customMenu.style.display = 'block';
+        customMenu.style.left = `${event.pageX}px`;
+        customMenu.style.top = `${event.pageY}px`;
+
+        document.getElementById('deleteObject').addEventListener('click', () => {
+            const index = bodies.indexOf(selectedObject);
+            if (index > -1) {
+                deleteBody(index);
+            } else {
+                deleteWell(wells.indexOf(selectedObject));
+            }
+            enterUpdate();
+        });
+
+        document.getElementById('toggleVisibility').addEventListener('click', () => {
+            selectedObject.show = !selectedObject.show;
+            enterUpdate();
+        });
+
+        document.getElementById('centerView').addEventListener('click', () => {
+            if (bodies.includes(selectedObject)) {
+                focusObject = `body-${bodies.indexOf(selectedObject)}`;
+            } else if (wells.includes(selectedObject)) {
+                focusObject = `well-${wells.indexOf(selectedObject)}`;
+            }
+            enterUpdate();
+        });
+
+        document.getElementById('duplicateObject').addEventListener('click', () => {
+            const duplicate = JSON.parse(JSON.stringify(selectedObject));
+			const theta = Math.random() * 2 * Math.PI
+			const rho = Math.random() * 20 + 5 + selectedObject.radius * 2
+            duplicate.position.x += rho * Math.cos(theta);
+            duplicate.position.y += rho * Math.sin(theta);
+			duplicate.name = `${selectedObject.name} copy`;
+            if (bodies.includes(selectedObject)) {
+                bodies.push(duplicate);
+            } else if (wells.includes(selectedObject)) {
+                wells.push(duplicate);
+            }
+            enterUpdate();
+        });
+		
+		document.getElementById('resetForces').addEventListener('click', () => {
+			if (selectedType === "body") {
+				selectedObject.velocity.x = 0;
+				selectedObject.velocity.y = 0;
+				selectedObject.acceleration.x = 0;
+				selectedObject.acceleration.y = 0;
+				enterUpdate();
+			}
+		});
+		
+		document.getElementById('resetAllForces').addEventListener('click', () => {
+			bodies.forEach(body => {
+				body.velocity.x = 0;
+				body.velocity.y = 0;
+				body.acceleration.x = 0;
+				body.acceleration.y = 0;
+			});
+            enterUpdate();
+		});
+		
+        document.getElementById('deleteAll').addEventListener('click', () => {
+            if (confirm("Are you sure you want to delete all objects?")) {
+                bodies.length = 0;
+                wells.length = 0;
+            }
+            enterUpdate();
+        });
+    } else {
+        customMenu.style.display = 'none';
+    }
+});
 
 focusSelect.addEventListener('change', (e) => {
 	focusObject = e.target.value;
@@ -164,6 +292,7 @@ window.addEventListener('click', (event) => {
 	if (event.target === modal) {
 		modal.style.display = 'none';
 	}
+    customMenu.style.display = 'none';
 });
 
 document.getElementById('autoZoomToggle').addEventListener('change', (e) => {
@@ -289,6 +418,7 @@ document.addEventListener('keydown', (event) => {
 	if (devModenabled) {
         console.log('Key pressed :', event.key);
 	}
+	customMenu.style.display = 'none';
 });
 
 objectASelect.addEventListener('change', (e) => {
@@ -1919,7 +2049,6 @@ function getRandomSpeed() {
 }
 
 function handleMouseDown(event) {
-	doZoom = false
 	const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
 	const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
 
@@ -1943,6 +2072,10 @@ function handleMouseDown(event) {
 			updateButtonImage();
 			break;
 		}
+	}
+	
+	if (selectedBody) {
+		doZoom = false
 	}
 }
 

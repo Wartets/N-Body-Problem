@@ -15,6 +15,7 @@ function translate() {
 		}
 
 		timerLng = trans.timeLabel;
+		positiontext = trans.posAtextEntree;
 		
         document.getElementById('dtLabel').textContent = trans.dt;
         document.getElementById('showSizeLabel').textContent = trans.adaptiveSize;
