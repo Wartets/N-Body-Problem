@@ -28,6 +28,11 @@ let frameCount = 0;
 let fpsTime = 0;
 let frameInterval = 2;
 let cpuUsage = 0;
+let objectLinkedA = null;
+let objectLinkedB = null;
+let objectLinkedAname = null;
+let objectLinkedBname = null;
+let distanceL = null;
 
 const canvas = document.getElementById('simulationCanvas');
 const customMenu = document.getElementById('customMenu');
@@ -102,7 +107,7 @@ canvas.addEventListener('contextmenu', function(event) {
     const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
     const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
     
-    selectedObject = null;
+    selectedInfo = null;
 	selectedType = null;
 	
     bodies.forEach(body => {
@@ -112,7 +117,7 @@ canvas.addEventListener('contextmenu', function(event) {
         const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
         
         if (distance < radius) {
-            selectedObject = body;
+            selectedInfo = body;
 			selectedType = "body";
         }
     });
@@ -123,64 +128,134 @@ canvas.addEventListener('contextmenu', function(event) {
         const distance = Math.sqrt(dx * dx + dy * dy);
         
         if (distance < 7 / scale) {
-            selectedObject = well;
+            selectedInfo = well;
 			selectedType = "well";
         }
     });
-    
-    if (selectedObject) {
-        customMenu.innerHTML = `
-            <div style="font-size:15px;padding-bottom: 5px;font-weight: bold;">${selectedObject.name || 'NaN'}</div>
-            <div style="font-size:10px; border-bottom: 1px solid #444">${positionText} (${selectedObject.position.x.toFixed(2)}; ${selectedObject.position.y.toFixed(2)})</div>
-            <button class="context-menu-button" id="toggleVisibility">${selectedObject.show ? `${hideText}` : `${showText}`}</button>
-            <button class="context-menu-button" id="centerView">Center view</button>
-            <button class="context-menu-button" id="duplicateObject">Duplicate</button>
+	
+    if (selectedInfo) {
+		customMenu.innerHTML = `
+			<div style="font-size:15px;padding-bottom: 5px;font-weight: bold;">${selectedInfo.name || 'Object NaN'}</div>
+			<div style="font-size:10px; border-bottom: 1px solid #444">${positionText} (${selectedInfo.position.x.toFixed(2)}; ${selectedInfo.position.y.toFixed(2)})</div>
+			<button class="context-menu-button" id="toggleVisibility">${selectedInfo.show ? `${hideText}` : `${showText}`}</button>
+			<button class="context-menu-button" id="centerView">Center view</button>
+			<button class="context-menu-button" id="duplicateObject">Duplicate</button>
 			<button class="context-menu-button" id="resetForces">Reset Velocity</button>
 			<button class="context-menu-button" id="resetAllForces">Reset all Velocities</button>
-            <button class="context-menu-button" id="deleteObject">Delete</button>
-            <button class="context-menu-button" id="deleteAll">Delete all Objects & Wells</button>
-        `;
+			<button class="context-menu-button" id="deleteObject">Delete</button>
+			<button class="context-menu-button" id="deleteAll">Delete all Objects & Wells</button>
+			<button class="context-menu-button" id="linkA">${selectA} ${objectLinkedAname || '&empty;'}</button>
+			<button class="context-menu-button" id="linkB">${selectB} ${objectLinkedBname || '&empty;'}</button>
+			<button class="context-menu-button" id="unlink">Délier les objets</button>
+		`;
+		
+        if (objectLinkedA !== null && objectLinkedB !== null) {
+            unlink.innerHTML.display = 'block';
+			
+			document.getElementById('unlink').addEventListener('click', () => {
+				objectLinkedA = null;
+				objectLinkedB = null;
+				objectLinkedAname = null;
+				objectLinkedBname = null;
+				distanceL = null;
+			});
+		}
+		else {
+			unlink.style.display = 'none';
+		}
 		
         customMenu.style.display = 'block';
-        customMenu.style.left = `${event.pageX}px`;
-        customMenu.style.top = `${event.pageY}px`;
+        let menuX = event.pageX;
+        let menuY = event.pageY;
+
+        const menuWidth = customMenu.offsetWidth;
+        const menuHeight = customMenu.offsetHeight;
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+
+        if (menuX + menuWidth > windowWidth) {
+            menuX = windowWidth - menuWidth - 5;
+        }
+
+        if (menuY + menuHeight > windowHeight) {
+            menuY = windowHeight - menuHeight - 5;
+        }
+
+        customMenu.style.left = `${menuX}px`;
+        customMenu.style.top = `${menuY}px`;
+		
+		if (selectedType === "well") {
+			resetForces.style.display = 'none';
+			linkA.style.display = 'none';
+			linkB.style.display = 'none';
+		}
 		
 		translate();
 		
+        document.getElementById('linkA').addEventListener('click', () => {
+            objectLinkedA = bodies[bodies.indexOf(selectedInfo)];
+            objectLinkedAname = selectedInfo.name;
+			if (objectLinkedA !== null && objectLinkedB !== null) {
+				distanceL = getDistanceBetweenObjects(objectLinkedA, objectLinkedB)
+			}
+        });
+		
+        document.getElementById('linkB').addEventListener('click', () => {
+            objectLinkedB = bodies[bodies.indexOf(selectedInfo)];
+            objectLinkedBname = selectedInfo.name;
+			if (objectLinkedA !== null && objectLinkedB !== null) {
+				distanceL = getDistanceBetweenObjects(objectLinkedA, objectLinkedB)
+			}
+        });
+		
         document.getElementById('deleteObject').addEventListener('click', () => {
-            const index = bodies.indexOf(selectedObject);
+            const index = bodies.indexOf(selectedInfo);
             if (index > -1) {
                 deleteBody(index);
             } else {
-                deleteWell(wells.indexOf(selectedObject));
+                deleteWell(wells.indexOf(selectedInfo));
             }
             enterUpdate();
         });
 
         document.getElementById('toggleVisibility').addEventListener('click', () => {
-            selectedObject.show = !selectedObject.show;
+            selectedInfo.show = !selectedInfo.show;
             enterUpdate();
         });
 
         document.getElementById('centerView').addEventListener('click', () => {
-            if (bodies.includes(selectedObject)) {
-                focusObject = `body-${bodies.indexOf(selectedObject)}`;
-            } else if (wells.includes(selectedObject)) {
-                focusObject = `well-${wells.indexOf(selectedObject)}`;
+            if (bodies.includes(selectedInfo)) {
+                focusObject = `body-${bodies.indexOf(selectedInfo)}`;
+            } else if (wells.includes(selectedInfo)) {
+                focusObject = `well-${wells.indexOf(selectedInfo)}`;
             }
             enterUpdate();
         });
 
         document.getElementById('duplicateObject').addEventListener('click', () => {
-            const duplicate = JSON.parse(JSON.stringify(selectedObject));
+            const duplicate = JSON.parse(JSON.stringify(selectedInfo));
 			const theta = Math.random() * 2 * Math.PI
-			const rho = Math.random() * 20 + 5 + selectedObject.radius * 2
+			const rho = Math.random() * 20 + 5 + selectedInfo.radius * 2
             duplicate.position.x += rho * Math.cos(theta);
             duplicate.position.y += rho * Math.sin(theta);
-			duplicate.name = `${selectedObject.name} copy`;
-            if (bodies.includes(selectedObject)) {
+			const baseName = selectedInfo.name;
+
+			let copyCount = 0;
+			bodies.forEach(body => {
+				const copyPattern = new RegExp(`^${baseName} copy(?: \\d+)?$`);
+				if (copyPattern.test(body.name)) {
+					copyCount++;
+				}
+			});
+			if (copyCount === 0) {
+				duplicate.name = `${baseName} copy`;
+			} else {
+				duplicate.name = `${baseName} copy ${copyCount + 1}`;
+			}
+			
+            if (bodies.includes(selectedInfo)) {
                 bodies.push(duplicate);
-            } else if (wells.includes(selectedObject)) {
+            } else if (wells.includes(selectedInfo)) {
                 wells.push(duplicate);
             }
             enterUpdate();
@@ -188,10 +263,10 @@ canvas.addEventListener('contextmenu', function(event) {
 		
 		document.getElementById('resetForces').addEventListener('click', () => {
 			if (selectedType === "body") {
-				selectedObject.velocity.x = 0;
-				selectedObject.velocity.y = 0;
-				selectedObject.acceleration.x = 0;
-				selectedObject.acceleration.y = 0;
+				selectedInfo.velocity.x = 0;
+				selectedInfo.velocity.y = 0;
+				selectedInfo.acceleration.x = 0;
+				selectedInfo.acceleration.y = 0;
 				enterUpdate();
 			}
 		});
@@ -210,6 +285,11 @@ canvas.addEventListener('contextmenu', function(event) {
             if (confirm("Are you sure you want to delete all objects?")) {
                 bodies.length = 0;
                 wells.length = 0;
+				objectLinkedA = null;
+				objectLinkedAname = null;
+				objectLinkedB = null;
+				objectLinkedBname = null;
+				distanceL = null;
             }
             enterUpdate();
         });
@@ -346,6 +426,7 @@ startPauseBtn.addEventListener('touchstart', (e) => {
 slider.addEventListener('input', (e) => {
 	const value = e.target.value;
 	tooltip.innerHTML = `10<sup>${value}</sup>`;
+	
 	if (value == 0) {
 		clearTrails();
 	}
@@ -499,6 +580,7 @@ document.getElementById('addBodyBtn').addEventListener('click', () => {
 	let rdposition = getRandomPosition(rdradius)
 	if (rdposition !== null) {
 	const newBody = {
+            name: `Object ${bodies.length + 1}`,
 			mass: 50 + Math.random() * 100,
 			charge: Math.round((Math.random() * 3 - 1.5) * 10) / 10,
 			radius: rdradius,
@@ -830,6 +912,13 @@ function resetView() {
 }
 
 function deleteBody(index) {
+    if (bodies[index] === objectLinkedA || bodies[index] === objectLinkedB) {
+        objectLinkedA = null;
+        objectLinkedAname = null;
+        objectLinkedB = null;
+        objectLinkedBname = null;
+        distanceL = null;
+    }
 	bodies.splice(index, 1);
 	updateControlValues();
 	updateWellControlValues();
@@ -1446,15 +1535,6 @@ function applyFriction() {
 	}
 }
 
-function adjustTrails(trailMaxPoints) {
-	bodies.forEach(body => {
-		while (body.trail.length > trailMaxPoints) {
-			body.trail.shift();
-			body.points.shift();
-		}
-	});
-}
-
 function updatePositions(dt) {
 	const trailLimitInput = document.getElementById('trailLimit');
 	const trailMaxPoints = Math.pow(10, trailLimitInput.value);
@@ -1465,15 +1545,40 @@ function updatePositions(dt) {
 
 		body.position.x += body.velocity.x * dt;
 		body.position.y += body.velocity.y * dt;
-
+		
 		body.trail.push({ x: body.position.x, y: body.position.y });
-		if (body.trail.length > trailMaxPoints) {
-			body.trail.shift();
-		}
-
 		body.points.push({ x: body.position.x, y: body.position.y });
-		if (body.points.length > trailMaxPoints) {
-			body.points.shift();
+
+        if (objectLinkedA !== null && objectLinkedB !== null) {
+            const currentDistance = getDistanceBetweenObjects(objectLinkedA, objectLinkedB);
+            if (currentDistance > distanceL) {
+                const excessDistance = currentDistance - distanceL;
+                const dx = (objectLinkedB.position.x - objectLinkedA.position.x) / currentDistance;
+                const dy = (objectLinkedB.position.y - objectLinkedA.position.y) / currentDistance;
+
+                objectLinkedA.position.x += dx * excessDistance / 2;
+                objectLinkedA.position.y += dy * excessDistance / 2;
+                objectLinkedB.position.x -= dx * excessDistance / 2;
+                objectLinkedB.position.y -= dy * excessDistance / 2;
+            }
+        }
+
+		trailType = 'lastOne'
+
+		if (trailType === 'oneByTwo') {
+			const skippedPoint = 13 - frameInterval;
+			if (body.trail.length * bodies.length > trailMaxPoints) {
+				for (let i = body.trail.length - skippedPoint; i >= 0; i -= skippedPoint) {
+					body.trail.splice(i, 1);
+					body.points.splice(i, 1);
+				}
+			}
+		}
+		else if (trailType === 'lastOne') {
+			while (body.trail.length > trailMaxPoints) {
+				body.trail.shift();
+				body.points.shift();
+			}
 		}
 	}
 }
@@ -1668,6 +1773,22 @@ function drawBodies(barycenter) {
 	ctx.scale(scale, scale);
 	ctx.translate(-barycenter.x, -barycenter.y);
 	const barycenterPointSize = 1.1 / scale;
+
+    if (objectLinkedA !== null && objectLinkedB !== null) {
+        const currentDistance = getDistanceBetweenObjects(objectLinkedA, objectLinkedB);
+
+        const ratio = Math.min(currentDistance / distanceL, 1);
+        const colorIntensity = Math.floor(255 * ratio * 0.9);
+
+        const color = `rgb(${colorIntensity}, ${255 - colorIntensity}, 0, ${0.1 + 0.8 * ratio ** 2})`;
+
+        ctx.beginPath();
+        ctx.moveTo(objectLinkedA.position.x, objectLinkedA.position.y);
+        ctx.lineTo(objectLinkedB.position.x, objectLinkedB.position.y);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1 / scale;
+        ctx.stroke();
+    }
 
 	wells.forEach(well => {
 		if (well.show) {
@@ -2041,10 +2162,11 @@ function animate(currentTime) {
     
     cpuUsage = Math.min((frameTime / 16.67 / 2.25) * 100, 500);
 	if (cpuUsage >= 500) {
-		document.getElementById('UsageDisplay').textContent = `Usage: +500%`;
+		clearTrails();
+		document.getElementById('UsageDisplay').textContent = `Use: +500%`;
 	}
 	else {
-		document.getElementById('UsageDisplay').textContent = `Usage: ${cpuUsage.toFixed(0).padStart(3, '0')}%`;
+		document.getElementById('UsageDisplay').textContent = `Use: ${cpuUsage.toFixed(0).padStart(3, '0')}%`;
 	}
     
     requestAnimationFrame(animate);
@@ -2910,7 +3032,8 @@ function initChart() {
 function updateChart(xValue, yValue) {
 	if (showWindow) {
 		if (chartInitialized) {
-			chart.data.datasets[0].data.push({ x: xValue, y: yValue });
+			const precision = 1e5
+			chart.data.datasets[0].data.push({ x: Math.round(xValue * precision) / precision, y: Math.round(yValue * precision) / precision });
 			chart.update();
 		}
     }

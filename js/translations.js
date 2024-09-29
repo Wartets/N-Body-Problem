@@ -18,6 +18,8 @@ function translate() {
 		positionText = trans.posAtextEntree;
 		hideText = trans.hide;
 		showText = trans.show;
+		selectA = trans.selectObjectA;
+		selectB = trans.selectObjectB;
 		
         document.getElementById('dtLabel').textContent = trans.dt;
         document.getElementById('showSizeLabel').textContent = trans.adaptiveSize;
@@ -211,6 +213,7 @@ function translate() {
         document.getElementById('resetAllForces').textContent = trans.resetAllForcesEntree;
         document.getElementById('deleteObject').textContent = trans.deleteObjectEntree;
         document.getElementById('deleteAll').textContent = trans.deleteAllEntree;
+        document.getElementById('unlink').textContent = trans.unlinkEntree;
     }
 
     languageSelect.addEventListener('change', () => {
@@ -222,6 +225,9 @@ function translate() {
 
 const translations = {
     "fr": {
+		"selectObjectA": "Sélectionner l'objet A :",
+		"selectObjectB": "Sélectionner l'objet B :",
+		"unlinkEntree": "Délier les objets",
 		"show": "Afficher",
 		"hide": "Masquer",
         "centerViewEntree": "Center la Vue",
@@ -351,6 +357,9 @@ const translations = {
 		"barycenterLabelwellValue": "Barycentre des Puits",
     },
     "en": {
+		"selectObjectA": "Select object A:",
+		"selectObjectB": "Select object B:",
+		"unlinkEntree": "Unlink objects",
 		"show": "Show",
 		"hide": "Hide",
         "centerViewEntree": "Center View",
@@ -477,6 +486,9 @@ const translations = {
 		"barycenterLabelwellValue": "Well Barycenter",
     },
     "es": {
+		"selectObjectA": "Seleccionar objeto A:",
+		"selectObjectB": "Seleccionar objeto B:",
+		"unlinkEntree": "Desvincular objetos",
 		"show": "Mostrar",
 		"hide": "Ocultar",
         "centerViewEntree": "Vista central",
@@ -595,13 +607,16 @@ const translations = {
 		"longitudeOfAscendingNodeEntree": "Longitud del nodo ascendente",
 		"meanAnomalyEntree": "Anomalía media",
 		"keplerEquationEntree": "Solucionador de la ecuación de Kepler (beta)",
-		"barycenterLabelValue": "",
-		"barycenterLabelchargeValue": "",
-		"barycenterLabelgeoValue": "",
-		"barycenterLabelradValue": "",
-		"barycenterLabelwellValue": "",
+		"barycenterLabelValue": "Baricentro de masa",
+		"barycenterLabelchargeValue": "Baricentro de carga",
+		"barycenterLabelgeoValue": "Baricentro geométrico",
+		"barycenterLabelradValue": "Baricentro de superficie",
+		"barycenterLabelwellValue": "Baricentro de pozo",
     },
 	"de": {
+		"selectObjectA": "Objekt A auswählen:",
+		"selectObjectB": "Objekt B auswählen:",
+		"unlinkEntree": "Objekte entkoppeln",
 		"show": "Anzeigen",
 		"hide": "Ausblenden",
         "centerViewEntree": "Ansicht zentrieren",
@@ -720,13 +735,16 @@ const translations = {
 		"longitudeOfAscendingNodeEntree": "Länge des aufsteigenden Knotens",
 		"meanAnomalyEntree": "Mittlere Anomalie",
 		"keplerEquationEntree": "Löser der Kepler-Gleichung (beta)",
-		"barycenterLabelValue": "",
-		"barycenterLabelchargeValue": "",
-		"barycenterLabelgeoValue": "",
-		"barycenterLabelradValue": "",
-		"barycenterLabelwellValue": "",
+		"barycenterLabelValue": "Masse-Baryzentrum",
+		"barycenterLabelchargeValue": "Ladungs-Baryzentrum",
+		"barycenterLabelgeoValue": "Geometrisches Baryzentrum",
+		"barycenterLabelradValue": "Oberflächen-Baryzentrum",
+		"barycenterLabelwellValue": "Bohrloch-Baryzentrum",
     },
 	"it": {
+		"selectObjectA": "Selezionare l'oggetto A:",
+		"selectObjectB": "Selezionare l'oggetto B:",
+		"unlinkEntree": "Scollegamento degli oggetti",
 		"show": "Mostrare",
 		"hide": "Nascondi",
         "centerViewEntree": "Vista centrale",
@@ -844,13 +862,16 @@ const translations = {
 		"longitudeOfAscendingNodeEntree": "Longitudine del nodo ascendente",
 		"meanAnomalyEntree": "Anomalia media",
 		"keplerEquationEntree": "Risolutore dell'equazione di Keplero (beta)",
-		"barycenterLabelValue": "",
-		"barycenterLabelchargeValue": "",
-		"barycenterLabelgeoValue": "",
-		"barycenterLabelradValue": "",
-		"barycenterLabelwellValue": "",
+		"barycenterLabelValue": "Baricentro di massa",
+		"barycenterLabelchargeValue": "Baricentro di carica",
+		"barycenterLabelgeoValue": "Baricentro geometrico",
+		"barycenterLabelradValue": "Baricentro di superficie",
+		"barycenterLabelwellValue": "Baricentro del pozzo",
 	},
 	"la": {
+		"selectObjectA": "",
+		"selectObjectB": "",
+		"unlinkEntree": "",
 		"show": "",
 		"hide": "",
         "centerViewEntree": "",
@@ -975,6 +996,9 @@ const translations = {
 		"barycenterLabelwellValue": "",
 	},
 	"vf": {
+		"selectObjectA": "",
+		"selectObjectB": "",
+		"unlinkEntree": "",
 		"show": "",
 		"hide": "",
         "centerViewEntree": "",
@@ -1099,6 +1123,9 @@ const translations = {
 		"barycenterLabelwellValue": "",
 	},
 	"pirate": {
+		"selectObjectA": "",
+		"selectObjectB": "",
+		"unlinkEntree": "",
 		"show": "",
 		"hide": "",
         "centerViewEntree": "",
@@ -1223,6 +1250,9 @@ const translations = {
 		"barycenterLabelwellValue": "",
 	},
 	"shakespeare": {
+		"selectObjectA": "",
+		"selectObjectB": "",
+		"unlinkEntree": "",
 		"show": "",
 		"hide": "",
         "centerViewEntree": "",
@@ -1347,6 +1377,9 @@ const translations = {
 		"barycenterLabelwellValue": "",
 	},
 	"minion": {
+		"selectObjectA": "",
+		"selectObjectB": "",
+		"unlinkEntree": "",
 		"show": "",
 		"hide": "",
         "centerViewEntree": "",
@@ -1471,6 +1504,9 @@ const translations = {
 		"barycenterLabelwellValue": "",
 	},
 	"pt": {
+		"selectObjectA": "",
+		"selectObjectB": "",
+		"unlinkEntree": "",
 		"show": "",
 		"hide": "",
         "centerViewEntree": "",
@@ -1595,6 +1631,9 @@ const translations = {
 		"barycenterLabelwellValue": "",
 	},
 	"LabelName": {
+		"selectObjectA": "selectObjectA",
+		"selectObjectB": "selectObjectB",
+		"unlinkEntree": "unlinkEntree",
 		"show": "show",
 		"hide": "hide",
         "centerViewEntree": "centerViewEntree",
