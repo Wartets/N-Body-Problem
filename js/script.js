@@ -96,6 +96,10 @@ canvas.addEventListener('touchstart', handleTouchStart);
 canvas.addEventListener('touchmove', handleTouchMove);
 canvas.addEventListener('touchend', handleTouchEnd);
 
+window.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+})
+
 canvas.addEventListener('contextmenu', function(event) {
     event.preventDefault();
 	
