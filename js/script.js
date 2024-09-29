@@ -35,8 +35,8 @@ let objectLinkedBname = null;
 let distanceL = null;
 
 const canvas = document.getElementById('simulationCanvas');
-const customMenu = document.getElementById('customMenu');
 const ctx = canvas.getContext('2d');
+const customMenu = document.getElementById('customMenu');
 const dtInput = document.getElementById('dt');
 const startPauseBtn = document.getElementById('startPauseBtn');
 const startPauseImg = document.getElementById('startPauseImg');
@@ -76,6 +76,7 @@ const impactSound = new Audio('sound/impact-sound.mp3');
 const mergeSound = new Audio('sound/merge-sound.mp3');
 const impactDelay = 10;
 const mergeDelay = 1;
+const springConstant = 0.8; // rigidité de la corde
 const bodies = initialBodies.map(body => ({
 	...body,
 	acceleration: { x: 0, y: 0 },
@@ -865,7 +866,7 @@ function getRadius(mean, stdDev, min) {
 
 function updateBarycenterCoord() {
     const barycenter = calculateBarycenter();
-    barycenterDisplay.textContent = `Barycenter Coord : (${barycenter.x.toFixed(2)}; ${barycenter.y.toFixed(2)})`;
+    barycenterDisplay.textContent = `Barycenter Coord : (${formatScientific(barycenter.x, 3)}; ${formatScientific(barycenter.y, 3)})`;
 }
 
 function updateCoord() {
@@ -879,7 +880,7 @@ function updateCoord() {
     const mouseX = mouseXOnCanvas + (barycenter.x - canvas.width / 2 / scale);
     const mouseY = mouseYOnCanvas + (barycenter.y - canvas.height / 2 / scale);
 
-    mouseCoordsDisplay.textContent = `Coord : (${mouseX.toFixed(2)}; ${mouseY.toFixed(2)})`;
+    mouseCoordsDisplay.textContent = `Coord : (${formatScientific(mouseX, 3)}; ${formatScientific(mouseY, 3)})`;
 }
 
 function updateConstants() {
@@ -1549,19 +1550,24 @@ function updatePositions(dt) {
 		body.trail.push({ x: body.position.x, y: body.position.y });
 		body.points.push({ x: body.position.x, y: body.position.y });
 
-        if (objectLinkedA !== null && objectLinkedB !== null) {
-            const currentDistance = getDistanceBetweenObjects(objectLinkedA, objectLinkedB);
-            if (currentDistance > distanceL) {
-                const excessDistance = currentDistance - distanceL;
-                const dx = (objectLinkedB.position.x - objectLinkedA.position.x) / currentDistance;
-                const dy = (objectLinkedB.position.y - objectLinkedA.position.y) / currentDistance;
+		if (objectLinkedA !== null && objectLinkedB !== null) {
+			const currentDistance = getDistanceBetweenObjects(objectLinkedA, objectLinkedB);
+			const dx = (objectLinkedB.position.x - objectLinkedA.position.x) / currentDistance;
+			const dy = (objectLinkedB.position.y - objectLinkedA.position.y) / currentDistance;
 
-                objectLinkedA.position.x += dx * excessDistance / 2;
-                objectLinkedA.position.y += dy * excessDistance / 2;
-                objectLinkedB.position.x -= dx * excessDistance / 2;
-                objectLinkedB.position.y -= dy * excessDistance / 2;
-            }
-        }
+			if (currentDistance > distanceL) {
+				const excessDistance = currentDistance - distanceL;
+				
+				const forceX = springConstant * dx * excessDistance;
+				const forceY = springConstant * dy * excessDistance;
+
+				objectLinkedA.acceleration.x += forceX / objectLinkedA.mass;
+				objectLinkedA.acceleration.y += forceY / objectLinkedA.mass;
+
+				objectLinkedB.acceleration.x -= forceX / objectLinkedB.mass;
+				objectLinkedB.acceleration.y -= forceY / objectLinkedB.mass;
+			}
+		}
 
 		trailType = 'lastOne'
 
@@ -1622,7 +1628,7 @@ function updateRelativisticPositions(dt) {
 function calculateBarycenter() {
 	let barycenter = { x: 0, y: 0 };
 	if (focusObject !== 'noObject') {
-		if (focusObject == 'barycenter-mass') {
+		if (focusObject == 'barycenter-mass' && bodies.length !== 0) {
 			let totalMass = 0;
 			bodies.forEach(body => {
 				if (body.show && (body.mass !== 0)) {
@@ -1637,7 +1643,7 @@ function calculateBarycenter() {
 				barycenter.y /= totalMass;
 			}
 		}
-		else if (focusObject == 'barycenter-charge') {
+		else if (focusObject == 'barycenter-charge' && bodies.length !== 0) {
 			let totalCharge = 0;
 	
 			bodies.forEach(body => {
@@ -1654,7 +1660,7 @@ function calculateBarycenter() {
 				barycenter.y /= totalCharge;
 			}
 		}
-		else if (focusObject == 'barycenter-geometric') {
+		else if (focusObject == 'barycenter-geometric' && bodies.length !== 0) {
 			let number = 0;
 	
 			bodies.forEach(body => {
@@ -1668,7 +1674,7 @@ function calculateBarycenter() {
 				barycenter.y /= number;
 			}
 		}
-		else if (focusObject == 'barycenter-surfacique') {
+		else if (focusObject == 'barycenter-surfacique' && bodies.length !== 0) {
 			let totalRadius = 0;
 	
 			bodies.forEach(body => {
@@ -1684,7 +1690,7 @@ function calculateBarycenter() {
 				barycenter.y /= totalRadius;
 			}
 		}
-		else if (focusObject == 'barycenter-well') {
+		else if (focusObject == 'barycenter-well' && wells.length !== 0) {
 			let number = 0;
 	
 			wells.forEach(well => {
@@ -1772,7 +1778,6 @@ function drawBodies(barycenter) {
 	ctx.translate(canvas.width / 2, canvas.height / 2);
 	ctx.scale(scale, scale);
 	ctx.translate(-barycenter.x, -barycenter.y);
-	const barycenterPointSize = 1.1 / scale;
 
     if (objectLinkedA !== null && objectLinkedB !== null) {
         const currentDistance = getDistanceBetweenObjects(objectLinkedA, objectLinkedB);
@@ -1808,11 +1813,6 @@ function drawBodies(barycenter) {
 			ctx.arc(well.position.x, well.position.y, 3.25 / scale, 0, 2 * pi);
 			ctx.strokeStyle = well.color || 'white';
 			ctx.lineWidth = 1 / scale;
-			if (hoveredBody === well) {
-				ctx.globalAlpha = 0.45;
-			} else {
-				ctx.globalAlpha = 0.9;
-			}
 			ctx.stroke();
 			ctx.closePath();
 		}
@@ -1837,15 +1837,6 @@ function drawBodies(barycenter) {
 			const tracedTrail = slider.value
 			
 			if (tracedTrail > 0) {
-				body.points.forEach(point => {
-					ctx.beginPath();
-					const pointSize = radius * 0;
-					ctx.arc(point.x, point.y, pointSize, 0, 2 * pi);
-					ctx.fillStyle = body.color;
-					ctx.fill();
-					ctx.closePath();
-				});
-			
 				body.trail.forEach((point, i) => {
 					if (i > 0) {
 						ctx.beginPath();
@@ -1890,13 +1881,14 @@ function drawBodies(barycenter) {
         }
     }
 
-	ctx.beginPath();
 	if (document.getElementById('showVelocities').checked) {
+		const barycenterPointSize = 1.1 / scale;
+		ctx.beginPath();
 		ctx.arc(barycenter.x, barycenter.y, barycenterPointSize, 0, 2 * pi);
+		ctx.fillStyle = 'gray';
+		ctx.fill();
+		ctx.closePath();
 	}
-	ctx.fillStyle = 'gray';
-	ctx.fill();
-	ctx.closePath();
 
 	ctx.restore();
 }
@@ -2100,7 +2092,7 @@ function displayFPS(currentTime) {
 					fps > 6  ? 6 :
 					fps > 4  ? 7 : 11;
 	
-	document.getElementById('skipDisplay').textContent = `Skipped: ${frameInterval}`;
+	document.getElementById('skipDisplay').textContent = `${frameInterval - 1} ms`;
 }
 
 function draw() {
@@ -2182,6 +2174,10 @@ function getRandomSpeed() {
 function handleMouseDown(event) {
 	const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
 	const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
+	
+	if (event.button !== 0) {
+        return;
+    }
 
 	for (const body of bodies) {
 		const dx = mouseX - body.position.x;
@@ -2885,7 +2881,7 @@ function updateObjectInfo(objectA, objectB) {
 
 function formatScientific(number, digits) {
     if (number === 0) {
-        return `${number.toFixed(digits)}`;
+        return number.toFixed(digits).replace('.', ',');
     }
     
     if (Math.abs(number) >= Math.pow(10, digits) || Math.abs(number) < Math.pow(10, -digits)) {
@@ -2902,7 +2898,8 @@ function formatScientific(number, digits) {
                                                            .replace(/9/g, '⁹');
 
         return `${coefficient}×10${exponentUnicode}`;
-    } else {
+    }
+	else {
         return number.toFixed(digits).replace('.', ',');
     }
 }
