@@ -2113,75 +2113,6 @@ function displayFPS(currentTime) {
 	document.getElementById('skipDisplay').textContent = `${frameInterval - 1} ms`;
 }
 
-function draw() {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	const barycenter = calculateBarycenter();
-	drawGrid();
-	if (document.getElementById('showGravityField').checked || document.getElementById('showMagneticField').checked) {
-        drawGravityField();
-		drawMagneticField();
-    }
-	drawBodies(barycenter);
-	drawVelocityVectors();
-}
-
-function animate(currentTime) {
-    const startTime = performance.now();
-
-    displayFPS(currentTime);
-	const dt = parseFloat(dtInput.value);
-	
-    if (!isPaused) {
-		if (relativistMod) {
-			calculateRelativisticForces();
-		} else {
-			calculateForces();
-		}
-		
-        if (collisionsEnabled || mergingEnabled) {
-            detectProximity();
-        }
-		
-		if (relativistMod) {
-			updateRelativisticPositions(dt);
-		} else {
-			updatePositions(dt);
-		}
-		
-		updateControlValues();
-		updateWellControlValues();
-
-        if (frameCount % frameInterval === 0) {
-			draw();
-        }
-    }
-	
-	updateBarycenterCoord();
-	draw();
-	
-	const objectA = bodies[parseInt(objectASelect)];
-	const objectB = bodies[parseInt(objectBSelect)];
-	
-	if (objectA && objectB) {
-		updateObjectInfo(objectA, objectB);
-		updateGraphWithParameters(objectA, objectB);
-	}
-
-    const endTime = performance.now();
-    const frameTime = endTime - startTime;
-    
-    cpuUsage = Math.min((frameTime / 16.67 / 2.25) * 100, 500);
-	if (cpuUsage >= 500) {
-		clearTrails();
-		document.getElementById('UsageDisplay').textContent = `Use: +500%`;
-	}
-	else {
-		document.getElementById('UsageDisplay').textContent = `Use: ${cpuUsage.toFixed(0).padStart(3, '0')}%`;
-	}
-    
-    requestAnimationFrame(animate);
-}
-
 function getRandomSpeed() {
     const term0 = Math.random() * 4 - 2;
     const term1 = (term0 !== 0 ? Math.exp(-term0 * term0) : 1) * 5 * Math.sign(term0);
@@ -2408,6 +2339,82 @@ function updatePresetSelect() {
 	});
 }
 
+// ANIMATE
+function animate(currentTime) {
+    const startTime = performance.now();
+
+    displayFPS(currentTime);
+	const dt = parseFloat(dtInput.value);
+	
+    if (!isPaused) {
+		if (relativistMod) {
+			calculateRelativisticForces();
+		} else {
+			calculateForces();
+		}
+		
+        if (collisionsEnabled || mergingEnabled) {
+            detectProximity();
+        }
+		
+		if (relativistMod) {
+			updateRelativisticPositions(dt);
+		} else {
+			updatePositions(dt);
+		}
+		
+		updateControlValues();
+		updateWellControlValues();
+
+        if (frameCount % frameInterval === 0) {
+			draw();
+        }
+    }
+	
+	updateBarycenterCoord();
+	draw();
+	
+	const objectA = bodies[parseInt(objectASelect)];
+	const objectB = bodies[parseInt(objectBSelect)];
+	
+	if (objectA && objectB) {
+		updateObjectInfo(objectA, objectB);
+		updateGraphWithParameters(objectA, objectB);
+	}
+
+    const endTime = performance.now();
+    const frameTime = endTime - startTime;
+    
+    cpuUsage = Math.min((frameTime / 16.67 / 2.25) * 100, 500);
+	if (cpuUsage >= 500) {
+		clearTrails();
+		document.getElementById('UsageDisplay').textContent = `Use: +500%`;
+	}
+	else {
+		document.getElementById('UsageDisplay').textContent = `Use: ${cpuUsage.toFixed(0).padStart(3, '0')}%`;
+	}
+    
+    requestAnimationFrame(animate);
+}
+
+// DRAW
+function draw() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	
+	const barycenter = calculateBarycenter();
+	
+	drawGrid();
+	if (document.getElementById('showGravityField').checked || document.getElementById('showMagneticField').checked) {
+        drawGravityField();
+		drawMagneticField();
+    }
+	if (document.getElementById('showPotentialContours').checked) {
+		drawContours();	
+	}
+	drawBodies(barycenter);
+	drawVelocityVectors();
+}
+
 function drawGravityField() {
     const vectorLengthSliderG = document.getElementById('vectorLengthSliderG');
     const vectorLengthValueG = parseFloat(vectorLengthSliderG.value);
@@ -2578,10 +2585,101 @@ function drawMagneticField() {
     ctx.restore();
 }
 
-function getDistance(touch1, touch2) {
-    const dx = touch2.pageX - touch1.pageX;
-    const dy = touch2.pageY - touch1.pageY;
-    return Math.sqrt(dx * dx + dy * dy);
+function drawContours() {
+    const showPotentialContours = document.getElementById('showPotentialContours').checked;
+    const gravityEnabled = document.getElementById('gravityToggle').checked;
+    const magneticEnabled = document.getElementById('magneticToggle').checked;
+	
+    if (!showPotentialContours || (gravityEnabled === false && magneticEnabled === false)) return;
+	
+    ctx.save();
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.scale(scale, scale);
+    const barycenter = calculateBarycenter();
+    ctx.translate(-barycenter.x, -barycenter.y);
+
+    const gridSize = Math.min(Math.round(43 / scale), 118);
+    const potentialValues = new Array(gridSize * 2 + 1);
+    let minPotential = Number.MAX_VALUE;
+    let maxPotential = -Number.MAX_VALUE;
+
+    for (let i = -gridSize; i <= gridSize; i++) {
+        potentialValues[i + gridSize] = new Array(gridSize * 2 + 1);
+        for (let j = -gridSize; j <= gridSize; j++) {
+            const x = barycenter.x + i * (canvas.width / scale / gridSize);
+            const y = barycenter.y + j * (canvas.height / scale / gridSize);
+            let potential = 0;
+
+            bodies.forEach(body => {
+                const dx = x - body.position.x;
+                const dy = y - body.position.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance !== 0) {
+					if (gravityEnabled) {
+						potential += - (body.mass / distance);
+					}
+					if (magneticEnabled) {
+						potential += (body.charge / distance);
+					}
+                }
+            });
+
+            wells.forEach(well => {
+                const dx = x - well.position.x;
+                const dy = y - well.position.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance !== 0) {
+					if (gravityEnabled) {
+						potential += - (well.mass / distance);
+					}
+					if (magneticEnabled) {
+						potential += (well.charge / distance);
+					}
+                }
+            });
+
+            potentialValues[i + gridSize][j + gridSize] = potential;
+
+            if (potential < minPotential) minPotential = potential;
+            if (potential > maxPotential) maxPotential = potential;
+        }
+    }
+
+    const contourLevels = [];
+    const numLevels = Math.round(1.6 * Math.min(20 / scale, 16, Math.sqrt(gridSize * 2)));
+    for (let i = 0; i <= numLevels; i++) {
+        const level = minPotential + i * (maxPotential - minPotential) / numLevels;
+        contourLevels.push(level);
+    }
+
+    contourLevels.forEach(level => {
+        ctx.beginPath();
+        for (let i = 1; i < gridSize * 2; i++) {
+            for (let j = 1; j < gridSize * 2; j++) {
+                const p1 = potentialValues[i - 1][j - 1];
+                const p2 = potentialValues[i][j - 1];
+                const p3 = potentialValues[i - 1][j];
+                const p4 = potentialValues[i][j];
+
+                if ((p1 < level && p4 > level) || (p1 > level && p4 < level)) {
+                    const x1 = barycenter.x + (i - 1 - gridSize) * (canvas.width / scale / gridSize);
+                    const y1 = barycenter.y + (j - 1 - gridSize) * (canvas.height / scale / gridSize);
+                    const x2 = barycenter.x + (i - gridSize) * (canvas.width / scale / gridSize);
+                    const y2 = barycenter.y + (j - gridSize) * (canvas.height / scale / gridSize);
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.moveTo(x2, y1);
+                    ctx.lineTo(x1, y2);
+                }
+            }
+        }
+        ctx.strokeStyle = `rgba(200, 200, 100, 0.8)`;
+        ctx.lineWidth = 0.4 / scale;
+        ctx.stroke();
+        ctx.closePath();
+    });
+
+    ctx.restore();
 }
 
 function drawGrid() {
@@ -2699,6 +2797,12 @@ function dragElement(elmnt) {
         document.ontouchend = null;
         document.ontouchmove = null;
     }
+}
+
+function getDistance(touch1, touch2) {
+    const dx = touch2.pageX - touch1.pageX;
+    const dy = touch2.pageY - touch1.pageY;
+    return Math.sqrt(dx * dx + dy * dy);
 }
 
 function getDistanceFromBarycenter(object) {
@@ -3127,6 +3231,7 @@ function clearChart() {
 
 /* Démarrage de la simulation avec l'appel des fonctions */
 
+// INIT
 function initiate() {
 	startTimer();
 	

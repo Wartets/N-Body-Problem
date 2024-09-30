@@ -39,6 +39,7 @@ function translate() {
         document.getElementById('frictionToggleLabel').textContent = trans.enableFriction;
         document.getElementById('showGravityFieldLabel').textContent = trans.idGravityFieldLabel;
         document.getElementById('showMagneticFieldLabel').textContent = trans.idMagneticFieldLabel;
+        document.getElementById('showPotentialContoursLabel').textContent = trans.idPotentialFieldLabel;
         document.getElementById('frictionCoefficientLabel').textContent = trans.frictionCoefficient;
         document.getElementById('focusSelectLabel').textContent = trans.centerView;
         document.getElementById('showGridLabel').textContent = trans.enableGrid;
@@ -262,6 +263,7 @@ const translations = {
         "frictionCoefficient": "Coefficient de frottement :",
 		"idGravityFieldLabel": "Afficher le champ de gravité",
 		"idMagneticFieldLabel": "Afficher le champ électromagnétique",
+		"idPotentialFieldLabel": "Afficher l'isoplèthe de potentiel",
         "centerView": "Centre de la vue :",
         "zoomManual": "Zoom manuel :",
         "trailLimit": "Nombre de points du trail (puiss. 10)",
@@ -394,6 +396,7 @@ const translations = {
         "frictionCoefficient": "Friction Coefficient:",
 		"idGravityFieldLabel": "Display gravity field",
 		"idMagneticFieldLabel": "Display electromagnetic field",
+		"idPotentialFieldLabel": "Display potential isopleth",
         "centerView": "Center View:",
         "zoomManual": "Manual Zoom:",
         "trailLimit": "Trail Points (power of 10)",
@@ -523,6 +526,7 @@ const translations = {
         "frictionCoefficient": "Coeficiente de fricción:",
 		"idGravityFieldLabel": "Visualizar el campo gravitatorio",
 		"idMagneticFieldLabel": "Visualizar el campo electromagnético",
+		"idPotentialFieldLabel": "Visualizar la isopleta Potencial",
         "centerView": "Centrar vista en:",
         "zoomManual": "Zoom manual:",
         "trailLimit": "Puntos del trazado (potencia de 10)",
@@ -651,6 +655,7 @@ const translations = {
         "frictionCoefficient": "Reibungskoeffizient:",
 		"idGravityFieldLabel": "Das Gravitationsfeld anzeigen",
 		"idMagneticFieldLabel": "Elektromagnetisches Feld anzeigen",
+		"idPotentialFieldLabel": "Potenzial-Isopletheus anzeigen",
         "centerView": "Ansicht zentrieren:",
         "zoomManual": "Manuelles Zoomen:",
         "trailLimit": "Spurpunkte (Zehnerpotenzen)",
@@ -779,6 +784,7 @@ const translations = {
 		"frictionCoefficient": "Coefficiente di attrito:",
 		"idGravityFieldLabel": "Visualizzare il campo gravitazionale",
 		"idMagneticFieldLabel": "Visualizzare il campo elettromagnetico",
+		"idPotentialFieldLabel": "Visualizzare l'isopleta potenziale",
 		"centerView": "Centro della vista:",
 		"zoomManual": "Zoom manuale:",
 		"trailLimit": "Numero di punti della scia (pot. di 10)",
@@ -906,6 +912,7 @@ const translations = {
 		"frictionCoefficient": "Coefficiente attritus:",
 		"idGravityFieldLabel": "Gravitas ostende agri",
 		"idMagneticFieldLabel": "Monstrare campum electromagneticum",
+		"idPotentialFieldLabel": "",
 		"centerView": "Centrum visus:",
 		"zoomManual": "Manuale zoom:",
 		"trailLimit": "Numerus punctorum vestigii (pot. 10)",
@@ -1033,6 +1040,7 @@ const translations = {
 		"frictionCoefficient": "Coeficient de frotement :",
 		"idGravityFieldLabel": "Aficher le champ de gravité",
 		"idMagneticFieldLabel": "Aficher le champ élektrique",
+		"idPotentialFieldLabel": "",
 		"centerView": "Centre de la veue :",
 		"zoomManual": "Zoom manual :",
 		"trailLimit": "Nombre de poins du traiel (puissance 10)",
@@ -1160,6 +1168,7 @@ const translations = {
 		"frictionCoefficient": "Coefficient de frottage:",
 		"idGravityFieldLabel": "Montrer l'chant d'gravité",
 		"idMagneticFieldLabel": "Montrer l'chant d'lamant",
+		"idPotentialFieldLabel": "",
 		"centerView": "Cap sur le centre d'vue:",
 		"zoomManual": "Zoom à l'œil d'marin:",
 		"trailLimit": "Nombre de points d'trace (puiss. 10)",
@@ -1287,6 +1296,7 @@ const translations = {
 		"frictionCoefficient": "The Coefficient of Friction:",
 		"idGravityFieldLabel": "Reveal the Gravitational Field",
 		"idMagneticFieldLabel": "Unmask the Electromagnetic Field",
+		"idPotentialFieldLabel": "",
 		"centerView": "Centralize the Vision’s Scope:",
 		"zoomManual": "Magnify with Manual Grace:",
 		"trailLimit": "The Limit of Traced Points (to the Power of Ten)",
@@ -1414,6 +1424,7 @@ const translations = {
 		"frictionCoefficient": "Banana friction coefficient:",
 		"idGravityFieldLabel": "Show banana gravity field!",
 		"idMagneticFieldLabel": "Show banana magnetic field!",
+		"idPotentialFieldLabel": "",
 		"centerView": "Banana view center!",
 		"zoomManual": "Banana manual zoom!",
 		"trailLimit": "Banana trail points (Power of 10)",
@@ -1541,6 +1552,7 @@ const translations = {
 		"frictionCoefficient": "",
 		"idGravityFieldLabel": "",
 		"idMagneticFieldLabel": "",
+		"idPotentialFieldLabel": "",
 		"centerView": "",
 		"zoomManual": "",
 		"trailLimit": "",
@@ -1668,6 +1680,7 @@ const translations = {
 		"frictionCoefficient": "frictionCoefficient",
 		"idGravityFieldLabel": "idGravityFieldLabel",
 		"idMagneticFieldLabel": "idMagneticFieldLabel",
+		"idPotentialFieldLabel": "idPotentialFieldLabel",
 		"centerView": "centerView",
 		"zoomManual": "zoomManual",
 		"trailLimit": "trailLimit",
