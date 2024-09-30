@@ -72,6 +72,8 @@ const vectorFieldDistanceDisplay = document.getElementById('vectorFieldDistance'
 const vectorLengthSliderk = document.getElementById('vectorLengthSliderk');
 const vectorLengthDisplayk = document.getElementById('vectorLengthValuek');
 const toggleButtons = document.querySelectorAll('.toggle-btn');
+const themeSwitch = document.getElementById('themeSwitch');
+const bodyhtml = document.querySelector('body')
 const impactSound = new Audio('sound/impact-sound.mp3');
 const mergeSound = new Audio('sound/merge-sound.mp3');
 const impactDelay = 10;
@@ -99,6 +101,18 @@ canvas.addEventListener('touchend', handleTouchEnd);
 window.addEventListener('contextmenu', function(event) {
     event.preventDefault();
 })
+
+themeSwitch.addEventListener('change', () => {
+    if (themeSwitch.checked) {
+        // Mode sombre
+        bodyhtml.classList.remove('light-mode');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        // Mode clair
+        bodyhtml.classList.add('light-mode');
+        localStorage.setItem('theme', 'light');
+    }
+});
 
 canvas.addEventListener('contextmenu', function(event) {
     event.preventDefault();
@@ -3140,7 +3154,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	initiate();
-
+	
+	if (localStorage.getItem('theme') === 'light') {
+		bodyhtml.classList.add('light-mode');
+		themeSwitch.checked = false;
+	} else {
+		bodyhtml.classList.remove('light-mode');
+		themeSwitch.checked = true;
+	}
+	
 	if (devModenabled) {
 		console.log('Start succes!');
 	}

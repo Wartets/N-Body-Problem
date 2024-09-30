@@ -23,6 +23,7 @@
 	<link rel="icon" href="image\browser-icon.png">
 	
     <link rel="stylesheet" href="css\styles.css"> <!-- CSS style sheet -->
+    <link rel="stylesheet" href="css\styles-light.css"> <!-- CSS style sheet -->
     <link rel="stylesheet" href="css\background.css"> <!-- CSS style sheet 2 for background -->
 </head>
 
@@ -147,7 +148,7 @@
 		<button id="controlsToggleBtn">
 			<img id="controlsToggle" src="image/U+25B6.svg" alt="close controls">
 		</button>
-				
+		
 		<div id="controls">
 			<select id="languageSelect">
 				<option value="en">English</option>
@@ -386,6 +387,16 @@
 
 			<hr style="width:100%;text-align:center;color:#444" id="hr1">
 			
+			<div class="theme-switch-wrapper">
+				<input type="checkbox" id="themeSwitch" class="theme-switch">
+				<label for="themeSwitch" class="switch-label">
+					<span class="switch-icon sun">☀️</span>
+					<span class="switch-icon moon">🌙</span>
+				</label>
+			</div>
+
+			<h5></h5>
+			
 			<!-- <img id="planet" src="image/planet-icon.png" /> -->
 		</div>
 
@@ -395,7 +406,7 @@
 		<div class="modal-content">
 			<span class="close">&times;</span>
 			
-			<h2 style="text-align: center; margin-bottom: 10px; color: #fff;" id="HelpModalTitle">Simulation d'un Système à N-Corps</h2>
+			<h2 style="text-align: center; margin-bottom: 10px;" id="HelpModalTitle">Simulation d'un Système à N-Corps</h2>
 			<hr style="border: 0; height: 2px; background: #333; margin-bottom: 20px;">
 			
 			<p style="font-size: 1.1em; line-height: 1.6;" id="HelpModalIntro">
@@ -403,7 +414,7 @@
 			</p>
 
 			<div style="margin-top: 20px;">
-				<h3 style="color: #fff;" id="HelpModalGitPageTitle">Page GitHub du Projet</h3>
+				<h3 style="" id="HelpModalGitPageTitle">Page GitHub du Projet</h3>
 				<p id="HelpModalGitPageText">
 					Découvrez le code source et contribuez au projet sur GitHub :
 				</p>
@@ -413,7 +424,7 @@
 			</div>
 
 			<div style="margin-top: 20px;">
-				<h3 style="color: #fff;" id="HelpModalDocTitle">Documentation</h3>
+				<h3 style="" id="HelpModalDocTitle">Documentation</h3>
 				<p id="HelpModalDocText">
 					Pour une meilleure compréhension des fonctionnalités du simulateur, explorez le <strong>Wiki</strong> :
 				</p>
@@ -423,7 +434,7 @@
 			</div>
 
 			<div style="margin-top: 20px;">
-				<h3 style="color: #fff;" id="HelpModalBugTitle">Bugs et Suggestions</h3>
+				<h3 style="" id="HelpModalBugTitle">Bugs et Suggestions</h3>
 				<p id="HelpModalBugText">
 					Si vous rencontrez un bug ou avez des suggestions, veuillez visiter :
 				</p>
@@ -433,7 +444,7 @@
 			</div>
 
 			<div style="margin-top: 20px;">
-				<h3 style="color: #fff;" id="HelpModalAutorTitle">Créateur</h3>
+				<h3 style="" id="HelpModalAutorTitle">Créateur</h3>
 				<p id="HelpModalAutorText">
 					Ce projet a été créé par <strong>Wartets</strong>. Consultez son profil GitHub pour en découvrir d'autres projets :
 				</p>

@@ -1,0 +1,157 @@
+/* Container for the switch */
+.theme-switch-wrapper {
+	user-select: none;
+	left: 82px;
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 26px;
+}
+
+/* Hide default checkbox */
+.theme-switch {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Switch background */
+.switch-label {
+    position: absolute;
+    cursor: pointer;
+    width: 100%;
+    height: 26px;
+    background-color: #ccc;
+    border-radius: 34px;
+    transition: all 0.3s ease;
+}
+
+/* Sun and Moon icons */
+.switch-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+}
+
+.sun {
+    left: 2px;
+}
+
+.moon {
+    right: 4px;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+/* Switch toggle slider */
+.switch-label::before {
+    content: '';
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    background-color: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+/* When checked (mode sombre) */
+.theme-switch:checked + .switch-label {
+    background-color: #555;
+    transition: all 0.3s ease;
+}
+
+.theme-switch:checked + .switch-label::before {
+    transform: translateX(35px);
+}
+
+.theme-switch:checked + .switch-label .sun {
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.theme-switch:checked + .switch-label .moon {
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+/* LIGHT MODE */
+
+.light-mode .toggle-header,
+.light-mode .toggle-header-small {
+	background-color: #838383;
+	border: none;
+}
+
+.light-mode .toggle-btn {
+    color: #2e2e2e;
+}
+
+.light-mode body {
+    background-color: #fff;
+    transition: background-color 5s ease-in-out;
+}
+
+.light-mode #simulationCanvas {
+    background-color: #fff;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.light-mode #controls {
+    background-color: #666;
+    color: #2e2e2e;
+    transition: all 0.4s ease-in-out;
+}
+
+.light-mode .canvas-text {
+	-webkit-text-stroke: .5px black;
+    color: #2e2e2e;
+}
+
+.light-mode input[type="number"] {
+    background-color: #b7b7b7;
+    color: #2e2e2e;
+    border: none;
+}
+
+.light-mode button {
+    background-color: #838383;
+    color: #222;
+    border: 1px solid #aaa;
+}
+
+.light-mode button:hover {
+    background-color: #555;
+    color: #eee;
+}
+
+.light-mode .color-indicator {
+    border: 2px solid #ddd;
+}
+
+.light-mode .slider {
+    background: #ccc;
+}
+
+.light-mode #HelpModalGitPageTitle,
+.light-mode #HelpModalDocTitle,
+.light-mode #HelpModalBugTitle,
+.light-mode #HelpModalAutorTitle,
+.light-mode #HelpModalTitle {
+    color: #333;
+}
+
+.light-mode .modal-content {
+    background-color: #fff;
+    color: #333;
+}
+
+.light-mode .context-menu {
+    background-color: #f0f0f0;
+    color: #222;
+    border: 1px solid #ccc;
+}
+
+.light-mode .context-menu button {
+    color: #fff;
+}
