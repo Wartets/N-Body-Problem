@@ -62,9 +62,10 @@ const presets = {
 		],
 		wells: []
 	},
-	"Billard": { dt: 0.1,
+	"Pool Game": { dt: 0.1,
 		bodies: [
-			{ name: "White", mass: 8.5, charge: 0, radius: 2.5, position: { x: 150, y: 0 }, velocity: { x: -18.75, y: 0 }, color: "white", show: true },
+			{ name: "White", mass: 8.5, charge: 0, radius: 2.5, position: { x: 149 + 2 * Math.random(), y: Math.random() * 1.5 - 0.75 },
+				velocity: { x: -18 + Math.random() * 1.5, y: (Math.random() - 0.5) * 0.05 }, color: "white", show: true },
 			{ name: "Yellow", mass: 8.5, charge: 0, radius: 2.5, position: { x: 0, y: 5.11 }, velocity: { x: 0, y: 0 }, color: "yellow", show: true },
 			{ name: "Brown", mass: 8.5, charge: 0, radius: 2.5, position: { x: 0, y: -5.11 }, velocity: { x: 0, y: 0 }, color: "brown", show: true },
 			{ name: "Red", mass: 8.5, charge: 0, radius: 2.5, position: { x: 8.85, y: 0 }, velocity: { x: 0, y: 0 }, color: "red", show: true },

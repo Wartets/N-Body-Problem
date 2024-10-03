@@ -19,6 +19,7 @@ let chart;
 let G, epsi0, c, pi, k;
 let scale = 1;
 let scrollZoom = 1;
+let hideMouseTimeout = null;
 let timeElapsed = 0;
 let lastTime = 0;
 let lastImpactTime = 0;
@@ -656,12 +657,33 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 	const selectedPresetName = document.getElementById('presetSelect').value;
 	createRdPreset();
 	
-    if (selectedPresetName === "Sun Earth Moon" || selectedPresetName === "Hydrogens like") {
+    if (selectedPresetName === "Sun Earth Moon") {
         constValCheckbox.checked = true;
+        updateConstants();
+    }
+    else if (selectedPresetName === "Hydrogens like") {
+        constValCheckbox.checked = true;
+		document.getElementById('magneticToggle').checked = true;
+        updateConstants();
+    }
+    else if (selectedPresetName === "Soup") {
+        constValCheckbox.checked = false;
+		document.getElementById('magneticToggle').checked = true;
+        updateConstants();
+    }
+    else if (selectedPresetName === "Pool Game") {
+        constValCheckbox.checked = false;
+		document.getElementById('collisionToggle').checked = true;
+		collisionsEnabled = document.getElementById('collisionToggle').checked;
+		if (collisionsEnabled) {
+			mergingEnabled = false;
+			document.getElementById('mergeToggle').checked = mergingEnabled;
+		}
         updateConstants();
     }
 	else {
         constValCheckbox.checked = false;
+		document.getElementById('magneticToggle').checked = false;
         updateConstants();
 	}
 	
@@ -2016,56 +2038,63 @@ function handleMouseDown(event) {
 }
 
 function handleMouseMove(event) {
-	const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
-	const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
+    const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
+    const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
+    hoveredBody = null;
 
-	hoveredBody = null;
+    bodies.forEach(body => {
+        const dx = body.position.x - mouseX;
+        const dy = body.position.y - mouseY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
+        if (distance < radius) {
+            hoveredBody = body;
+        }
+    });
 
-	bodies.forEach(body => {
-		const dx = body.position.x - mouseX;
-		const dy = body.position.y - mouseY;
-		const distance = Math.sqrt(dx * dx + dy * dy);
+    wells.forEach(well => {
+        const dx = well.position.x - mouseX;
+        const dy = well.position.y - mouseY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const radius = 7 / scale;
+        if (distance < radius) {
+            hoveredBody = well;
+        }
+    });
 
-		const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
-		if (distance < radius) {
-			hoveredBody = body;
-		}
-	});
+    if (selectedBody) {
+        selectedBody.position.x = mouseX;
+        selectedBody.position.y = mouseY;
+        updateControlValues();
+        updateWellControlValues();
+        clearTimeout(manualMoveTimeout);
+        manualMoveTimeout = setTimeout(() => {
+            isPaused = true;
+            updateButtonImage();
+        }, 0);
+    }
 
-	wells.forEach(well => {
-		const dx = well.position.x - mouseX;
-		const dy = well.position.y - mouseY;
-		const distance = Math.sqrt(dx * dx + dy * dy);
+    if (hideMouseTimeout) {
+        clearTimeout(hideMouseTimeout);
+    }
 
-		const radius = 7 / scale;
-		if (distance < radius) {
-			hoveredBody = well;
-		}
-	});
-
-	if (selectedBody) {
-		selectedBody.position.x = mouseX;
-		selectedBody.position.y = mouseY;
-		updateControlValues();
-		updateWellControlValues();
-		clearTimeout(manualMoveTimeout);
-		manualMoveTimeout = setTimeout(() => {
-			isPaused = true;
-			updateButtonImage();
-		}, 0);
-	}
-	
-	if (cpuUsage >= 500) {
+    if (cpuUsage >= 500) {
         canvas.style.cursor = 'wait';
-	}
-	else {
-		if (hoveredBody) {
-			canvas.style.cursor = 'pointer';
-		} else {
-			canvas.style.cursor = 'crosshair';
-		}
-	}
+    } else {
+        if (hoveredBody) {
+            canvas.style.cursor = 'pointer';
+        } else {
+            canvas.style.cursor = 'crosshair';
+
+			hideMouseTimeout = setTimeout(() => {
+				if (cpuUsage < 500) {
+					canvas.style.cursor = 'none';
+				}
+			}, 4000);
+        }
+    }
 }
+
 
 function handleMouseUp() {
 	selectedBody = null;
