@@ -107,7 +107,10 @@
 		</div>
 
 		<div id="containerChart" style="">
-			<span class="resetChartBtn" id="resetChartBtn">&bull;</span>
+			<button class="resetChartBtn" id="resetChartBtn">
+				<img id="resetChartImg" src="image/reset-icon.png" alt="Reset Graph">
+			</button>
+			
 			<canvas id="parameterChart"></canvas>
 		</div>
 	</div>
@@ -351,16 +354,20 @@
 
 					<div id="customConstants">
 						<label for="GValue" id="GValueLabel">Constante Gravitationnelle (G) :</label>
-						<input type="number" id="GValue" value="0.1" step="0.1" style="margin-left:25px"/>
+						<br>
+						<input type="number" id="GValue" value="0.1" step="0.1" class="number-Constant" style="width: 100%;"/>
 						<br>
 						<label for="epsi0Value" id="epsi0ValueLabel">Permittivité du vide (epsilon_0) :</label>
-						<input type="number" id="epsi0Value" value="1.25663706144" step="0.1" style="margin-left:25px"/>
+						<br>
+						<input type="number" id="epsi0Value" value="1.25663706144" step="0.1" class="number-Constant" style="width: 100%;"/>
 						<br>
 						<label for="cValue" id="cValueLabel">Vitesse de la lumière (c) :</label>
-						<input type="number" id="cValue" value="299792458" step="10" style="margin-left:25px"/>
+						<br>
+						<input type="number" id="cValue" value="299792458" step="10" class="number-Constant" style="width: 100%;"/>
 						<br>
 						<label for="piValue" id="piValueLabel">Constante d'Archimède (pi) :</label>
-						<input type="number" id="piValue" value="3.141592653589793" step="0.01" style="margin-left:25px"/>
+						<br>
+						<input type="number" id="piValue" value="3.141592653589793" step="0.01" class="number-Constant" style="width: 100%;"/>
 					</div>
 				</div>
 
@@ -393,6 +400,11 @@
 					<div class="slider-container">
 						<input type="range" id="isoplethDistance" min="1" max="5" value="1" step="0.2" />
 						<span id="isoplethDistanceD"></span>
+					</div>
+				
+					<div>
+						<input type="checkbox" id="showPotentialContoursOld" name="showPotentialContoursOld"/>
+						<label for="showPotentialContoursOld" id="showPotentialContoursLabelOld">Afficher l'isoplèthe de Potentiel (Ancien)</label>
 					</div>
 				</div>
 				

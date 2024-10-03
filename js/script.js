@@ -930,6 +930,7 @@ function updateConstants() {
 function resetView() {
 	scrollZoom = 1;
 	scale = 1;
+	autoZoom(calculateBarycenter());
 	if (devModenabled) {
 		console.log('View reseted');
 	}
@@ -1742,7 +1743,13 @@ function calculateBarycenter() {
 			return { x: selectedWell.position.x, y: selectedWell.position.y };
 		}
 	}
+	
+	autoZoom(barycenter);
+	
+	return barycenter;
+}
 
+function autoZoom(barycenter) {
     if (doZoom) {
 		const visibleBodies = bodies.filter(body => body.show);
 		const maxDistance = Math.max(...visibleBodies.map(body => 
@@ -1756,9 +1763,10 @@ function calculateBarycenter() {
             minCanvasSize / (maxDistance * 2),
             minCanvasSize / (maxRadius * 2)
         ) * scrollZoom;
-    } else {scrollZoom = 1}
-
-	return barycenter;
+    } 
+	else {
+		scrollZoom = 1
+	}
 }
 
 function clearTrails() {
@@ -1940,7 +1948,7 @@ function mergeBodies(body1, body2) {
     bodies.push(newBody);
 }
 
-function displayFPS(currentTime) {
+function displayText(currentTime) {
     frameCount++;
 
     const deltaTime = (currentTime - fpsTime) / 1000;
@@ -2195,7 +2203,7 @@ function updatePresetSelect() {
 function animate(currentTime) {
     const startTime = performance.now();
 
-    displayFPS(currentTime);
+    displayText(currentTime);
 	const dt = parseFloat(dtInput.value);
 	
     if (!isPaused) {
@@ -2260,6 +2268,9 @@ function draw() {
         drawGravityField();
 		drawMagneticField();
     }
+	if (document.getElementById('showPotentialContoursOld').checked) {
+		drawContoursOld();	
+	}
 	if (document.getElementById('showPotentialContours').checked) {
 		drawContours();	
 	}
@@ -2500,7 +2511,12 @@ function drawGravityField() {
                     (x + (fx / forceMagnitude) * vectorLength) * scale - visibleCenterX * scale + canvasWidth / 2,
                     (y + (fy / forceMagnitude) * vectorLength) * scale - visibleCenterY * scale + canvasHeight / 2
                 );
-                ctx.strokeStyle = `rgba(255, 100, 90, 1)`;
+				
+				const theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
+
+				const gridColor = theme === 'light' ? 'rgba(140, 0, 0, 1)' : 'rgba(255, 100, 90, 1)';
+
+				ctx.strokeStyle = gridColor;
                 ctx.lineWidth = 0.5;
                 ctx.stroke();
                 ctx.closePath();
@@ -2585,7 +2601,12 @@ function drawMagneticField() {
                     (x + (fx / forceMagnitude) * vectorLength) * scale - visibleCenterX * scale + canvasWidth / 2,
                     (y + (fy / forceMagnitude) * vectorLength) * scale - visibleCenterY * scale + canvasHeight / 2
                 );
-                ctx.strokeStyle = `rgba(115, 255, 205, 0.7)`;
+				
+				const theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
+
+				const gridColor = theme === 'light' ? 'rgba(0, 50, 95, 1)' : 'rgba(115, 255, 205, 0.7)';
+
+				ctx.strokeStyle = gridColor;
                 ctx.lineWidth = 0.5;
                 ctx.stroke();
                 ctx.closePath();
@@ -2596,12 +2617,12 @@ function drawMagneticField() {
     ctx.restore();
 }
 
-/* function drawContours() {
-    const showPotentialContours = document.getElementById('showPotentialContours').checked;
+function drawContoursOld() {
+    const showPotentialContoursOld = document.getElementById('showPotentialContoursOld').checked;
     const gravityEnabled = document.getElementById('gravityToggle').checked;
     const magneticEnabled = document.getElementById('magneticToggle').checked;
     
-    if (!showPotentialContours || (!gravityEnabled && !magneticEnabled)) return;
+    if (!showPotentialContoursOld || (!gravityEnabled && !magneticEnabled)) return;
 
     ctx.save();
     ctx.translate(canvas.width / 2, canvas.height / 2);
@@ -2702,15 +2723,18 @@ function drawMagneticField() {
                 }
             }
         }
-        
-        ctx.strokeStyle = `rgba(200, 200, 100, 0.4)`;
+		
+		const theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
+
+		const gridColor = theme === 'light' ? 'rgba(50, 50, 0, 0.8)' : 'rgba(200, 200, 100, 0.45)';
+
+        ctx.strokeStyle = gridColor;
         ctx.lineWidth = 1 / scale;
         ctx.stroke();
     });
 
     ctx.restore();
 }
- */
 
 function drawContours() {
     const showPotentialContours = document.getElementById('showPotentialContours').checked;
@@ -2859,8 +2883,12 @@ function drawContours() {
                 }
             }
         }
+		
+		const theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
 
-        ctx.strokeStyle = `rgba(200, 200, 100, 0.45)`;
+		const gridColor = theme === 'light' ? 'rgba(50, 50, 0, 0.8)' : 'rgba(200, 200, 100, 0.45)';
+
+        ctx.strokeStyle = gridColor;
         ctx.lineWidth = 1 / scale;
         ctx.stroke();
     });
@@ -2893,8 +2921,14 @@ function drawGrid() {
     while (gridSize * scale > 150) {
         gridSize /= 2;
     }
+	
+    const theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
 
-    ctx.strokeStyle = 'rgba(200, 200, 200, 0.15)';
+    // Couleurs de la grille et des axes en fonction du thème
+    const gridColor = theme === 'light' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(200, 200, 200, 0.15)';
+    const axisColor = theme === 'light' ? 'rgba(0, 0, 0, 1)' : 'rgba(200, 200, 200, 0.5)';
+
+    ctx.strokeStyle = gridColor;
     ctx.lineWidth = Math.max(0.5, 10/(Math.exp(scale) + 100));
 
     for (let x = Math.floor(startX / gridSize) * gridSize; x < startX + visibleWidth; x += gridSize) {
@@ -2916,7 +2950,7 @@ function drawGrid() {
     const canvasX0 = (0 - visibleCenterX) * scale + canvasWidth / 2;
     const canvasY0 = (0 - visibleCenterY) * scale + canvasHeight / 2;
 
-    ctx.strokeStyle = 'rgba(200, 200, 200, 0.5)';
+    ctx.strokeStyle = axisColor;
     ctx.beginPath();
     ctx.moveTo(0, canvasY0); 
     ctx.lineTo(canvasWidth, canvasY0);
