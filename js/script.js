@@ -69,6 +69,7 @@ const isShownControl = controls.classList.toggle('shownControl');
 const vectorLengthSliderG = document.getElementById('vectorLengthSliderG');
 const vectorLengthDisplayG = document.getElementById('vectorLengthValueG');
 const vectorFieldDistanceDisplay = document.getElementById('vectorFieldDistance');
+const isoplethDistanceDisplay = document.getElementById('isoplethDistance');
 const vectorLengthSliderk = document.getElementById('vectorLengthSliderk');
 const vectorLengthDisplayk = document.getElementById('vectorLengthValuek');
 const toggleButtons = document.querySelectorAll('.toggle-btn');
@@ -358,6 +359,10 @@ vectorLengthSliderG.addEventListener('input', function() {
 
 vectorFieldDistanceDisplay.addEventListener('input', function() {
     vectorFieldDistanceD.textContent = vectorFieldDistance.value;
+});
+
+isoplethDistanceDisplay.addEventListener('input', function() {
+    isoplethDistanceD.textContent = isoplethDistanceDisplay.value;
 });
 
 vectorLengthSliderk.addEventListener('input', function() {
@@ -1561,6 +1566,8 @@ function updatePositions(dt) {
 	for (const body of bodies) {
 		body.velocity.x += body.acceleration.x * dt;
 		body.velocity.y += body.acceleration.y * dt;
+		
+		applyFriction();
 
 		body.position.x += body.velocity.x * dt;
 		body.position.y += body.velocity.y * dt;
@@ -1627,6 +1634,8 @@ function updateRelativisticPositions(dt) {
             body.velocity.x *= scalingFactor;
             body.velocity.y *= scalingFactor;
         }
+		
+		applyFriction();
 
         body.position.x += body.velocity.x * dt;
         body.position.y += body.velocity.y * dt;
@@ -1750,165 +1759,6 @@ function calculateBarycenter() {
     } else {scrollZoom = 1}
 
 	return barycenter;
-}
-
-function drawVelocityVectors() {
-	const showVelocities = document.getElementById('showVelocities').checked;
-	if (!showVelocities) return;
-
-	ctx.save();
-	ctx.translate(canvas.width / 2, canvas.height / 2);
-	ctx.scale(scale, scale);
-	ctx.translate(-calculateBarycenter().x, -calculateBarycenter().y);
-
-	bodies.forEach(body => {
-		if (body.show) {
-			const vectorLength = Math.sqrt(body.velocity.x ** 2 + body.velocity.y ** 2) * 2 ;
-			const endX = body.position.x + body.velocity.x * vectorLength;
-			const endY = body.position.y + body.velocity.y * vectorLength;
-			
-			ctx.beginPath();
-			ctx.moveTo(body.position.x, body.position.y);
-			ctx.lineTo(endX, endY);
-			ctx.strokeStyle = 'darkgray'; 
-			ctx.lineWidth = 1 / scale;
-			ctx.stroke();
-			ctx.closePath();
-
-			const arrowSize = 6 / scale;
-			const angle = Math.atan2(body.velocity.y, body.velocity.x);
-			ctx.beginPath();
-			ctx.moveTo(endX, endY);
-			ctx.lineTo(endX - arrowSize * Math.cos(angle - pi / 6), endY - arrowSize * Math.sin(angle - pi / 6));
-			ctx.lineTo(endX - arrowSize * Math.cos(angle + pi / 6), endY - arrowSize * Math.sin(angle + pi / 6));
-			ctx.lineTo(endX, endY);
-			ctx.fillStyle = 'darkgray';
-			ctx.fill();
-			ctx.closePath();
-		}
-	});
-
-	ctx.restore();
-}
-
-function drawBodies(barycenter) {
-	ctx.save();
-	ctx.translate(canvas.width / 2, canvas.height / 2);
-	ctx.scale(scale, scale);
-	ctx.translate(-barycenter.x, -barycenter.y);
-
-    if (objectLinkedA !== null && objectLinkedB !== null) {
-        const currentDistance = getDistanceBetweenObjects(objectLinkedA, objectLinkedB);
-
-        const ratio = Math.min(currentDistance / distanceL, 1);
-        const colorIntensity = Math.floor(255 * ratio * 0.9);
-
-        const color = `rgb(${colorIntensity}, ${255 - colorIntensity}, 0, ${0.1 + 0.8 * ratio ** 2})`;
-
-        ctx.beginPath();
-        ctx.moveTo(objectLinkedA.position.x, objectLinkedA.position.y);
-        ctx.lineTo(objectLinkedB.position.x, objectLinkedB.position.y);
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 1 / scale;
-        ctx.stroke();
-    }
-
-	wells.forEach(well => {
-		if (well.show) {
-			ctx.beginPath();
-			ctx.arc(well.position.x, well.position.y, 7 / scale, 0, 2 * pi);
-			ctx.strokeStyle = well.color || 'white';
-			ctx.lineWidth = 1 / scale;
-			if (hoveredBody === well) {
-				ctx.globalAlpha = 0.4;
-			} else {
-				ctx.globalAlpha = 0.8;
-			}
-			ctx.stroke();
-			ctx.closePath();
-			
-			ctx.beginPath();
-			ctx.arc(well.position.x, well.position.y, 3.25 / scale, 0, 2 * pi);
-			ctx.strokeStyle = well.color || 'white';
-			ctx.lineWidth = 1 / scale;
-			ctx.stroke();
-			ctx.closePath();
-		}
-	});
-	
-	bodies.forEach(body => {
-		if (body.show) {
-			ctx.beginPath();
-			const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
-			ctx.arc(body.position.x, body.position.y, radius, 0, 2 * pi);
-			ctx.fillStyle = body.color;
-			
-			if (hoveredBody === body) {
-				ctx.globalAlpha = 0.45;
-			} else {
-				ctx.globalAlpha = 0.9;
-			}
-
-			ctx.fill();
-			ctx.closePath();
-			
-			const tracedTrail = slider.value
-			
-			if (tracedTrail > 0) {
-				body.trail.forEach((point, i) => {
-					if (i > 0) {
-						ctx.beginPath();
-						ctx.moveTo(body.trail[i - 1].x, body.trail[i - 1].y);
-						ctx.lineTo(point.x, point.y);
-						ctx.strokeStyle = body.color;
-						ctx.lineWidth = 1 / scale;
-						ctx.stroke();
-						ctx.closePath();
-					}
-				});
-			}
-		}
-	});
-
-    if (showWindow) {
-		const objectA = bodies[parseInt(objectASelect)];
-		const objectB = bodies[parseInt(objectBSelect)];
-
-        if (objectA && objectA.show) {
-            ctx.beginPath();
-            const radiusA = showSizeCheckbox.checked ? objectA.radius / scale : objectA.radius;
-            const highlightedradiusA = (showSizeCheckbox.checked ? (Math.min(objectA.radius * 2.5, 7)) / scale * 1.7 : Math.min(Math.max(1.8 * radiusA, 2.5 + radiusA), 2.5 + radiusA));
-			ctx.globalAlpha = 0.2;
-            ctx.arc(objectA.position.x, objectA.position.y, highlightedradiusA, 0, 2 * pi);
-            ctx.strokeStyle = objectA.color;
-            ctx.lineWidth = showSizeCheckbox.checked ? 1.1 / scale : 1.1;
-            ctx.stroke();
-            ctx.closePath();
-        }
-
-        if (objectB && objectB.show) {
-            ctx.beginPath();
-            const radiusB = showSizeCheckbox.checked ? objectB.radius / scale : objectB.radius;
-            const highlightedradiusB = (showSizeCheckbox.checked ? (Math.min(objectB.radius * 2.5, 7)) / scale * 1.7 : Math.min(Math.max(1.8 * radiusB, 2.5 + radiusB), 2.5 + radiusB));
-			ctx.globalAlpha = 0.2;
-            ctx.arc(objectB.position.x, objectB.position.y, highlightedradiusB, 0, 2 * pi);
-            ctx.strokeStyle = objectB.color;
-            ctx.lineWidth = showSizeCheckbox.checked ? 1 / scale : 1.1;
-            ctx.stroke();
-            ctx.closePath();
-        }
-    }
-
-	if (document.getElementById('showVelocities').checked) {
-		const barycenterPointSize = 1.1 / scale;
-		ctx.beginPath();
-		ctx.arc(barycenter.x, barycenter.y, barycenterPointSize, 0, 2 * pi);
-		ctx.fillStyle = 'gray';
-		ctx.fill();
-		ctx.closePath();
-	}
-
-	ctx.restore();
 }
 
 function clearTrails() {
@@ -2111,6 +1961,8 @@ function displayFPS(currentTime) {
 					fps > 4  ? 7 : 11;
 	
 	document.getElementById('skipDisplay').textContent = `${frameInterval - 1} ms`;
+	document.getElementById('scaleDisplay').textContent = `Scale: ${formatScientific(scale, 2)}`;
+	document.getElementById('scrollZoomDisplay').textContent = `Zoom: ${formatScientific(scrollZoom, 2)}`;
 }
 
 function getRandomSpeed() {
@@ -2415,6 +2267,165 @@ function draw() {
 	drawVelocityVectors();
 }
 
+function drawVelocityVectors() {
+	const showVelocities = document.getElementById('showVelocities').checked;
+	if (!showVelocities) return;
+
+	ctx.save();
+	ctx.translate(canvas.width / 2, canvas.height / 2);
+	ctx.scale(scale, scale);
+	ctx.translate(-calculateBarycenter().x, -calculateBarycenter().y);
+
+	bodies.forEach(body => {
+		if (body.show) {
+			const vectorLength = Math.sqrt(body.velocity.x ** 2 + body.velocity.y ** 2) * 2 ;
+			const endX = body.position.x + body.velocity.x * vectorLength;
+			const endY = body.position.y + body.velocity.y * vectorLength;
+			
+			ctx.beginPath();
+			ctx.moveTo(body.position.x, body.position.y);
+			ctx.lineTo(endX, endY);
+			ctx.strokeStyle = 'darkgray'; 
+			ctx.lineWidth = 1 / scale;
+			ctx.stroke();
+			ctx.closePath();
+
+			const arrowSize = 6 / scale;
+			const angle = Math.atan2(body.velocity.y, body.velocity.x);
+			ctx.beginPath();
+			ctx.moveTo(endX, endY);
+			ctx.lineTo(endX - arrowSize * Math.cos(angle - pi / 6), endY - arrowSize * Math.sin(angle - pi / 6));
+			ctx.lineTo(endX - arrowSize * Math.cos(angle + pi / 6), endY - arrowSize * Math.sin(angle + pi / 6));
+			ctx.lineTo(endX, endY);
+			ctx.fillStyle = 'darkgray';
+			ctx.fill();
+			ctx.closePath();
+		}
+	});
+
+	ctx.restore();
+}
+
+function drawBodies(barycenter) {
+	ctx.save();
+	ctx.translate(canvas.width / 2, canvas.height / 2);
+	ctx.scale(scale, scale);
+	ctx.translate(-barycenter.x, -barycenter.y);
+
+    if (objectLinkedA !== null && objectLinkedB !== null) {
+        const currentDistance = getDistanceBetweenObjects(objectLinkedA, objectLinkedB);
+
+        const ratio = Math.min(currentDistance / distanceL, 1);
+        const colorIntensity = Math.floor(255 * ratio * 0.9);
+
+        const color = `rgb(${colorIntensity}, ${255 - colorIntensity}, 0, ${0.1 + 0.8 * ratio ** 2})`;
+
+        ctx.beginPath();
+        ctx.moveTo(objectLinkedA.position.x, objectLinkedA.position.y);
+        ctx.lineTo(objectLinkedB.position.x, objectLinkedB.position.y);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1 / scale;
+        ctx.stroke();
+    }
+
+	wells.forEach(well => {
+		if (well.show) {
+			ctx.beginPath();
+			ctx.arc(well.position.x, well.position.y, 7 / scale, 0, 2 * pi);
+			ctx.strokeStyle = well.color || 'white';
+			ctx.lineWidth = 1 / scale;
+			if (hoveredBody === well) {
+				ctx.globalAlpha = 0.4;
+			} else {
+				ctx.globalAlpha = 0.8;
+			}
+			ctx.stroke();
+			ctx.closePath();
+			
+			ctx.beginPath();
+			ctx.arc(well.position.x, well.position.y, 3.25 / scale, 0, 2 * pi);
+			ctx.strokeStyle = well.color || 'white';
+			ctx.lineWidth = 1 / scale;
+			ctx.stroke();
+			ctx.closePath();
+		}
+	});
+	
+	bodies.forEach(body => {
+		if (body.show) {
+			ctx.beginPath();
+			const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
+			ctx.arc(body.position.x, body.position.y, radius, 0, 2 * pi);
+			ctx.fillStyle = body.color;
+			
+			if (hoveredBody === body) {
+				ctx.globalAlpha = 0.45;
+			} else {
+				ctx.globalAlpha = 0.9;
+			}
+
+			ctx.fill();
+			ctx.closePath();
+			
+			const tracedTrail = slider.value
+			
+			if (tracedTrail > 0) {
+				body.trail.forEach((point, i) => {
+					if (i > 0) {
+						ctx.beginPath();
+						ctx.moveTo(body.trail[i - 1].x, body.trail[i - 1].y);
+						ctx.lineTo(point.x, point.y);
+						ctx.strokeStyle = body.color;
+						ctx.lineWidth = 1 / scale;
+						ctx.stroke();
+						ctx.closePath();
+					}
+				});
+			}
+		}
+	});
+
+    if (showWindow) {
+		const objectA = bodies[parseInt(objectASelect)];
+		const objectB = bodies[parseInt(objectBSelect)];
+
+        if (objectA && objectA.show) {
+            ctx.beginPath();
+            const radiusA = showSizeCheckbox.checked ? objectA.radius / scale : objectA.radius;
+            const highlightedradiusA = (showSizeCheckbox.checked ? (Math.min(objectA.radius * 2.5, 7)) / scale * 1.7 : Math.min(Math.max(1.8 * radiusA, 2.5 + radiusA), 2.5 + radiusA));
+			ctx.globalAlpha = 0.2;
+            ctx.arc(objectA.position.x, objectA.position.y, highlightedradiusA, 0, 2 * pi);
+            ctx.strokeStyle = objectA.color;
+            ctx.lineWidth = showSizeCheckbox.checked ? 1.1 / scale : 1.1;
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        if (objectB && objectB.show) {
+            ctx.beginPath();
+            const radiusB = showSizeCheckbox.checked ? objectB.radius / scale : objectB.radius;
+            const highlightedradiusB = (showSizeCheckbox.checked ? (Math.min(objectB.radius * 2.5, 7)) / scale * 1.7 : Math.min(Math.max(1.8 * radiusB, 2.5 + radiusB), 2.5 + radiusB));
+			ctx.globalAlpha = 0.2;
+            ctx.arc(objectB.position.x, objectB.position.y, highlightedradiusB, 0, 2 * pi);
+            ctx.strokeStyle = objectB.color;
+            ctx.lineWidth = showSizeCheckbox.checked ? 1 / scale : 1.1;
+            ctx.stroke();
+            ctx.closePath();
+        }
+    }
+
+	if (document.getElementById('showVelocities').checked) {
+		const barycenterPointSize = 1.1 / scale;
+		ctx.beginPath();
+		ctx.arc(barycenter.x, barycenter.y, barycenterPointSize, 0, 2 * pi);
+		ctx.fillStyle = 'gray';
+		ctx.fill();
+		ctx.closePath();
+	}
+
+	ctx.restore();
+}
+
 function drawGravityField() {
     const vectorLengthSliderG = document.getElementById('vectorLengthSliderG');
     const vectorLengthValueG = parseFloat(vectorLengthSliderG.value);
@@ -2585,42 +2596,162 @@ function drawMagneticField() {
     ctx.restore();
 }
 
+/* function drawContours() {
+    const showPotentialContours = document.getElementById('showPotentialContours').checked;
+    const gravityEnabled = document.getElementById('gravityToggle').checked;
+    const magneticEnabled = document.getElementById('magneticToggle').checked;
+    
+    if (!showPotentialContours || (!gravityEnabled && !magneticEnabled)) return;
+
+    ctx.save();
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.scale(scale, scale);
+    
+    const barycenter = calculateBarycenter();
+    ctx.translate(-barycenter.x, -barycenter.y);
+    
+	const multiplier = isoplethDistanceDisplay.value;
+	
+    const gridSize = Math.round(68 * Math.sqrt(multiplier));
+    const gridStepX = (canvas.width / scale) / gridSize;
+    const gridStepY = (canvas.height / scale) / gridSize;
+    
+    let minPotential = Number.MAX_VALUE;
+    let maxPotential = -Number.MAX_VALUE;
+
+    const potentialValues = Array.from({ length: gridSize * 2 + 1 }, () => new Array(gridSize * 2 + 1));
+    
+    // Precompute potential values and find min/max
+    for (let i = -gridSize; i <= gridSize; i++) {
+        for (let j = -gridSize; j <= gridSize; j++) {
+            const x = barycenter.x + i * gridStepX;
+            const y = barycenter.y + j * gridStepY;
+            let potential = 0;
+            
+            bodies.forEach(body => {
+                const dx = x - body.position.x;
+                const dy = y - body.position.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance > 0) {
+                    if (gravityEnabled) potential += -body.mass / distance;
+                    if (magneticEnabled) potential += body.charge / distance;
+                }
+            });
+            
+            wells.forEach(well => {
+                const dx = x - well.position.x;
+                const dy = y - well.position.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance > 0) {
+                    if (gravityEnabled) potential += -well.mass / distance;
+                    if (magneticEnabled) potential += well.charge / distance;
+                }
+            });
+            
+            potentialValues[i + gridSize][j + gridSize] = potential;
+            if (potential < minPotential) minPotential = potential;
+            if (potential > maxPotential) maxPotential = potential;
+        }
+    }
+    
+    // Determine contour levels
+    const numLevels = Math.round(multiplier ** 2 * 27.2 * scale) - 1;
+    const contourLevels = Array.from({ length: numLevels + 1 }, (_, i) => minPotential + i * (maxPotential - minPotential) / numLevels);
+    
+    const drawnLines = new Set(); // Track drawn lines to avoid duplicates
+    
+    // Draw contours using linear interpolation
+    contourLevels.forEach(level => {
+        ctx.beginPath();
+        
+        for (let i = 1; i < gridSize * 2; i++) {
+            for (let j = 1; j < gridSize * 2; j++) {
+                const p1 = potentialValues[i - 1][j - 1];
+                const p2 = potentialValues[i][j - 1];
+                const p3 = potentialValues[i - 1][j];
+                const p4 = potentialValues[i][j];
+                
+                // Draw the first diagonal (from top-left to bottom-right)
+                if ((p1 < level && p4 > level) || (p1 > level && p4 < level)) {
+                    const x1 = barycenter.x + (i - 1 - gridSize) * gridStepX;
+                    const y1 = barycenter.y + (j - 1 - gridSize) * gridStepY;
+                    const x2 = barycenter.x + (i - gridSize) * gridStepX;
+                    const y2 = barycenter.y + (j - gridSize) * gridStepY;
+                    
+                    const lineKey = `${x1},${y1},${x2},${y2}`;
+                    if (!drawnLines.has(lineKey)) {
+                        drawnLines.add(lineKey);
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                    }
+                }
+                
+                // Draw the second diagonal (from top-right to bottom-left)
+                if ((p2 < level && p3 > level) || (p2 > level && p3 < level)) {
+                    const x1 = barycenter.x + (i - 1 - gridSize) * gridStepX;
+                    const y1 = barycenter.y + (j - 1 - gridSize) * gridStepY;
+                    const x2 = barycenter.x + (i - gridSize) * gridStepX;
+                    const y2 = barycenter.y + (j - gridSize) * gridStepY;
+                    
+                    const lineKey = `${x2},${y1},${x1},${y2}`;
+                    if (!drawnLines.has(lineKey)) {
+                        drawnLines.add(lineKey);
+                        ctx.moveTo(x2, y1);
+                        ctx.lineTo(x1, y2);
+                    }
+                }
+            }
+        }
+        
+        ctx.strokeStyle = `rgba(200, 200, 100, 0.4)`;
+        ctx.lineWidth = 1 / scale;
+        ctx.stroke();
+    });
+
+    ctx.restore();
+}
+ */
+
 function drawContours() {
     const showPotentialContours = document.getElementById('showPotentialContours').checked;
     const gravityEnabled = document.getElementById('gravityToggle').checked;
     const magneticEnabled = document.getElementById('magneticToggle').checked;
-	
-    if (!showPotentialContours || (gravityEnabled === false && magneticEnabled === false)) return;
-	
-    ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.scale(scale, scale);
-    const barycenter = calculateBarycenter();
-    ctx.translate(-barycenter.x, -barycenter.y);
 
-    const gridSize = Math.min(Math.round(43 / scale), 118);
-    const potentialValues = new Array(gridSize * 2 + 1);
+    if (!showPotentialContours || (!gravityEnabled && !magneticEnabled)) return;
+
+    ctx.save();
+
+    const barycenter = calculateBarycenter();
+
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
+    const visibleCenterX = barycenter.x;
+    const visibleCenterY = barycenter.y;
+
+    const multiplier = isoplethDistanceDisplay.value;
+    const gridSize = Math.round(68 * Math.sqrt(multiplier));
+    const gridStepX = (canvasWidth / scale) / gridSize;
+    const gridStepY = (canvasHeight / scale) / gridSize;
+
     let minPotential = Number.MAX_VALUE;
     let maxPotential = -Number.MAX_VALUE;
+    const potentialValues = Array.from({ length: gridSize * 2 + 1 }, () => new Array(gridSize * 2 + 1));
 
     for (let i = -gridSize; i <= gridSize; i++) {
-        potentialValues[i + gridSize] = new Array(gridSize * 2 + 1);
         for (let j = -gridSize; j <= gridSize; j++) {
-            const x = barycenter.x + i * (canvas.width / scale / gridSize);
-            const y = barycenter.y + j * (canvas.height / scale / gridSize);
+            const x = barycenter.x + i * gridStepX;
+            const y = barycenter.y + j * gridStepY;
             let potential = 0;
 
             bodies.forEach(body => {
                 const dx = x - body.position.x;
                 const dy = y - body.position.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance !== 0) {
-					if (gravityEnabled) {
-						potential += - (body.mass / distance);
-					}
-					if (magneticEnabled) {
-						potential += (body.charge / distance);
-					}
+				const radius = 0.8 * (showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius);
+                if (distance > radius) {
+                    if (gravityEnabled) potential += -body.mass / distance;
+                    if (magneticEnabled) potential += body.charge / distance;
                 }
             });
 
@@ -2628,55 +2759,110 @@ function drawContours() {
                 const dx = x - well.position.x;
                 const dy = y - well.position.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance !== 0) {
-					if (gravityEnabled) {
-						potential += - (well.mass / distance);
-					}
-					if (magneticEnabled) {
-						potential += (well.charge / distance);
-					}
+                if (distance > 0) {
+                    if (gravityEnabled) potential += -well.mass / distance;
+                    if (magneticEnabled) potential += well.charge / distance;
                 }
             });
-
+			
             potentialValues[i + gridSize][j + gridSize] = potential;
-
             if (potential < minPotential) minPotential = potential;
             if (potential > maxPotential) maxPotential = potential;
         }
     }
 
-    const contourLevels = [];
-    const numLevels = Math.round(1.6 * Math.min(20 / scale, 16, Math.sqrt(gridSize * 2)));
-    for (let i = 0; i <= numLevels; i++) {
-        const level = minPotential + i * (maxPotential - minPotential) / numLevels;
-        contourLevels.push(level);
+    const numLevels = Math.round(80 * multiplier * scrollZoom / scale); // Math.round(Math.min(multiplier ** 2 * 27.2 * scrollZoom, multiplier ** 2 * 30)) - 1;
+    const contourLevels = Array.from({ length: numLevels + 1 }, (_, i) => minPotential + i * (maxPotential - minPotential) / numLevels);
+
+    const drawnLines = new Set();
+
+    function interpolate(p1, p2, level, v1, v2) {
+        const t = (level - v1) / (v2 - v1);
+        return p1 + t * (p2 - p1);
     }
+	
+    ctx.translate(-barycenter.x - canvasWidth / 2, -barycenter.y - canvasHeight/ 2);
+    ctx.scale(scale, scale);
 
     contourLevels.forEach(level => {
         ctx.beginPath();
-        for (let i = 1; i < gridSize * 2; i++) {
-            for (let j = 1; j < gridSize * 2; j++) {
-                const p1 = potentialValues[i - 1][j - 1];
-                const p2 = potentialValues[i][j - 1];
-                const p3 = potentialValues[i - 1][j];
-                const p4 = potentialValues[i][j];
+        for (let i = 0; i < gridSize * 2; i++) {
+            for (let j = 0; j < gridSize * 2; j++) {
+                const p1 = potentialValues[i][j];
+                const p2 = potentialValues[i + 1][j];
+                const p3 = potentialValues[i][j + 1];
+                const p4 = potentialValues[i + 1][j + 1];
+                let caseIndex = 0;
+                if (p1 > level) caseIndex |= 1;
+                if (p2 > level) caseIndex |= 2;
+                if (p3 > level) caseIndex |= 4;
+                if (p4 > level) caseIndex |= 8;
 
-                if ((p1 < level && p4 > level) || (p1 > level && p4 < level)) {
-                    const x1 = barycenter.x + (i - 1 - gridSize) * (canvas.width / scale / gridSize);
-                    const y1 = barycenter.y + (j - 1 - gridSize) * (canvas.height / scale / gridSize);
-                    const x2 = barycenter.x + (i - gridSize) * (canvas.width / scale / gridSize);
-                    const y2 = barycenter.y + (j - gridSize) * (canvas.height / scale / gridSize);
-                    ctx.moveTo(x1, y1);
-                    ctx.lineTo(x2, y2);
-                    ctx.moveTo(x2, y1);
-                    ctx.lineTo(x1, y2);
+                if (caseIndex === 0 || caseIndex === 15) continue;
+
+                let x1, y1, x2, y2;
+                const xLeft = i * gridStepX;
+                const yTop = j * gridStepY;
+                const xRight = xLeft + gridStepX;
+                const yBottom = yTop + gridStepY;
+
+                switch (caseIndex) {
+                    case 1:
+                    case 14:
+                        x1 = xLeft;
+                        y1 = interpolate(yTop, yBottom, level, p1, p3);
+                        x2 = interpolate(xLeft, xRight, level, p1, p2);
+                        y2 = yTop;
+                        break;
+                    case 2:
+                    case 13:
+                        x1 = interpolate(xLeft, xRight, level, p1, p2);
+                        y1 = yTop;
+                        x2 = xRight;
+                        y2 = interpolate(yTop, yBottom, level, p2, p4);
+                        break;
+                    case 3:
+                    case 12:
+                        x1 = xLeft;
+                        y1 = interpolate(yTop, yBottom, level, p1, p3);
+                        x2 = xRight;
+                        y2 = interpolate(yTop, yBottom, level, p2, p4);
+                        break;
+                    case 4:
+                    case 11:
+                        x1 = xLeft;
+                        y1 = interpolate(yTop, yBottom, level, p1, p3);
+                        x2 = interpolate(xLeft, xRight, level, p3, p4);
+                        y2 = yBottom;
+                        break;
+                    case 6:
+                    case 9:
+                        x1 = interpolate(xLeft, xRight, level, p1, p2);
+                        y1 = yTop;
+                        x2 = interpolate(xLeft, xRight, level, p3, p4);
+                        y2 = yBottom;
+                        break;
+                    case 7:
+                    case 8:
+                        x1 = interpolate(xLeft, xRight, level, p3, p4);
+                        y1 = yBottom;
+                        x2 = xRight;
+                        y2 = interpolate(yTop, yBottom, level, p2, p4);
+                        break;
+                }
+
+                const lineKey = `${x1},${y1},${x2},${y2}`;
+                if (!drawnLines.has(lineKey)) {
+                    drawnLines.add(lineKey);
+					ctx.moveTo(x1 + visibleCenterX / scale, y1 + visibleCenterY / scale);
+					ctx.lineTo(x2 + visibleCenterX / scale, y2 + visibleCenterY / scale);
                 }
             }
         }
-        ctx.strokeStyle = `rgba(200, 200, 100, 0.8)`;
-        ctx.lineWidth = 0.4 / scale;
+
+        ctx.strokeStyle = `rgba(200, 200, 100, 0.45)`;
+        ctx.lineWidth = 1 / scale;
         ctx.stroke();
-        ctx.closePath();
     });
 
     ctx.restore();
@@ -3231,6 +3417,16 @@ function clearChart() {
 
 /* Démarrage de la simulation avec l'appel des fonctions */
 
+function getLocalStorage() {
+	if (localStorage.getItem('theme') === 'light') {
+		bodyhtml.classList.add('light-mode');
+		themeSwitch.checked = false;
+	} else {
+		bodyhtml.classList.remove('light-mode');
+		themeSwitch.checked = true;
+	}
+}
+
 // INIT
 function initiate() {
 	startTimer();
@@ -3250,6 +3446,8 @@ function initiate() {
 	
 	draw();
 	
+	getLocalStorage();
+	
 	translate();
 }
 
@@ -3259,14 +3457,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	initiate();
-	
-	if (localStorage.getItem('theme') === 'light') {
-		bodyhtml.classList.add('light-mode');
-		themeSwitch.checked = false;
-	} else {
-		bodyhtml.classList.remove('light-mode');
-		themeSwitch.checked = true;
-	}
 	
 	if (devModenabled) {
 		console.log('Start succes!');

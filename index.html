@@ -119,11 +119,15 @@
 
 		<div id="timer" class="canvas-text" style="position: absolute; top: 55px;"></div>
 		
-		<div id="UsageDisplay" class="canvas-text" style="position: absolute; top: 75px;"></div>
+		<div id="scaleDisplay" class="canvas-text" style="position: absolute; top: 75px;"></div>
 		
-		<div id="fpsDisplay" class="canvas-text" style="position: absolute; top: 95px;"></div>
+		<div id="scrollZoomDisplay" class="canvas-text" style="position: absolute; top: 95px;"></div>
 		
-		<div id="skipDisplay" class="canvas-text" style="position: absolute; top: 115px;"></div>
+		<div id="UsageDisplay" class="canvas-text" style="position: absolute; top: 115px;"></div>
+		
+		<div id="fpsDisplay" class="canvas-text" style="position: absolute; top: 135px;"></div>
+		
+		<div id="skipDisplay" class="canvas-text" style="position: absolute; top: 155px;"></div>
 
 		<button id="infoWindowBtn">
 			<img id="infoWindowImg" src="image/chart-icon.png" alt="Object info">
@@ -364,7 +368,7 @@
 					<label id="vectorLengthLabelG">Longueur des vecteurs du champ gravitationnel :</label>
 					<div class="slider-container">
 						<input type="range" id="vectorLengthSliderG" min="0.01" max="10" value="1" step="0.01" />
-						<span id="vectorLengthValueG">1</span>
+						<span id="vectorLengthValueG"></span>
 					</div>
 				</div>
 
@@ -372,7 +376,7 @@
 					<label id="vectorLengthLabelk">Longueur des vecteurs du champ électromagnétique :</label>
 					<div class="slider-container">
 						<input type="range" id="vectorLengthSliderk" min="0.01" max="10" value="1" step="0.01" />
-						<span id="vectorLengthValuek">1</span>
+						<span id="vectorLengthValuek"></span>
 					</div>
 				</div>
 
@@ -380,7 +384,15 @@
 					<label id="vectorFieldDistanceLabel">Écartement des vecteurs des champs magnétiques</label>
 					<div class="slider-container">
 						<input type="range" id="vectorFieldDistance" min="3.75" max="37.5" value="17.5" step="1.25" />
-						<span id="vectorFieldDistanceD">17.5</span>
+						<span id="vectorFieldDistanceD"></span>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label id="isoplethDistanceLabel">Précision du tracé de l'isoplèthe</label>
+					<div class="slider-container">
+						<input type="range" id="isoplethDistance" min="1" max="5" value="1" step="0.2" />
+						<span id="isoplethDistanceD"></span>
 					</div>
 				</div>
 				
