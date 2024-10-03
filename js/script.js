@@ -101,60 +101,60 @@ canvas.addEventListener('touchmove', handleTouchMove);
 canvas.addEventListener('touchend', handleTouchEnd);
 
 window.addEventListener('contextmenu', function(event) {
-    event.preventDefault();
+	event.preventDefault();
 })
 
 themeSwitch.addEventListener('change', () => {
-    if (themeSwitch.checked) {
-        // Mode sombre
-        bodyhtml.classList.remove('light-mode');
-        localStorage.setItem('theme', 'dark');
-    } else {
-        // Mode clair
-        bodyhtml.classList.add('light-mode');
-        localStorage.setItem('theme', 'light');
-    }
+	if (themeSwitch.checked) {
+		// Mode sombre
+		bodyhtml.classList.remove('light-mode');
+		localStorage.setItem('theme', 'dark');
+	} else {
+		// Mode clair
+		bodyhtml.classList.add('light-mode');
+		localStorage.setItem('theme', 'light');
+	}
 });
 
 canvas.addEventListener('contextmenu', function(event) {
-    event.preventDefault();
+	event.preventDefault();
 	
 	function enterUpdate() {
 		customMenu.style.display = 'none';
 		updateControlValues();
 		updateWellControlValues();
 	}
-    
-    const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
-    const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
-    
-    selectedInfo = null;
+	
+	const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
+	const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
+	
+	selectedInfo = null;
 	selectedType = null;
 	
-    bodies.forEach(body => {
-        const dx = body.position.x - mouseX;
-        const dy = body.position.y - mouseY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
-        
-        if (distance < radius) {
-            selectedInfo = body;
+	bodies.forEach(body => {
+		const dx = body.position.x - mouseX;
+		const dy = body.position.y - mouseY;
+		const distance = Math.sqrt(dx * dx + dy * dy);
+		const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
+		
+		if (distance < radius) {
+			selectedInfo = body;
 			selectedType = "body";
-        }
-    });
-    
-    wells.forEach(well => {
-        const dx = well.position.x - mouseX;
-        const dy = well.position.y - mouseY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        
-        if (distance < 7 / scale) {
-            selectedInfo = well;
-			selectedType = "well";
-        }
-    });
+		}
+	});
 	
-    if (selectedInfo) {
+	wells.forEach(well => {
+		const dx = well.position.x - mouseX;
+		const dy = well.position.y - mouseY;
+		const distance = Math.sqrt(dx * dx + dy * dy);
+		
+		if (distance < 7 / scale) {
+			selectedInfo = well;
+			selectedType = "well";
+		}
+	});
+	
+	if (selectedInfo) {
 		customMenu.innerHTML = `
 			<div style="font-size:15px;padding-bottom: 5px;font-weight: bold;">${selectedInfo.name || 'Object NaN'}</div>
 			<div style="font-size:10px; border-bottom: 1px solid #444">${positionText} (${selectedInfo.position.x.toFixed(2)}; ${selectedInfo.position.y.toFixed(2)})</div>
@@ -170,8 +170,8 @@ canvas.addEventListener('contextmenu', function(event) {
 			<button class="context-menu-button" id="unlink">Délier les objets</button>
 		`;
 		
-        if (objectLinkedA !== null && objectLinkedB !== null) {
-            unlink.innerHTML.display = 'block';
+		if (objectLinkedA !== null && objectLinkedB !== null) {
+			unlink.innerHTML.display = 'block';
 			
 			document.getElementById('unlink').addEventListener('click', () => {
 				objectLinkedA = null;
@@ -185,25 +185,25 @@ canvas.addEventListener('contextmenu', function(event) {
 			unlink.style.display = 'none';
 		}
 		
-        customMenu.style.display = 'block';
-        let menuX = event.pageX;
-        let menuY = event.pageY;
+		customMenu.style.display = 'block';
+		let menuX = event.pageX;
+		let menuY = event.pageY;
 
-        const menuWidth = customMenu.offsetWidth;
-        const menuHeight = customMenu.offsetHeight;
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
+		const menuWidth = customMenu.offsetWidth;
+		const menuHeight = customMenu.offsetHeight;
+		const windowWidth = window.innerWidth;
+		const windowHeight = window.innerHeight;
 
-        if (menuX + menuWidth > windowWidth) {
-            menuX = windowWidth - menuWidth - 5;
-        }
+		if (menuX + menuWidth > windowWidth) {
+			menuX = windowWidth - menuWidth - 5;
+		}
 
-        if (menuY + menuHeight > windowHeight) {
-            menuY = windowHeight - menuHeight - 5;
-        }
+		if (menuY + menuHeight > windowHeight) {
+			menuY = windowHeight - menuHeight - 5;
+		}
 
-        customMenu.style.left = `${menuX}px`;
-        customMenu.style.top = `${menuY}px`;
+		customMenu.style.left = `${menuX}px`;
+		customMenu.style.top = `${menuY}px`;
 		
 		if (selectedType === "well") {
 			resetForces.style.display = 'none';
@@ -213,52 +213,52 @@ canvas.addEventListener('contextmenu', function(event) {
 		
 		translate();
 		
-        document.getElementById('linkA').addEventListener('click', () => {
-            objectLinkedA = bodies[bodies.indexOf(selectedInfo)];
-            objectLinkedAname = selectedInfo.name;
+		document.getElementById('linkA').addEventListener('click', () => {
+			objectLinkedA = bodies[bodies.indexOf(selectedInfo)];
+			objectLinkedAname = selectedInfo.name;
 			if (objectLinkedA !== null && objectLinkedB !== null) {
 				distanceL = getDistanceBetweenObjects(objectLinkedA, objectLinkedB)
 			}
-        });
+		});
 		
-        document.getElementById('linkB').addEventListener('click', () => {
-            objectLinkedB = bodies[bodies.indexOf(selectedInfo)];
-            objectLinkedBname = selectedInfo.name;
+		document.getElementById('linkB').addEventListener('click', () => {
+			objectLinkedB = bodies[bodies.indexOf(selectedInfo)];
+			objectLinkedBname = selectedInfo.name;
 			if (objectLinkedA !== null && objectLinkedB !== null) {
 				distanceL = getDistanceBetweenObjects(objectLinkedA, objectLinkedB)
 			}
-        });
+		});
 		
-        document.getElementById('deleteObject').addEventListener('click', () => {
-            const index = bodies.indexOf(selectedInfo);
-            if (index > -1) {
-                deleteBody(index);
-            } else {
-                deleteWell(wells.indexOf(selectedInfo));
-            }
-            enterUpdate();
-        });
+		document.getElementById('deleteObject').addEventListener('click', () => {
+			const index = bodies.indexOf(selectedInfo);
+			if (index > -1) {
+				deleteBody(index);
+			} else {
+				deleteWell(wells.indexOf(selectedInfo));
+			}
+			enterUpdate();
+		});
 
-        document.getElementById('toggleVisibility').addEventListener('click', () => {
-            selectedInfo.show = !selectedInfo.show;
-            enterUpdate();
-        });
+		document.getElementById('toggleVisibility').addEventListener('click', () => {
+			selectedInfo.show = !selectedInfo.show;
+			enterUpdate();
+		});
 
-        document.getElementById('centerView').addEventListener('click', () => {
-            if (bodies.includes(selectedInfo)) {
-                focusObject = `body-${bodies.indexOf(selectedInfo)}`;
-            } else if (wells.includes(selectedInfo)) {
-                focusObject = `well-${wells.indexOf(selectedInfo)}`;
-            }
-            enterUpdate();
-        });
+		document.getElementById('centerView').addEventListener('click', () => {
+			if (bodies.includes(selectedInfo)) {
+				focusObject = `body-${bodies.indexOf(selectedInfo)}`;
+			} else if (wells.includes(selectedInfo)) {
+				focusObject = `well-${wells.indexOf(selectedInfo)}`;
+			}
+			enterUpdate();
+		});
 
-        document.getElementById('duplicateObject').addEventListener('click', () => {
-            const duplicate = JSON.parse(JSON.stringify(selectedInfo));
+		document.getElementById('duplicateObject').addEventListener('click', () => {
+			const duplicate = JSON.parse(JSON.stringify(selectedInfo));
 			const theta = Math.random() * 2 * Math.PI
 			const rho = Math.random() * 20 + 5 + selectedInfo.radius * 2
-            duplicate.position.x += rho * Math.cos(theta);
-            duplicate.position.y += rho * Math.sin(theta);
+			duplicate.position.x += rho * Math.cos(theta);
+			duplicate.position.y += rho * Math.sin(theta);
 			const baseName = selectedInfo.name;
 
 			let copyCount = 0;
@@ -274,13 +274,13 @@ canvas.addEventListener('contextmenu', function(event) {
 				duplicate.name = `${baseName} copy ${copyCount + 1}`;
 			}
 			
-            if (bodies.includes(selectedInfo)) {
-                bodies.push(duplicate);
-            } else if (wells.includes(selectedInfo)) {
-                wells.push(duplicate);
-            }
-            enterUpdate();
-        });
+			if (bodies.includes(selectedInfo)) {
+				bodies.push(duplicate);
+			} else if (wells.includes(selectedInfo)) {
+				wells.push(duplicate);
+			}
+			enterUpdate();
+		});
 		
 		document.getElementById('resetForces').addEventListener('click', () => {
 			if (selectedType === "body") {
@@ -299,24 +299,24 @@ canvas.addEventListener('contextmenu', function(event) {
 				body.acceleration.x = 0;
 				body.acceleration.y = 0;
 			});
-            enterUpdate();
+			enterUpdate();
 		});
 		
-        document.getElementById('deleteAll').addEventListener('click', () => {
-            if (confirm("Are you sure you want to delete all objects?")) {
-                bodies.length = 0;
-                wells.length = 0;
+		document.getElementById('deleteAll').addEventListener('click', () => {
+			if (confirm("Are you sure you want to delete all objects?")) {
+				bodies.length = 0;
+				wells.length = 0;
 				objectLinkedA = null;
 				objectLinkedAname = null;
 				objectLinkedB = null;
 				objectLinkedBname = null;
 				distanceL = null;
-            }
-            enterUpdate();
-        });
-    } else {
-        customMenu.style.display = 'none';
-    }
+			}
+			enterUpdate();
+		});
+	} else {
+		customMenu.style.display = 'none';
+	}
 });
 
 focusSelect.addEventListener('change', (e) => {
@@ -335,39 +335,39 @@ frictionToggle.addEventListener('change', () => {
 });
 
 toggleButtons.forEach((button, index) => {
-    button.addEventListener('click', function () {
-        const controlGroup = this.parentElement.nextElementSibling;
-        
-        if (controlGroup.classList.contains('collapsed')) {
-            controlGroup.classList.remove('collapsed');
-            this.textContent = '▼';
-        } else {
-            controlGroup.classList.add('collapsed');
-            this.textContent = '▶';
-        }
-    });
+	button.addEventListener('click', function () {
+		const controlGroup = this.parentElement.nextElementSibling;
+		
+		if (controlGroup.classList.contains('collapsed')) {
+			controlGroup.classList.remove('collapsed');
+			this.textContent = '▼';
+		} else {
+			controlGroup.classList.add('collapsed');
+			this.textContent = '▶';
+		}
+	});
 });
 
 [GInput, epsi0Input, cInput, piInput].forEach(input => {
-    input.addEventListener('input', updateConstants);
+	input.addEventListener('input', updateConstants);
 });
 
 constValCheckbox.addEventListener('change', updateConstants);
 
 vectorLengthSliderG.addEventListener('input', function() {
-    vectorLengthDisplayG.textContent = vectorLengthSliderG.value;
+	vectorLengthDisplayG.textContent = vectorLengthSliderG.value;
 });
 
 vectorFieldDistanceDisplay.addEventListener('input', function() {
-    vectorFieldDistanceD.textContent = vectorFieldDistance.value;
+	vectorFieldDistanceD.textContent = vectorFieldDistance.value;
 });
 
 isoplethDistanceDisplay.addEventListener('input', function() {
-    isoplethDistanceD.textContent = isoplethDistanceDisplay.value;
+	isoplethDistanceD.textContent = isoplethDistanceDisplay.value;
 });
 
 vectorLengthSliderk.addEventListener('input', function() {
-    vectorLengthDisplayk.textContent = vectorLengthSliderk.value;
+	vectorLengthDisplayk.textContent = vectorLengthSliderk.value;
 });
 
 helpBtn.addEventListener('click', () => {
@@ -380,7 +380,7 @@ helpBtn.addEventListener('click', () => {
 });
 
 helpBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault();
+	e.preventDefault();
 	isPaused = true
 	updateButtonImage();
 	modal.style.display = 'block';
@@ -391,7 +391,7 @@ closeBtn.addEventListener('click', () => {
 });
 
 closeBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault();
+	e.preventDefault();
 	modal.style.display = 'none';
 });
 
@@ -399,7 +399,7 @@ window.addEventListener('click', (event) => {
 	if (event.target === modal) {
 		modal.style.display = 'none';
 	}
-    customMenu.style.display = 'none';
+	customMenu.style.display = 'none';
 });
 
 document.getElementById('autoZoomToggle').addEventListener('change', (e) => {
@@ -428,8 +428,8 @@ controlsToggle.addEventListener('touchstart', (e) => {
 fullscreenBtn.addEventListener('click', () => {
 	if (!document.fullscreenElement) {
 		document.documentElement.requestFullscreen();
-        fullscreenImg.src = "image/full-screen-off-icon.png";
-        fullscreenImg.alt = "Quit Full-screen";
+		fullscreenImg.src = "image/full-screen-off-icon.png";
+		fullscreenImg.alt = "Quit Full-screen";
 	} else {
 		if (document.exitFullscreen) {
 			document.exitFullscreen();
@@ -444,8 +444,8 @@ startPauseBtn.addEventListener('click', () => {
 });
 
 startPauseBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault(); 
-    Pause();
+	e.preventDefault(); 
+	Pause();
 });
 
 slider.addEventListener('input', (e) => {
@@ -466,18 +466,18 @@ slider.addEventListener('mouseover', () => {
 });
 
 canvas.addEventListener('mousemove', (event) => {
-    updateCoord();
+	updateCoord();
 });
 
 window.addEventListener('resize', () => {
-    if (controls.classList.contains('hidden')) {
-        canvas.width = window.innerWidth - 300;
-    } else {
-        canvas.width = window.innerWidth;
-    }
-    canvas.height = window.innerHeight;
+	if (controls.classList.contains('hidden')) {
+		canvas.width = window.innerWidth - 300;
+	} else {
+		canvas.width = window.innerWidth;
+	}
+	canvas.height = window.innerHeight;
 	if (devModenabled) {
-        console.log('Canvas width :', canvas.width);
+		console.log('Canvas width :', canvas.width);
 	}
 });
 
@@ -524,7 +524,7 @@ document.addEventListener('keydown', (event) => {
 			break;
 	}
 	if (devModenabled) {
-        console.log('Key pressed :', event.key);
+		console.log('Key pressed :', event.key);
 	}
 	customMenu.style.display = 'none';
 });
@@ -550,12 +550,12 @@ dragElement(document.getElementById('infoWindow'));
 window.dispatchEvent(new Event('resize'));
 
 document.getElementById('infoWindowBtn').addEventListener('click', function() {
-    showWindow = !showWindow;
-    if (showWindow) {
-        document.getElementById('infoWindow').style.display = 'block';
-    } else {
-        document.getElementById('infoWindow').style.display = 'none';
-    }
+	showWindow = !showWindow;
+	if (showWindow) {
+		document.getElementById('infoWindow').style.display = 'block';
+	} else {
+		document.getElementById('infoWindow').style.display = 'none';
+	}
 	if (devModenabled) {
 		console.log('infoWindow showed:', showWindow);
 	}
@@ -563,13 +563,13 @@ document.getElementById('infoWindowBtn').addEventListener('click', function() {
 
 document.getElementById('closeInfoWindowBtn').addEventListener('click', function() {
 	showWindow = false
-    document.getElementById('infoWindow').style.display = 'none';
+	document.getElementById('infoWindow').style.display = 'none';
 });
 
 document.getElementById('closeInfoWindowBtn').addEventListener('touchstart', function() {
 	preventDefault();
 	showWindow = false
-    document.getElementById('infoWindow').style.display = 'none';
+	document.getElementById('infoWindow').style.display = 'none';
 });
 
 document.getElementById('zoomOut10').addEventListener('click', () => {
@@ -605,7 +605,7 @@ document.getElementById('addBodyBtn').addEventListener('click', () => {
 	let rdposition = getRandomPosition(rdradius)
 	if (rdposition !== null) {
 	const newBody = {
-            name: `Object ${bodies.length + 1}`,
+			name: `Object ${bodies.length + 1}`,
 			mass: 50 + Math.random() * 100,
 			charge: Math.round((Math.random() * 3 - 1.5) * 10) / 10,
 			radius: rdradius,
@@ -634,7 +634,7 @@ document.getElementById('addWellBtn').addEventListener('click', () => {
 	let rdposition = getRandomPosition(rdradius)
 	if (rdposition !== null) {
 	const newWell = {
-            name: `Well ${wells.length + 1}`,
+			name: `Well ${wells.length + 1}`,
 			mass: 500 + Math.random() * 1000,
 			charge: Math.round((Math.random() * 3 - 1.5) * 10) / 10,
 			position: rdposition,
@@ -657,34 +657,34 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 	const selectedPresetName = document.getElementById('presetSelect').value;
 	createRdPreset();
 	
-    if (selectedPresetName === "Sun Earth Moon") {
-        constValCheckbox.checked = true;
-        updateConstants();
-    }
-    else if (selectedPresetName === "Hydrogens like") {
-        constValCheckbox.checked = true;
+	if (selectedPresetName === "Sun Earth Moon") {
+		constValCheckbox.checked = true;
+		updateConstants();
+	}
+	else if (selectedPresetName === "Hydrogens like") {
+		constValCheckbox.checked = true;
 		document.getElementById('magneticToggle').checked = true;
-        updateConstants();
-    }
-    else if (selectedPresetName === "Soup") {
-        constValCheckbox.checked = false;
+		updateConstants();
+	}
+	else if (selectedPresetName === "Soup") {
+		constValCheckbox.checked = false;
 		document.getElementById('magneticToggle').checked = true;
-        updateConstants();
-    }
-    else if (selectedPresetName === "Pool Game") {
-        constValCheckbox.checked = false;
+		updateConstants();
+	}
+	else if (selectedPresetName === "Pool Game") {
+		constValCheckbox.checked = false;
 		document.getElementById('collisionToggle').checked = true;
 		collisionsEnabled = document.getElementById('collisionToggle').checked;
 		if (collisionsEnabled) {
 			mergingEnabled = false;
 			document.getElementById('mergeToggle').checked = mergingEnabled;
 		}
-        updateConstants();
-    }
+		updateConstants();
+	}
 	else {
-        constValCheckbox.checked = false;
+		constValCheckbox.checked = false;
 		document.getElementById('magneticToggle').checked = false;
-        updateConstants();
+		updateConstants();
 	}
 	
 	if (selectedPresetName && presets[selectedPresetName]) {
@@ -751,7 +751,7 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 		});
 
 		clearTrails();
-        chart.update();
+		chart.update();
 		updateControlValues();
 		updateWellControlValues();
 		resetView();
@@ -763,34 +763,34 @@ document.getElementById('loadPresetBtn').addEventListener('click', () => {
 });
 
 document.getElementById('importPresetBtn').addEventListener('click', () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'application/javascript';
+	const input = document.createElement('input');
+	input.type = 'file';
+	input.accept = 'application/javascript';
 
-    input.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            
-            reader.onload = (e) => {
-                const content = e.target.result;
-                
-                try {
-                    eval(content);
-                    
-                    updatePresetSelect();
-                    alert('Preset importé avec succès.');
-                } catch (err) {
-                    console.error('Erreur lors de l\'importation du preset:', err);
-                    alert('Échec de l\'importation du preset.');
-                }
-            };
+	input.addEventListener('change', (event) => {
+		const file = event.target.files[0];
+		if (file) {
+			const reader = new FileReader();
+			
+			reader.onload = (e) => {
+				const content = e.target.result;
+				
+				try {
+					eval(content);
+					
+					updatePresetSelect();
+					alert('Preset importé avec succès.');
+				} catch (err) {
+					console.error('Erreur lors de l\'importation du preset:', err);
+					alert('Échec de l\'importation du preset.');
+				}
+			};
 
-            reader.readAsText(file);
-        }
-    });
+			reader.readAsText(file);
+		}
+	});
 
-    input.click();
+	input.click();
 });
 
 document.getElementById('savePresetBtn').addEventListener('click', () => {
@@ -823,17 +823,17 @@ document.getElementById('savePresetBtn').addEventListener('click', () => {
 	updatePresetSelect();
 	presetNameInput.value = '';
 	
-    const fileContent = `presets['${presetName}'] = ${JSON.stringify(presets[presetName], null, 2)};`;
+	const fileContent = `presets['${presetName}'] = ${JSON.stringify(presets[presetName], null, 2)};`;
 
-    const blob = new Blob([fileContent], { type: 'application/javascript' });
+	const blob = new Blob([fileContent], { type: 'application/javascript' });
 
-    const downloadLink = document.createElement('a');
-    downloadLink.href = URL.createObjectURL(blob);
-    downloadLink.download = `${presetName}.js`;
+	const downloadLink = document.createElement('a');
+	downloadLink.href = URL.createObjectURL(blob);
+	downloadLink.download = `${presetName}.js`;
 
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+	document.body.appendChild(downloadLink);
+	downloadLink.click();
+	document.body.removeChild(downloadLink);
 	
 	if (devModenabled) {
 		console.log('Preset saved:', presetName);
@@ -897,10 +897,10 @@ function createRdPreset() {
 }
 
 function gaussianRandom(mean, stdDev) {
-    let u1 = Math.random();
-    let u2 = Math.random();
-    let z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * pi * u2);
-    return z * stdDev + mean;
+	let u1 = Math.random();
+	let u2 = Math.random();
+	let z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * pi * u2);
+	return z * stdDev + mean;
 }
 
 function getRadius(mean, stdDev, min) {
@@ -910,39 +910,39 @@ function getRadius(mean, stdDev, min) {
 }
 
 function updateBarycenterCoord() {
-    const barycenter = calculateBarycenter();
-    barycenterDisplay.textContent = `Barycenter Coord : (${formatScientific(barycenter.x, 3)}; ${formatScientific(barycenter.y, 3)})`;
+	const barycenter = calculateBarycenter();
+	barycenterDisplay.textContent = `Barycenter Coord : (${formatScientific(barycenter.x, 3)}; ${formatScientific(barycenter.y, 3)})`;
 }
 
 function updateCoord() {
-    const barycenter = calculateBarycenter();
+	const barycenter = calculateBarycenter();
 
-    const rect = canvas.getBoundingClientRect();
+	const rect = canvas.getBoundingClientRect();
 
-    const mouseXOnCanvas = (event.clientX - rect.left) / scale;
-    const mouseYOnCanvas = (event.clientY - rect.top) / scale;
+	const mouseXOnCanvas = (event.clientX - rect.left) / scale;
+	const mouseYOnCanvas = (event.clientY - rect.top) / scale;
 
-    const mouseX = mouseXOnCanvas + (barycenter.x - canvas.width / 2 / scale);
-    const mouseY = mouseYOnCanvas + (barycenter.y - canvas.height / 2 / scale);
+	const mouseX = mouseXOnCanvas + (barycenter.x - canvas.width / 2 / scale);
+	const mouseY = mouseYOnCanvas + (barycenter.y - canvas.height / 2 / scale);
 
-    mouseCoordsDisplay.textContent = `Coord : (${formatScientific(mouseX, 3)}; ${formatScientific(mouseY, 3)})`;
+	mouseCoordsDisplay.textContent = `Coord : (${formatScientific(mouseX, 3)}; ${formatScientific(mouseY, 3)})`;
 }
 
 function updateConstants() {
-    if (constValCheckbox.checked) {
+	if (constValCheckbox.checked) {
 		c = 299792458;			// Speed of light in m/s
-        G = 6.67430e-11;		// Constante gravitationnelle (réelle)
-        epsi0 = 8.85418782e-12;	// Permittivité du vide (réelle)
+		G = 6.67430e-11;		// Constante gravitationnelle (réelle)
+		epsi0 = 8.85418782e-12;	// Permittivité du vide (réelle)
 		pi = Math.PI;			// Constante d'Archimède (réelle)
-        customConstantsDiv.style.display = 'none';
-    } else {
-        // Utiliser les valeurs personnalisées
+		customConstantsDiv.style.display = 'none';
+	} else {
+		// Utiliser les valeurs personnalisées
 		c = parseFloat(GInput.value);
-        G = parseFloat(GInput.value);
-        epsi0 = parseFloat(epsi0Input.value);
+		G = parseFloat(GInput.value);
+		epsi0 = parseFloat(epsi0Input.value);
 		pi = parseFloat(piInput.value);
-        customConstantsDiv.style.display = 'block';
-    }
+		customConstantsDiv.style.display = 'block';
+	}
 	k = 1 / (4 * pi * epsi0);
 	if (devModenabled) {
 		console.log('G:', G, 'epsi0:', epsi0, 'k:', k, 'c:', c, 'pi:', pi);
@@ -959,13 +959,13 @@ function resetView() {
 }
 
 function deleteBody(index) {
-    if (bodies[index] === objectLinkedA || bodies[index] === objectLinkedB) {
-        objectLinkedA = null;
-        objectLinkedAname = null;
-        objectLinkedB = null;
-        objectLinkedBname = null;
-        distanceL = null;
-    }
+	if (bodies[index] === objectLinkedA || bodies[index] === objectLinkedB) {
+		objectLinkedA = null;
+		objectLinkedAname = null;
+		objectLinkedB = null;
+		objectLinkedBname = null;
+		distanceL = null;
+	}
 	bodies.splice(index, 1);
 	updateControlValues();
 	updateWellControlValues();
@@ -1008,35 +1008,35 @@ function setupTrashIcons() {
 }
 
 function startTimer() {
-    timeElapsed = 0;
-    timerDisplay.textContent = `Time: 0.00 s / 0.00s`;
-    lastTime = performance.now(); 
+	timeElapsed = 0;
+	timerDisplay.textContent = `Time: 0.00 s / 0.00s`;
+	lastTime = performance.now(); 
 
-    function updateTimer(currentTime) {
-        if (!isPaused) {
-            const deltaTime = (currentTime - lastTime) / 1000;
-            timeElapsed += Math.abs(deltaTime * parseFloat(dtInput.value));
-            timerDisplay.textContent = `${timerLng} ${formatTime(Math.abs(timeElapsed))} / ${formatTime(Math.abs(timeElapsed/dtInput.value))}`;
-        }
-        lastTime = currentTime; 
-        requestAnimationFrame(updateTimer);
-    }
+	function updateTimer(currentTime) {
+		if (!isPaused) {
+			const deltaTime = (currentTime - lastTime) / 1000;
+			timeElapsed += Math.abs(deltaTime * parseFloat(dtInput.value));
+			timerDisplay.textContent = `${timerLng} ${formatTime(Math.abs(timeElapsed))} / ${formatTime(Math.abs(timeElapsed/dtInput.value))}`;
+		}
+		lastTime = currentTime; 
+		requestAnimationFrame(updateTimer);
+	}
 
-    requestAnimationFrame(updateTimer);
+	requestAnimationFrame(updateTimer);
 }
 
 function formatTime(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = (seconds % 60).toFixed(2);
+	const hours = Math.floor(seconds / 3600);
+	const minutes = Math.floor((seconds % 3600) / 60);
+	const remainingSeconds = (seconds % 60).toFixed(2);
 
-    if (hours > 0) {
-        return `${hours} h ${minutes} m ${remainingSeconds} s`; 
-    } else if (minutes > 0) {
-        return `${minutes} m ${remainingSeconds} s`;
-    } else {
-        return `${remainingSeconds} s`;
-    }
+	if (hours > 0) {
+		return `${hours} h ${minutes} m ${remainingSeconds} s`; 
+	} else if (minutes > 0) {
+		return `${minutes} m ${remainingSeconds} s`;
+	} else {
+		return `${remainingSeconds} s`;
+	}
 }
 
 function updateControlValues() {
@@ -1061,85 +1061,85 @@ function updateControlValues() {
 
 		const group = document.createElement('div');
 		group.className = 'control-group';
-        group.innerHTML = `
-            <div class="checkbox-group">
-                <input type="checkbox" id="show${index + 1}" ${body.show ? 'checked' : ''}>
-                
-                <label for="info${index + 1}">
-                    <span class="color-indicator" id="color${index}" style="background-color: ${body.color}"></span>
-                    <input type="text" id="name${index}" value="${body.name || `Object ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 80%;">
-                    <img class="hoverOpct" src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Delete" style="filter: brightness(4); cursor:pointer; margin: 5px">
-                </label>
-            </div>
-            
-            <label for="mass${index + 1}" id="MassEntree${index + 1}">Mass:</label>
-            <div class="btn-group mrgn-bttm-lg">
-                <button onclick="adjustValue('mass${index + 1}', 0.1)">/10</button>
-                <button onclick="adjustValue('mass${index + 1}', 0.5)">/2</button>
-                <input type="number" id="mass${index + 1}" value="${body.mass.toExponential(2)}" step="5">
-                <button onclick="adjustValue('mass${index + 1}', 2)">x2</button>
-                <button onclick="adjustValue('mass${index + 1}', 10)">x10</button>
-            </div>
-            
-            <label for="charge${index + 1}" id="ChargeEntree${index + 1}">Charge:</label>
-            <div class="btn-group mrgn-bttm-lg">
-                <button onclick="adjustValue('charge${index + 1}', 0.1)">/10</button>
-                <button onclick="adjustValue('charge${index + 1}', 0.5)">/2</button>
-                <input type="number" id="charge${index + 1}" value="${body.charge.toExponential(1)}" step="1">
-                <button onclick="adjustValue('charge${index + 1}', 2)">x2</button>
-                <button onclick="adjustValue('charge${index + 1}', 10)">x10</button>
-            </div>
-            
-            <label for="radius${index + 1}" id="radiusEntree${index + 1}">Radius:</label>
-            <div class="btn-group mrgn-bttm-lg">
-                <button onclick="adjustValue('radius${index + 1}', 0.1)">/10</button>
-                <button onclick="adjustValue('radius${index + 1}', 0.5)">/2</button>
-                <input type="number" id="radius${index + 1}" value="${body.radius.toExponential(1)}" step="0.5">
-                <button onclick="adjustValue('radius${index + 1}', 2)">x2</button>
-                <button onclick="adjustValue('radius${index + 1}', 10)">x10</button>
-            </div>
-            
-            <label for="x${index + 1}" id="PosXEntree${index + 1}">X Position:</label>
-            <div class="btn-group mrgn-bttm-lg">
-                <button onclick="adjustValue('x${index + 1}', 0.1)">/10</button>
-                <button onclick="adjustValue('x${index + 1}', 0.5)">/2</button>
-                <input type="number" id="x${index + 1}" value="${body.position.x.toExponential(2)}" step="1">
-                <button onclick="adjustValue('x${index + 1}', 2)">x2</button>
-                <button onclick="adjustValue('x${index + 1}', 10)">x10</button>
-            </div>
-            
-            <label for="y${index + 1}" id="PosYEntree${index + 1}">Y Position:</label>
-            <div class="btn-group mrgn-bttm-lg">
-                <button onclick="adjustValue('y${index + 1}', 0.1)">/10</button>
-                <button onclick="adjustValue('y${index + 1}', 0.5)">/2</button>
-                <input type="number" id="y${index + 1}" value="${body.position.y.toExponential(2)}" step="0.5">
-                <button onclick="adjustValue('y${index + 1}', 2)">x2</button>
-                <button onclick="adjustValue('y${index + 1}', 10)">x10</button>
-            </div>
-            
-            <label for="vx${index + 1}" id="SpeedXEntree${index + 1}">X Speed:</label>
-            <div class="btn-group mrgn-bttm-lg">
-                <button onclick="adjustValue('vx${index + 1}', 0.1)">/10</button>
-                <button onclick="adjustValue('vx${index + 1}', 0.5)">/2</button>
-                <input type="number" id="vx${index + 1}" value="${body.velocity.x.toExponential(3)}" step="0.5">
-                <button onclick="adjustValue('vx${index + 1}', 2)">x2</button>
-                <button onclick="adjustValue('vx${index + 1}', 10)">x10</button>
-            </div>
-            
-            <label for="vy${index + 1}" id="SpeedYEntree${index + 1}">Y Speed:</label>
-            <div class="btn-group mrgn-bttm-lg">
-                <button onclick="adjustValue('vy${index + 1}', 0.5)">/2</button>
-                <button onclick="adjustValue('vy${index + 1}', 0.1)">/10</button>
-                <input type="number" id="vy${index + 1}" value="${body.velocity.y.toExponential(3)}" step="0.1">
-                <button onclick="adjustValue('vy${index + 1}', 2)">x2</button>
-                <button onclick="adjustValue('vy${index + 1}', 10)">x10</button>
-            </div>
-        `;
+		group.innerHTML = `
+			<div class="checkbox-group">
+				<input type="checkbox" id="show${index + 1}" ${body.show ? 'checked' : ''}>
+				
+				<label for="info${index + 1}">
+					<span class="color-indicator" id="color${index}" style="background-color: ${body.color}"></span>
+					<input type="text" id="name${index}" value="${body.name || `Object ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 80%;">
+					<img class="hoverOpct" src="image/trash-icon.png" id="trash${index}" class="trash-icon" alt="Delete" style="filter: brightness(4); cursor:pointer; margin: 5px">
+				</label>
+			</div>
+			
+			<label for="mass${index + 1}" id="MassEntree${index + 1}">Mass:</label>
+			<div class="btn-group mrgn-bttm-lg">
+				<button onclick="adjustValue('mass${index + 1}', 0.1)">/10</button>
+				<button onclick="adjustValue('mass${index + 1}', 0.5)">/2</button>
+				<input type="number" id="mass${index + 1}" value="${body.mass.toExponential(2)}" step="5">
+				<button onclick="adjustValue('mass${index + 1}', 2)">x2</button>
+				<button onclick="adjustValue('mass${index + 1}', 10)">x10</button>
+			</div>
+			
+			<label for="charge${index + 1}" id="ChargeEntree${index + 1}">Charge:</label>
+			<div class="btn-group mrgn-bttm-lg">
+				<button onclick="adjustValue('charge${index + 1}', 0.1)">/10</button>
+				<button onclick="adjustValue('charge${index + 1}', 0.5)">/2</button>
+				<input type="number" id="charge${index + 1}" value="${body.charge.toExponential(1)}" step="1">
+				<button onclick="adjustValue('charge${index + 1}', 2)">x2</button>
+				<button onclick="adjustValue('charge${index + 1}', 10)">x10</button>
+			</div>
+			
+			<label for="radius${index + 1}" id="radiusEntree${index + 1}">Radius:</label>
+			<div class="btn-group mrgn-bttm-lg">
+				<button onclick="adjustValue('radius${index + 1}', 0.1)">/10</button>
+				<button onclick="adjustValue('radius${index + 1}', 0.5)">/2</button>
+				<input type="number" id="radius${index + 1}" value="${body.radius.toExponential(1)}" step="0.5">
+				<button onclick="adjustValue('radius${index + 1}', 2)">x2</button>
+				<button onclick="adjustValue('radius${index + 1}', 10)">x10</button>
+			</div>
+			
+			<label for="x${index + 1}" id="PosXEntree${index + 1}">X Position:</label>
+			<div class="btn-group mrgn-bttm-lg">
+				<button onclick="adjustValue('x${index + 1}', 0.1)">/10</button>
+				<button onclick="adjustValue('x${index + 1}', 0.5)">/2</button>
+				<input type="number" id="x${index + 1}" value="${body.position.x.toExponential(2)}" step="1">
+				<button onclick="adjustValue('x${index + 1}', 2)">x2</button>
+				<button onclick="adjustValue('x${index + 1}', 10)">x10</button>
+			</div>
+			
+			<label for="y${index + 1}" id="PosYEntree${index + 1}">Y Position:</label>
+			<div class="btn-group mrgn-bttm-lg">
+				<button onclick="adjustValue('y${index + 1}', 0.1)">/10</button>
+				<button onclick="adjustValue('y${index + 1}', 0.5)">/2</button>
+				<input type="number" id="y${index + 1}" value="${body.position.y.toExponential(2)}" step="0.5">
+				<button onclick="adjustValue('y${index + 1}', 2)">x2</button>
+				<button onclick="adjustValue('y${index + 1}', 10)">x10</button>
+			</div>
+			
+			<label for="vx${index + 1}" id="SpeedXEntree${index + 1}">X Speed:</label>
+			<div class="btn-group mrgn-bttm-lg">
+				<button onclick="adjustValue('vx${index + 1}', 0.1)">/10</button>
+				<button onclick="adjustValue('vx${index + 1}', 0.5)">/2</button>
+				<input type="number" id="vx${index + 1}" value="${body.velocity.x.toExponential(3)}" step="0.5">
+				<button onclick="adjustValue('vx${index + 1}', 2)">x2</button>
+				<button onclick="adjustValue('vx${index + 1}', 10)">x10</button>
+			</div>
+			
+			<label for="vy${index + 1}" id="SpeedYEntree${index + 1}">Y Speed:</label>
+			<div class="btn-group mrgn-bttm-lg">
+				<button onclick="adjustValue('vy${index + 1}', 0.5)">/2</button>
+				<button onclick="adjustValue('vy${index + 1}', 0.1)">/10</button>
+				<input type="number" id="vy${index + 1}" value="${body.velocity.y.toExponential(3)}" step="0.1">
+				<button onclick="adjustValue('vy${index + 1}', 2)">x2</button>
+				<button onclick="adjustValue('vy${index + 1}', 10)">x10</button>
+			</div>
+		`;
 		
 		if (index < bodies.length - 1) {
 			group.innerHTML += `
 			<br>
-            <hr style="width:100%;text-align:center;color:#444">
+			<hr style="width:100%;text-align:center;color:#444">
 			`;
 		}
 		
@@ -1259,7 +1259,7 @@ function updateControlValues() {
 }
 
 function updateWellControlValues() {
-    const wellControlsContainer = document.getElementById('well-controls');
+	const wellControlsContainer = document.getElementById('well-controls');
 	wellControlsContainer.innerHTML = '';
 	
 	wells.forEach((well, index) => {
@@ -1267,58 +1267,58 @@ function updateWellControlValues() {
 
 		const group = document.createElement('div');
 		group.className = 'control-group';
-        group.innerHTML = `
-            <div class="checkbox-group">
-                <input type="checkbox" id="showWell${index + 1}" ${well.show ? 'checked' : ''}>
-                
-                <label for="info${index + 1}">
-                    <span class="color-indicator" id="colorWell${index}" style="background-color: ${well.color}"></span>
-                    <input type="text" id="nameWell${index}" value="${well.name || `Well ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 80%;">
-                    <img class="hoverOpct"  src="image/trash-icon.png" id="trashWell${index}" class="trash-icon" alt="Delete" style="filter: brightness(4); cursor:pointer; margin: 5px">
-                </label>
-            </div>
-            
-            <label for="massWell${index + 1}" id="MassEntreeWell${index + 1}">Mass:</label>
-            <div class="btn-group mrgn-bttm-lg">
-                <button onclick="adjustValue('massWell${index + 1}', 0.1)">/10</button>
-                <button onclick="adjustValue('massWell${index + 1}', 0.5)">/2</button>
-                <input type="number" id="massWell${index + 1}" value="${well.mass.toExponential(2)}" step="5">
-                <button onclick="adjustValue('massWell${index + 1}', 2)">x2</button>
-                <button onclick="adjustValue('massWell${index + 1}', 10)">x10</button>
-            </div>
-            
-            <label for="chargeWell${index + 1}" id="ChargeEntreeWell${index + 1}">Charge:</label>
-            <div class="btn-group mrgn-bttm-lg">
-                <button onclick="adjustValue('chargeWell${index + 1}', 0.1)">/10</button>
-                <button onclick="adjustValue('chargeWell${index + 1}', 0.5)">/2</button>
-                <input type="number" id="chargeWell${index + 1}" value="${well.charge.toExponential(1)}" step="1">
-                <button onclick="adjustValue('chargeWell${index + 1}', 2)">x2</button>
-                <button onclick="adjustValue('chargeWell${index + 1}', 10)">x10</button>
-            </div>
-            
-            <label for="xWell${index + 1}" id="PosXEntreeWell${index + 1}">X Position:</label>
-            <div class="btn-group mrgn-bttm-lg">
-                <button onclick="adjustValue('xWell${index + 1}', 0.1)">/10</button>
-                <button onclick="adjustValue('xWell${index + 1}', 0.5)">/2</button>
-                <input type="number" id="xWell${index + 1}" value="${well.position.x.toExponential(2)}" step="1">
-                <button onclick="adjustValue('xWell${index + 1}', 2)">x2</button>
-                <button onclick="adjustValue('xWell${index + 1}', 10)">x10</button>
-            </div>
-            
-            <label for="yWell${index + 1}" id="PosYEntreeWell${index + 1}">Y Position:</label>
-            <div class="btn-group mrgn-bttm-lg">
-                <button onclick="adjustValue('yWell${index + 1}', 0.1)">/10</button>
-                <button onclick="adjustValue('yWell${index + 1}', 0.5)">/2</button>
-                <input type="number" id="yWell${index + 1}" value="${well.position.y.toExponential(2)}" step="0.5">
-                <button onclick="adjustValue('yWell${index + 1}', 2)">x2</button>
-                <button onclick="adjustValue('yWell${index + 1}', 10)">x10</button>
-            </div>
-        `;
+		group.innerHTML = `
+			<div class="checkbox-group">
+				<input type="checkbox" id="showWell${index + 1}" ${well.show ? 'checked' : ''}>
+				
+				<label for="info${index + 1}">
+					<span class="color-indicator" id="colorWell${index}" style="background-color: ${well.color}"></span>
+					<input type="text" id="nameWell${index}" value="${well.name || `Well ${index + 1}`}" style="background: none; border: none; color: white; font-size: 14px; width: 80%;">
+					<img class="hoverOpct"  src="image/trash-icon.png" id="trashWell${index}" class="trash-icon" alt="Delete" style="filter: brightness(4); cursor:pointer; margin: 5px">
+				</label>
+			</div>
+			
+			<label for="massWell${index + 1}" id="MassEntreeWell${index + 1}">Mass:</label>
+			<div class="btn-group mrgn-bttm-lg">
+				<button onclick="adjustValue('massWell${index + 1}', 0.1)">/10</button>
+				<button onclick="adjustValue('massWell${index + 1}', 0.5)">/2</button>
+				<input type="number" id="massWell${index + 1}" value="${well.mass.toExponential(2)}" step="5">
+				<button onclick="adjustValue('massWell${index + 1}', 2)">x2</button>
+				<button onclick="adjustValue('massWell${index + 1}', 10)">x10</button>
+			</div>
+			
+			<label for="chargeWell${index + 1}" id="ChargeEntreeWell${index + 1}">Charge:</label>
+			<div class="btn-group mrgn-bttm-lg">
+				<button onclick="adjustValue('chargeWell${index + 1}', 0.1)">/10</button>
+				<button onclick="adjustValue('chargeWell${index + 1}', 0.5)">/2</button>
+				<input type="number" id="chargeWell${index + 1}" value="${well.charge.toExponential(1)}" step="1">
+				<button onclick="adjustValue('chargeWell${index + 1}', 2)">x2</button>
+				<button onclick="adjustValue('chargeWell${index + 1}', 10)">x10</button>
+			</div>
+			
+			<label for="xWell${index + 1}" id="PosXEntreeWell${index + 1}">X Position:</label>
+			<div class="btn-group mrgn-bttm-lg">
+				<button onclick="adjustValue('xWell${index + 1}', 0.1)">/10</button>
+				<button onclick="adjustValue('xWell${index + 1}', 0.5)">/2</button>
+				<input type="number" id="xWell${index + 1}" value="${well.position.x.toExponential(2)}" step="1">
+				<button onclick="adjustValue('xWell${index + 1}', 2)">x2</button>
+				<button onclick="adjustValue('xWell${index + 1}', 10)">x10</button>
+			</div>
+			
+			<label for="yWell${index + 1}" id="PosYEntreeWell${index + 1}">Y Position:</label>
+			<div class="btn-group mrgn-bttm-lg">
+				<button onclick="adjustValue('yWell${index + 1}', 0.1)">/10</button>
+				<button onclick="adjustValue('yWell${index + 1}', 0.5)">/2</button>
+				<input type="number" id="yWell${index + 1}" value="${well.position.y.toExponential(2)}" step="0.5">
+				<button onclick="adjustValue('yWell${index + 1}', 2)">x2</button>
+				<button onclick="adjustValue('yWell${index + 1}', 10)">x10</button>
+			</div>
+		`;
 		
 		if (index < wells.length - 1) {
 			group.innerHTML += `
 			<br>
-            <hr style="width:100%;text-align:center;color:#444">
+			<hr style="width:100%;text-align:center;color:#444">
 			`;
 		}
 		
@@ -1382,7 +1382,7 @@ function updateWellControlValues() {
 			well.trail = [];
 			well.points = [];
 		});
-    
+	
 		yInput.addEventListener('input', (e) => {
 			well.position.y = parseFloat(e.target.value);
 			well.trail = [];
@@ -1398,12 +1398,12 @@ function updateWellControlValues() {
 }
 
 function adjustValue(inputId, factor) {
-    const input = document.getElementById(inputId);
-    if (input) {
-        input.value = (parseFloat(input.value) * factor).toFixed(2);
-        const event = new Event('input', { bubbles: true });
-        input.dispatchEvent(event);
-    }
+	const input = document.getElementById(inputId);
+	if (input) {
+		input.value = (parseFloat(input.value) * factor).toFixed(2);
+		const event = new Event('input', { bubbles: true });
+		input.dispatchEvent(event);
+	}
 }
 
 function playImpactSound(objectA, objectB) {
@@ -1422,7 +1422,7 @@ function playImpactSound(objectA, objectB) {
 			const restitutionf = 1 - 1 / Math.log(restitution * Math.E + Math.E);
 			const volume = Math.max(Math.max(Math.min(1 - restitutionf / 10, 1), 0) * restitution, 0);
 			console.log(volume)
-            impactSound.volume = volume
+			impactSound.volume = volume
 			impactSound.play();
 		}
 	}
@@ -1440,22 +1440,22 @@ function playMergeSound() {
 }
 
 function calculateForces() {
-    const gravityEnabled = document.getElementById('gravityToggle').checked;
-    const magneticEnabled = document.getElementById('magneticToggle').checked;
+	const gravityEnabled = document.getElementById('gravityToggle').checked;
+	const magneticEnabled = document.getElementById('magneticToggle').checked;
 	
-    bodies.forEach(body => {
-        body.acceleration.x = 0;
-        body.acceleration.y = 0;
-    });
+	bodies.forEach(body => {
+		body.acceleration.x = 0;
+		body.acceleration.y = 0;
+	});
 	
-    for (let i = 0; i < bodies.length; i++) {
-        let fx = 0;
-        let fy = 0;
+	for (let i = 0; i < bodies.length; i++) {
+		let fx = 0;
+		let fy = 0;
 
 		for (const well of wells) {
 			const dx = well.position.x - bodies[i].position.x;
 			const dy = well.position.y - bodies[i].position.y;
-                
+				
 			if ((isNaN(dx) || isNaN(dy)) && DevMod) {
 				console.error(`Les positions de l'objets ${i + 1} ou du puit ${well} sont invalides.`);
 				continue;
@@ -1470,106 +1470,106 @@ function calculateForces() {
 			}
 			
 			if (magneticEnabled) {
-                const forceEM = (k * well.charge * bodies[i].charge) / distance;
+				const forceEM = (k * well.charge * bodies[i].charge) / distance;
 				fx += (dx / distance) * forceEM;
 				fy += (dy / distance) * forceEM;
 			}
 		}
 
-        for (let j = 0; j < bodies.length; j++) {
-            if (i !== j) {
-                const dx = bodies[j].position.x - bodies[i].position.x;
-                const dy = bodies[j].position.y - bodies[i].position.y;
-                
-                if ((isNaN(dx) || isNaN(dy)) && DevMod) {
-                    console.error(`Les positions des objets ${i + 1} ou ${j + 1} sont invalides.`);
-                    continue;
-                }
-
-                const distance = Math.sqrt(dx * dx + dy * dy);
+		for (let j = 0; j < bodies.length; j++) {
+			if (i !== j) {
+				const dx = bodies[j].position.x - bodies[i].position.x;
+				const dy = bodies[j].position.y - bodies[i].position.y;
 				
-                if (distance > 0) {
+				if ((isNaN(dx) || isNaN(dy)) && DevMod) {
+					console.error(`Les positions des objets ${i + 1} ou ${j + 1} sont invalides.`);
+					continue;
+				}
 
-                    if (gravityEnabled) {
-                        const forceG = (G * bodies[i].mass * bodies[j].mass) / (distance * distance);
-                        fx += forceG * (dx / distance);
-                        fy += forceG * (dy / distance);
-                    }
+				const distance = Math.sqrt(dx * dx + dy * dy);
+				
+				if (distance > 0) {
 
-                    if (magneticEnabled) {
-                        const forceEM = (k * bodies[i].charge * bodies[j].charge) / (distance * distance);
-                        fx += forceEM * (-dx / distance);
-                        fy += forceEM * (-dy / distance);
-                    }
-                }
-            }
-        }
+					if (gravityEnabled) {
+						const forceG = (G * bodies[i].mass * bodies[j].mass) / (distance * distance);
+						fx += forceG * (dx / distance);
+						fy += forceG * (dy / distance);
+					}
 
-        bodies[i].acceleration.x = fx / bodies[i].mass;
-        bodies[i].acceleration.y = fy / bodies[i].mass;
-    }
+					if (magneticEnabled) {
+						const forceEM = (k * bodies[i].charge * bodies[j].charge) / (distance * distance);
+						fx += forceEM * (-dx / distance);
+						fy += forceEM * (-dy / distance);
+					}
+				}
+			}
+		}
+
+		bodies[i].acceleration.x = fx / bodies[i].mass;
+		bodies[i].acceleration.y = fy / bodies[i].mass;
+	}
 }
 
 function calculateRelativisticForces() {
-    const gravityEnabled = document.getElementById('gravityToggle').checked;
-    const magneticEnabled = document.getElementById('magneticToggle').checked;
+	const gravityEnabled = document.getElementById('gravityToggle').checked;
+	const magneticEnabled = document.getElementById('magneticToggle').checked;
 
-    bodies.forEach(body => {
-        body.acceleration.x = 0;
-        body.acceleration.y = 0;
-    });
+	bodies.forEach(body => {
+		body.acceleration.x = 0;
+		body.acceleration.y = 0;
+	});
 
-    for (let i = 0; i < bodies.length; i++) {
-        let fx = 0;
-        let fy = 0;
+	for (let i = 0; i < bodies.length; i++) {
+		let fx = 0;
+		let fy = 0;
 
-        for (const well of wells) {
-            const dx = well.position.x - bodies[i].position.x;
-            const dy = well.position.y - bodies[i].position.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+		for (const well of wells) {
+			const dx = well.position.x - bodies[i].position.x;
+			const dy = well.position.y - bodies[i].position.y;
+			const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (gravityEnabled && distance > 0) {
-                const velocityMagnitude = Math.sqrt(bodies[i].velocity.x ** 2 + bodies[i].velocity.y ** 2);
-                const relativisticCorrection = 1 + (3 * (velocityMagnitude / c) ** 2) / 2;
+			if (gravityEnabled && distance > 0) {
+				const velocityMagnitude = Math.sqrt(bodies[i].velocity.x ** 2 + bodies[i].velocity.y ** 2);
+				const relativisticCorrection = 1 + (3 * (velocityMagnitude / c) ** 2) / 2;
 
-                const forceG = (G * well.mass * bodies[i].mass) / (distance * distance) * relativisticCorrection;
-                fx += (dx / distance) * forceG;
-                fy += (dy / distance) * forceG;
-            }
+				const forceG = (G * well.mass * bodies[i].mass) / (distance * distance) * relativisticCorrection;
+				fx += (dx / distance) * forceG;
+				fy += (dy / distance) * forceG;
+			}
 
-            if (magneticEnabled) {
-                const forceEM = (k * well.charge * bodies[i].charge) / (distance * distance);
-                fx += (dx / distance) * forceEM;
-                fy += (dy / distance) * forceEM;
-            }
-        }
+			if (magneticEnabled) {
+				const forceEM = (k * well.charge * bodies[i].charge) / (distance * distance);
+				fx += (dx / distance) * forceEM;
+				fy += (dy / distance) * forceEM;
+			}
+		}
 
-        for (let j = 0; j < bodies.length; j++) {
-            if (i !== j) {
-                const dx = bodies[j].position.x - bodies[i].position.x;
-                const dy = bodies[j].position.y - bodies[i].position.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+		for (let j = 0; j < bodies.length; j++) {
+			if (i !== j) {
+				const dx = bodies[j].position.x - bodies[i].position.x;
+				const dy = bodies[j].position.y - bodies[i].position.y;
+				const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (gravityEnabled && distance > 0) {
-                    const velocityMagnitude = Math.sqrt(bodies[i].velocity.x ** 2 + bodies[i].velocity.y ** 2);
-                    const relativisticCorrection = 1 + (3 * (velocityMagnitude / c) ** 2) / 2;
+				if (gravityEnabled && distance > 0) {
+					const velocityMagnitude = Math.sqrt(bodies[i].velocity.x ** 2 + bodies[i].velocity.y ** 2);
+					const relativisticCorrection = 1 + (3 * (velocityMagnitude / c) ** 2) / 2;
 
-                    const forceG = (G * bodies[i].mass * bodies[j].mass) / (distance * distance) * relativisticCorrection;
-                    fx += (forceG * (dx / distance));
-                    fy += (forceG * (dy / distance));
-                }
+					const forceG = (G * bodies[i].mass * bodies[j].mass) / (distance * distance) * relativisticCorrection;
+					fx += (forceG * (dx / distance));
+					fy += (forceG * (dy / distance));
+				}
 
-                if (magneticEnabled) {
-                    const forceEM = (k * bodies[i].charge * bodies[j].charge) / (distance * distance);
-                    fx += (forceEM * (-dx / distance));
-                    fy += (forceEM * (-dy / distance));
-                }
-            }
-        }
+				if (magneticEnabled) {
+					const forceEM = (k * bodies[i].charge * bodies[j].charge) / (distance * distance);
+					fx += (forceEM * (-dx / distance));
+					fy += (forceEM * (-dy / distance));
+				}
+			}
+		}
 
-        bodies[i].acceleration.x = fx / bodies[i].mass;
-        bodies[i].acceleration.y = fy / bodies[i].mass;
-    }
+		bodies[i].acceleration.x = fx / bodies[i].mass;
+		bodies[i].acceleration.y = fy / bodies[i].mass;
+	}
 }
 
 function applyFriction() {
@@ -1638,41 +1638,41 @@ function updatePositions(dt) {
 }
 
 function updateRelativisticPositions(dt) {
-    const trailLimitInput = document.getElementById('trailLimit');
-    const trailMaxPoints = Math.pow(10, trailLimitInput.value);
+	const trailLimitInput = document.getElementById('trailLimit');
+	const trailMaxPoints = Math.pow(10, trailLimitInput.value);
 
-    bodies.forEach(body => {
-        const velocityMagnitude = Math.sqrt(body.velocity.x ** 2 + body.velocity.y ** 2);
-        const lorentzFactor = 1 / Math.sqrt(1 - (velocityMagnitude ** 2 / c ** 2));
+	bodies.forEach(body => {
+		const velocityMagnitude = Math.sqrt(body.velocity.x ** 2 + body.velocity.y ** 2);
+		const lorentzFactor = 1 / Math.sqrt(1 - (velocityMagnitude ** 2 / c ** 2));
 
-        const newVelocityX = body.velocity.x * lorentzFactor;
-        const newVelocityY = body.velocity.y * lorentzFactor;
+		const newVelocityX = body.velocity.x * lorentzFactor;
+		const newVelocityY = body.velocity.y * lorentzFactor;
 
-        body.velocity.x += body.acceleration.x * dt;
-        body.velocity.y += body.acceleration.y * dt;
+		body.velocity.x += body.acceleration.x * dt;
+		body.velocity.y += body.acceleration.y * dt;
 
-        const totalVelocity = Math.sqrt(body.velocity.x ** 2 + body.velocity.y ** 2);
-        if (totalVelocity > c) {
-            const scalingFactor = c / totalVelocity;
-            body.velocity.x *= scalingFactor;
-            body.velocity.y *= scalingFactor;
-        }
+		const totalVelocity = Math.sqrt(body.velocity.x ** 2 + body.velocity.y ** 2);
+		if (totalVelocity > c) {
+			const scalingFactor = c / totalVelocity;
+			body.velocity.x *= scalingFactor;
+			body.velocity.y *= scalingFactor;
+		}
 		
 		applyFriction();
 
-        body.position.x += body.velocity.x * dt;
-        body.position.y += body.velocity.y * dt;
+		body.position.x += body.velocity.x * dt;
+		body.position.y += body.velocity.y * dt;
 
-        body.trail.push({ x: body.position.x, y: body.position.y });
-        if (body.trail.length > trailMaxPoints) {
-            body.trail.shift();
-        }
+		body.trail.push({ x: body.position.x, y: body.position.y });
+		if (body.trail.length > trailMaxPoints) {
+			body.trail.shift();
+		}
 
-        body.points.push({ x: body.position.x, y: body.position.y });
-        if (body.points.length > trailMaxPoints) {
-            body.points.shift();
-        }
-    });
+		body.points.push({ x: body.position.x, y: body.position.y });
+		if (body.points.length > trailMaxPoints) {
+			body.points.shift();
+		}
+	});
 }
 
 function calculateBarycenter() {
@@ -1772,7 +1772,7 @@ function calculateBarycenter() {
 }
 
 function autoZoom(barycenter) {
-    if (doZoom) {
+	if (doZoom) {
 		const visibleBodies = bodies.filter(body => body.show);
 		const maxDistance = Math.max(...visibleBodies.map(body => 
 			Math.sqrt(Math.pow(body.position.x - barycenter.x, 2) + Math.pow(body.position.y - barycenter.y, 2))
@@ -1781,11 +1781,11 @@ function autoZoom(barycenter) {
 		const maxRadius = showSizeCheckbox.checked ? 10 / scale : 10;
 		const minCanvasSize = Math.min(canvas.width, canvas.height * 0.9);
 		
-        scale = Math.min(
-            minCanvasSize / (maxDistance * 2),
-            minCanvasSize / (maxRadius * 2)
-        ) * scrollZoom;
-    } 
+		scale = Math.min(
+			minCanvasSize / (maxDistance * 2),
+			minCanvasSize / (maxRadius * 2)
+		) * scrollZoom;
+	} 
 	else {
 		scrollZoom = 1
 	}
@@ -1830,155 +1830,155 @@ function getRandomPosition(rdradius) {
 }
 
 function mixColors(color1, color2, surface1, surface2, threshold = 30) {
-    const rgb1 = hexToRgb(color1);
-    const rgb2 = hexToRgb(color2);
+	const rgb1 = hexToRgb(color1);
+	const rgb2 = hexToRgb(color2);
 
-    const totalSurface = surface1 + surface2;
+	const totalSurface = surface1 + surface2;
 	
 	const colorLost = 1 - 25 / 100
 
-    let r = Math.round((rgb1.r * surface1 + rgb2.r * surface2) / totalSurface * colorLost);
-    let g = Math.round((rgb1.g * surface1 + rgb2.g * surface2) / totalSurface * colorLost);
-    let b = Math.round((rgb1.b * surface1 + rgb2.b * surface2) / totalSurface * colorLost);
+	let r = Math.round((rgb1.r * surface1 + rgb2.r * surface2) / totalSurface * colorLost);
+	let g = Math.round((rgb1.g * surface1 + rgb2.g * surface2) / totalSurface * colorLost);
+	let b = Math.round((rgb1.b * surface1 + rgb2.b * surface2) / totalSurface * colorLost);
 
-    r = Math.max(r, threshold);
-    g = Math.max(g, threshold);
-    b = Math.max(b, threshold);
+	r = Math.max(r, threshold);
+	g = Math.max(g, threshold);
+	b = Math.max(b, threshold);
 
-    return rgbToHex(r, g, b);
+	return rgbToHex(r, g, b);
 }
 
 function detectProximity() {
-    for (let i = 0; i < bodies.length; i++) {
-        for (let j = i + 1; j < bodies.length; j++) {
-            const dx = bodies[j].position.x - bodies[i].position.x;
-            const dy = bodies[j].position.y - bodies[i].position.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            const combinedRadius = bodies[i].radius + bodies[j].radius;
+	for (let i = 0; i < bodies.length; i++) {
+		for (let j = i + 1; j < bodies.length; j++) {
+			const dx = bodies[j].position.x - bodies[i].position.x;
+			const dy = bodies[j].position.y - bodies[i].position.y;
+			const distance = Math.sqrt(dx * dx + dy * dy);
+			
+			const combinedRadius = bodies[i].radius + bodies[j].radius;
 
-            if (distance < combinedRadius) {
+			if (distance < combinedRadius) {
 				if (collisionsEnabled) {
 					resolveCollision(bodies[i], bodies[j]);
 					playImpactSound(bodies[i], bodies[j]);
 				}
-                if (mergingEnabled) {
-                    mergeBodies(bodies[i], bodies[j]);
+				if (mergingEnabled) {
+					mergeBodies(bodies[i], bodies[j]);
 					playMergeSound();
 				}
-            }
-        }
-    }
+			}
+		}
+	}
 }
 
 function resolveCollision(body1, body2) {
-    const dx = body2.position.x - body1.position.x;
-    const dy = body2.position.y - body1.position.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
+	const dx = body2.position.x - body1.position.x;
+	const dy = body2.position.y - body1.position.y;
+	const distance = Math.sqrt(dx * dx + dy * dy);
 
-    const nx = dx / distance;
-    const ny = dy / distance;
+	const nx = dx / distance;
+	const ny = dy / distance;
 
-    const p = 2 * (body1.velocity.x * nx + body1.velocity.y * ny - body2.velocity.x * nx - body2.velocity.y * ny) / (body1.mass + body2.mass);
-    body1.velocity.x -= p * body2.mass * nx;
-    body1.velocity.y -= p * body2.mass * ny;
-    body2.velocity.x += p * body1.mass * nx;
-    body2.velocity.y += p * body1.mass * ny;
+	const p = 2 * (body1.velocity.x * nx + body1.velocity.y * ny - body2.velocity.x * nx - body2.velocity.y * ny) / (body1.mass + body2.mass);
+	body1.velocity.x -= p * body2.mass * nx;
+	body1.velocity.y -= p * body2.mass * ny;
+	body2.velocity.x += p * body1.mass * nx;
+	body2.velocity.y += p * body1.mass * ny;
 
-    const combinedRadius = body1.radius + body2.radius;
-    const overlap = combinedRadius - distance;
-    body1.position.x -= overlap / 2 * nx;
-    body1.position.y -= overlap / 2 * ny;
-    body2.position.x += overlap / 2 * nx;
-    body2.position.y += overlap / 2 * ny;
+	const combinedRadius = body1.radius + body2.radius;
+	const overlap = combinedRadius - distance;
+	body1.position.x -= overlap / 2 * nx;
+	body1.position.y -= overlap / 2 * ny;
+	body2.position.x += overlap / 2 * nx;
+	body2.position.y += overlap / 2 * ny;
 }
 
 function mergeBodies(body1, body2) {
-    const newMass = body1.mass + body2.mass;
-    const newCharge = body1.charge + body2.charge;
+	const newMass = body1.mass + body2.mass;
+	const newCharge = body1.charge + body2.charge;
 
-    const dx = body2.position.x - body1.position.x;
-    const dy = body2.position.y - body1.position.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
+	const dx = body2.position.x - body1.position.x;
+	const dy = body2.position.y - body1.position.y;
+	const distance = Math.sqrt(dx * dx + dy * dy);
 
-    const nx = dx / distance;
-    const ny = dy / distance;
+	const nx = dx / distance;
+	const ny = dy / distance;
 
-    const p = 1 * (body1.velocity.x * nx + body1.velocity.y * ny - body2.velocity.x * nx - body2.velocity.y * ny) / (body1.mass + body2.mass);
+	const p = 1 * (body1.velocity.x * nx + body1.velocity.y * ny - body2.velocity.x * nx - body2.velocity.y * ny) / (body1.mass + body2.mass);
 
-    const body1VelocityAfterImpact = {
-        x: body1.velocity.x - p * body2.mass * nx,
-        y: body1.velocity.y - p * body2.mass * ny
-    };
-    const body2VelocityAfterImpact = {
-        x: body2.velocity.x + p * body1.mass * nx,
-        y: body2.velocity.y + p * body1.mass * ny
-    };
+	const body1VelocityAfterImpact = {
+		x: body1.velocity.x - p * body2.mass * nx,
+		y: body1.velocity.y - p * body2.mass * ny
+	};
+	const body2VelocityAfterImpact = {
+		x: body2.velocity.x + p * body1.mass * nx,
+		y: body2.velocity.y + p * body1.mass * ny
+	};
 
-    const newVelocity = {
-        x: (body1VelocityAfterImpact.x + body2VelocityAfterImpact.x) / 6 + (body1.velocity.x + body2.velocity.x) / 2,
-        y: (body1VelocityAfterImpact.y + body2VelocityAfterImpact.y) / 6 + (body1.velocity.y + body2.velocity.y) / 2
-    };
+	const newVelocity = {
+		x: (body1VelocityAfterImpact.x + body2VelocityAfterImpact.x) / 6 + (body1.velocity.x + body2.velocity.x) / 2,
+		y: (body1VelocityAfterImpact.y + body2VelocityAfterImpact.y) / 6 + (body1.velocity.y + body2.velocity.y) / 2
+	};
 
-    const newAcceleration = {
-        x: (body1.acceleration.x + body2.acceleration.x) / 2,
-        y: (body1.acceleration.y + body2.acceleration.y) / 2
-    };
+	const newAcceleration = {
+		x: (body1.acceleration.x + body2.acceleration.x) / 2,
+		y: (body1.acceleration.y + body2.acceleration.y) / 2
+	};
 
-    const surface1 = pi * Math.pow(body1.radius, 2);
-    const surface2 = pi * Math.pow(body2.radius, 2);
-    const newSurface = surface1 + surface2;
-    const newRadius = Math.sqrt(newSurface / pi);
-    const newColor = mixColors(body1.color, body2.color, surface1, surface2)
+	const surface1 = pi * Math.pow(body1.radius, 2);
+	const surface2 = pi * Math.pow(body2.radius, 2);
+	const newSurface = surface1 + surface2;
+	const newRadius = Math.sqrt(newSurface / pi);
+	const newColor = mixColors(body1.color, body2.color, surface1, surface2)
 
-    const massPosition = {
-        x: (body1.position.x * body1.mass + body2.position.x * body2.mass) / newMass,
-        y: (body1.position.y * body1.mass + body2.position.y * body2.mass) / newMass
-    };
+	const massPosition = {
+		x: (body1.position.x * body1.mass + body2.position.x * body2.mass) / newMass,
+		y: (body1.position.y * body1.mass + body2.position.y * body2.mass) / newMass
+	};
 
-    const chargePosition = {
-        x: (body1.position.x * Math.abs(body1.charge) + body2.position.x * Math.abs(body2.charge)) / (Math.abs(body1.charge) + Math.abs(body2.charge)),
-        y: (body1.position.y * Math.abs(body1.charge) + body2.position.y * Math.abs(body2.charge)) / (Math.abs(body1.charge) + Math.abs(body2.charge))
-    };
+	const chargePosition = {
+		x: (body1.position.x * Math.abs(body1.charge) + body2.position.x * Math.abs(body2.charge)) / (Math.abs(body1.charge) + Math.abs(body2.charge)),
+		y: (body1.position.y * Math.abs(body1.charge) + body2.position.y * Math.abs(body2.charge)) / (Math.abs(body1.charge) + Math.abs(body2.charge))
+	};
 
-    const surfacePosition = {
-        x: (body1.position.x * surface1 + body2.position.x * surface2) / newSurface,
-        y: (body1.position.y * surface1 + body2.position.y * surface2) / newSurface
-    };
+	const surfacePosition = {
+		x: (body1.position.x * surface1 + body2.position.x * surface2) / newSurface,
+		y: (body1.position.y * surface1 + body2.position.y * surface2) / newSurface
+	};
 
-    const newPosition = {
+	const newPosition = {
 		x: (massPosition.x + chargePosition.x + surfacePosition.x) / 3,
 		y: (massPosition.y + chargePosition.y + surfacePosition.y) / 3
 	};
 		
-    const newBody = {
-        mass: newMass,
-        charge: newCharge,
-        radius: newRadius,
-        position: newPosition,
-        velocity: newVelocity,
-        acceleration: newAcceleration,
-        color: newColor,
-        trail: [],
-        show: true,
-        points: []
-    };
+	const newBody = {
+		mass: newMass,
+		charge: newCharge,
+		radius: newRadius,
+		position: newPosition,
+		velocity: newVelocity,
+		acceleration: newAcceleration,
+		color: newColor,
+		trail: [],
+		show: true,
+		points: []
+	};
 
-    bodies.splice(bodies.indexOf(body1), 1);
-    bodies.splice(bodies.indexOf(body2), 1);
+	bodies.splice(bodies.indexOf(body1), 1);
+	bodies.splice(bodies.indexOf(body2), 1);
 
-    bodies.push(newBody);
+	bodies.push(newBody);
 }
 
 function displayText(currentTime) {
-    frameCount++;
+	frameCount++;
 
-    const deltaTime = (currentTime - fpsTime) / 1000;
-    if (deltaTime >= 1) {
-        fps = Math.round(frameCount / deltaTime);
-        fpsTime = currentTime;
-        frameCount = 0;
-    }
+	const deltaTime = (currentTime - fpsTime) / 1000;
+	if (deltaTime >= 1) {
+		fps = Math.round(frameCount / deltaTime);
+		fpsTime = currentTime;
+		frameCount = 0;
+	}
 
 	document.getElementById('fpsDisplay').textContent = `fps: ${fps}`;
 	
@@ -1996,10 +1996,10 @@ function displayText(currentTime) {
 }
 
 function getRandomSpeed() {
-    const term0 = Math.random() * 4 - 2;
-    const term1 = (term0 !== 0 ? Math.exp(-term0 * term0) : 1) * 5 * Math.sign(term0);
+	const term0 = Math.random() * 4 - 2;
+	const term1 = (term0 !== 0 ? Math.exp(-term0 * term0) : 1) * 5 * Math.sign(term0);
 	const result = Math.round(term1 * 1000) / 1000;
-    return result;
+	return result;
 }
 
 function handleMouseDown(event) {
@@ -2007,8 +2007,8 @@ function handleMouseDown(event) {
 	const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
 	
 	if (event.button !== 0) {
-        return;
-    }
+		return;
+	}
 
 	for (const body of bodies) {
 		const dx = mouseX - body.position.x;
@@ -2038,63 +2038,62 @@ function handleMouseDown(event) {
 }
 
 function handleMouseMove(event) {
-    const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
-    const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
-    hoveredBody = null;
+	const mouseX = (event.offsetX - canvas.width / 2) / scale + calculateBarycenter().x;
+	const mouseY = (event.offsetY - canvas.height / 2) / scale + calculateBarycenter().y;
+	hoveredBody = null;
 
-    bodies.forEach(body => {
-        const dx = body.position.x - mouseX;
-        const dy = body.position.y - mouseY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
-        if (distance < radius) {
-            hoveredBody = body;
-        }
-    });
+	bodies.forEach(body => {
+		const dx = body.position.x - mouseX;
+		const dy = body.position.y - mouseY;
+		const distance = Math.sqrt(dx * dx + dy * dy);
+		const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius;
+		if (distance < radius) {
+			hoveredBody = body;
+		}
+	});
 
-    wells.forEach(well => {
-        const dx = well.position.x - mouseX;
-        const dy = well.position.y - mouseY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const radius = 7 / scale;
-        if (distance < radius) {
-            hoveredBody = well;
-        }
-    });
+	wells.forEach(well => {
+		const dx = well.position.x - mouseX;
+		const dy = well.position.y - mouseY;
+		const distance = Math.sqrt(dx * dx + dy * dy);
+		const radius = 7 / scale;
+		if (distance < radius) {
+			hoveredBody = well;
+		}
+	});
 
-    if (selectedBody) {
-        selectedBody.position.x = mouseX;
-        selectedBody.position.y = mouseY;
-        updateControlValues();
-        updateWellControlValues();
-        clearTimeout(manualMoveTimeout);
-        manualMoveTimeout = setTimeout(() => {
-            isPaused = true;
-            updateButtonImage();
-        }, 0);
-    }
+	if (selectedBody) {
+		selectedBody.position.x = mouseX;
+		selectedBody.position.y = mouseY;
+		updateControlValues();
+		updateWellControlValues();
+		clearTimeout(manualMoveTimeout);
+		manualMoveTimeout = setTimeout(() => {
+			isPaused = true;
+			updateButtonImage();
+		}, 0);
+	}
 
-    if (hideMouseTimeout) {
-        clearTimeout(hideMouseTimeout);
-    }
+	if (hideMouseTimeout) {
+		clearTimeout(hideMouseTimeout);
+	}
 
-    if (cpuUsage >= 500) {
-        canvas.style.cursor = 'wait';
-    } else {
-        if (hoveredBody) {
-            canvas.style.cursor = 'pointer';
-        } else {
-            canvas.style.cursor = 'crosshair';
+	if (cpuUsage >= 500) {
+		canvas.style.cursor = 'wait';
+	} else {
+		if (hoveredBody) {
+			canvas.style.cursor = 'pointer';
+		} else {
+			canvas.style.cursor = 'crosshair';
 
 			hideMouseTimeout = setTimeout(() => {
 				if (cpuUsage < 500) {
 					canvas.style.cursor = 'none';
 				}
 			}, 4000);
-        }
-    }
+		}
+	}
 }
-
 
 function handleMouseUp() {
 	selectedBody = null;
@@ -2102,89 +2101,89 @@ function handleMouseUp() {
 }
 
 function handleTouchStart(event) {
-    if (event.touches.length === 1) {
+	if (event.touches.length === 1) {
 		doZoom = false
-        const touch = event.touches[0];
-        const touchX = (touch.clientX - canvas.width / 2) / scale + calculateBarycenter().x;
-        const touchY = (touch.clientY - canvas.height / 2) / scale + calculateBarycenter().y;
+		const touch = event.touches[0];
+		const touchX = (touch.clientX - canvas.width / 2) / scale + calculateBarycenter().x;
+		const touchY = (touch.clientY - canvas.height / 2) / scale + calculateBarycenter().y;
 
-        for (const body of bodies) {
-            const dx = touchX - body.position.x;
-            const dy = touchY - body.position.y;
+		for (const body of bodies) {
+			const dx = touchX - body.position.x;
+			const dy = touchY - body.position.y;
 			const distance = Math.sqrt(dx * dx + dy * dy);
 			const radius = showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius
-            if (distance < radius) {
-                selectedBody = body;
-                isDragging = true;
-                isPaused = true;
-                updateButtonImage();
-                break;
-            }
-        }
+			if (distance < radius) {
+				selectedBody = body;
+				isDragging = true;
+				isPaused = true;
+				updateButtonImage();
+				break;
+			}
+		}
 
-        for (const well of wells) {
-            const dx = touchX - well.position.x;
-            const dy = touchY - well.position.y;
+		for (const well of wells) {
+			const dx = touchX - well.position.x;
+			const dy = touchY - well.position.y;
 			const distance = Math.sqrt(dx * dx + dy * dy);
 			const radius = 7 / scale
-            if (distance < radius) {
-                selectedBody = well;
-                isDragging = true;
-                isPaused = true;
-                updateButtonImage();
-                break;
-            }
-        }
-    } else if (event.touches.length === 2) {
-        const touch1 = event.touches[0];
-        const touch2 = event.touches[1];
-        initialPinchDistance = getDistance(touch1, touch2);
-        lastPinchZoom = scrollZoom;
-    }
+			if (distance < radius) {
+				selectedBody = well;
+				isDragging = true;
+				isPaused = true;
+				updateButtonImage();
+				break;
+			}
+		}
+	} else if (event.touches.length === 2) {
+		const touch1 = event.touches[0];
+		const touch2 = event.touches[1];
+		initialPinchDistance = getDistance(touch1, touch2);
+		lastPinchZoom = scrollZoom;
+	}
 }
 
 function handleTouchMove(event) {
-    if (event.touches.length === 1 && isDragging && selectedBody) {
-        event.preventDefault();
-        const touch = event.touches[0];
-        const touchX = (touch.clientX - canvas.width / 2) / scale + calculateBarycenter().x;
-        const touchY = (touch.clientY - canvas.height / 2) / scale + calculateBarycenter().y;
+	if (event.touches.length === 1 && isDragging && selectedBody) {
+		event.preventDefault();
+		const touch = event.touches[0];
+		const touchX = (touch.clientX - canvas.width / 2) / scale + calculateBarycenter().x;
+		const touchY = (touch.clientY - canvas.height / 2) / scale + calculateBarycenter().y;
 
-        selectedBody.position.x = touchX;
-        selectedBody.position.y = touchY;
+		selectedBody.position.x = touchX;
+		selectedBody.position.y = touchY;
 		updateControlValues();
 		updateWellControlValues();
-        clearTimeout(manualMoveTimeout);
-        manualMoveTimeout = setTimeout(() => {
-            isPaused = true;
-            updateButtonImage();
-        }, 0);
+		clearTimeout(manualMoveTimeout);
+		manualMoveTimeout = setTimeout(() => {
+			isPaused = true;
+			updateButtonImage();
+		}, 0);
 		
-    } else if (event.touches.length === 2) {
-        event.preventDefault();
-        const touch1 = event.touches[0];
-        const touch2 = event.touches[1];
+	} else if (event.touches.length === 2) {
+		event.preventDefault();
+		const touch1 = event.touches[0];
+		const touch2 = event.touches[1];
 
-        const currentPinchDistance = getDistance(touch1, touch2);
+		const currentPinchDistance = getDistance(touch1, touch2);
 
-        if (initialPinchDistance) {
-            const pinchZoomFactor = currentPinchDistance / initialPinchDistance;
-            scrollZoom = lastPinchZoom * pinchZoomFactor;
-            scale = scrollZoom;
-        }
-    }
+		if (initialPinchDistance) {
+			const pinchZoomFactor = currentPinchDistance / initialPinchDistance;
+			scrollZoom = lastPinchZoom * pinchZoomFactor;
+			scale = scrollZoom;
+		}
+	}
 }
 
 function handleTouchEnd(event) {
 	doZoom = document.getElementById('autoZoomToggle').checked;;
-    if (event.touches.length < 2) {
-        initialPinchDistance = null;
+	if (event.touches.length < 2) {
+		initialPinchDistance = null;
 
-        if (event.touches.length === 0 && isDragging) {
-            isDragging = false;
-            selectedBody = null;
-        }
-    }
+		if (event.touches.length === 0 && isDragging) {
+			isDragging = false;
+			selectedBody = null;
+		}
+	}
 }
 
 function handleMouseWheel(event) {
@@ -2195,7 +2194,7 @@ function handleMouseWheel(event) {
 
 function Pause() {
 	isPaused = !isPaused;
-    updateButtonImage();
+	updateButtonImage();
 	if (devModenabled) {
 		if (isPaused) {
 			console.log('Pause');
@@ -2207,18 +2206,18 @@ function Pause() {
 }
 
 function updateButtonImage() {
-    if (isPaused) {
-        startPauseImg.src = "image/start-button.png";
-        startPauseImg.alt = "Start";
-    } else {
-        startPauseImg.src = "image/pause-button.png";
-        startPauseImg.alt = "Pause";
-    }
+	if (isPaused) {
+		startPauseImg.src = "image/start-button.png";
+		startPauseImg.alt = "Start";
+	} else {
+		startPauseImg.src = "image/pause-button.png";
+		startPauseImg.alt = "Pause";
+	}
 }
 
 function updatePresetSelect() {
 	const presetSelect = document.getElementById('presetSelect');
-    presetSelect.innerHTML = '';
+	presetSelect.innerHTML = '';
 	createRdPreset();
 	Object.keys(presets).forEach(presetName => {
 		const option = document.createElement('option');
@@ -2230,21 +2229,21 @@ function updatePresetSelect() {
 
 // ANIMATE
 function animate(currentTime) {
-    const startTime = performance.now();
+	const startTime = performance.now();
 
-    displayText(currentTime);
+	displayText(currentTime);
 	const dt = parseFloat(dtInput.value);
 	
-    if (!isPaused) {
+	if (!isPaused) {
 		if (relativistMod) {
 			calculateRelativisticForces();
 		} else {
 			calculateForces();
 		}
 		
-        if (collisionsEnabled || mergingEnabled) {
-            detectProximity();
-        }
+		if (collisionsEnabled || mergingEnabled) {
+			detectProximity();
+		}
 		
 		if (relativistMod) {
 			updateRelativisticPositions(dt);
@@ -2255,10 +2254,10 @@ function animate(currentTime) {
 		updateControlValues();
 		updateWellControlValues();
 
-        if (frameCount % frameInterval === 0) {
+		if (frameCount % frameInterval === 0) {
 			draw();
-        }
-    }
+		}
+	}
 	
 	updateBarycenterCoord();
 	draw();
@@ -2271,10 +2270,10 @@ function animate(currentTime) {
 		updateGraphWithParameters(objectA, objectB);
 	}
 
-    const endTime = performance.now();
-    const frameTime = endTime - startTime;
-    
-    cpuUsage = Math.min((frameTime / 16.67 / 2.25) * 100, 500);
+	const endTime = performance.now();
+	const frameTime = endTime - startTime;
+	
+	cpuUsage = Math.min((frameTime / 16.67 / 2.25) * 100, 500);
 	if (cpuUsage >= 500) {
 		clearTrails();
 		document.getElementById('UsageDisplay').textContent = `Use: +500%`;
@@ -2282,10 +2281,10 @@ function animate(currentTime) {
 	else {
 		document.getElementById('UsageDisplay').textContent = `Use: ${cpuUsage.toFixed(0).padStart(3, '0')}%`;
 	}
-    
-    requestAnimationFrame(animate);
+	
+	requestAnimationFrame(animate);
 }
-
+	
 // DRAW
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -2294,9 +2293,9 @@ function draw() {
 	
 	drawGrid();
 	if (document.getElementById('showGravityField').checked || document.getElementById('showMagneticField').checked) {
-        drawGravityField();
+		drawGravityField();
 		drawMagneticField();
-    }
+	}
 	if (document.getElementById('showPotentialContoursOld').checked) {
 		drawContoursOld();	
 	}
@@ -2352,21 +2351,21 @@ function drawBodies(barycenter) {
 	ctx.scale(scale, scale);
 	ctx.translate(-barycenter.x, -barycenter.y);
 
-    if (objectLinkedA !== null && objectLinkedB !== null) {
-        const currentDistance = getDistanceBetweenObjects(objectLinkedA, objectLinkedB);
+	if (objectLinkedA !== null && objectLinkedB !== null) {
+		const currentDistance = getDistanceBetweenObjects(objectLinkedA, objectLinkedB);
 
-        const ratio = Math.min(currentDistance / distanceL, 1);
-        const colorIntensity = Math.floor(255 * ratio * 0.9);
+		const ratio = Math.min(currentDistance / distanceL, 1);
+		const colorIntensity = Math.floor(255 * ratio * 0.9);
 
-        const color = `rgb(${colorIntensity}, ${255 - colorIntensity}, 0, ${0.1 + 0.8 * ratio ** 2})`;
+		const color = `rgb(${colorIntensity}, ${255 - colorIntensity}, 0, ${0.1 + 0.8 * ratio ** 2})`;
 
-        ctx.beginPath();
-        ctx.moveTo(objectLinkedA.position.x, objectLinkedA.position.y);
-        ctx.lineTo(objectLinkedB.position.x, objectLinkedB.position.y);
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 1 / scale;
-        ctx.stroke();
-    }
+		ctx.beginPath();
+		ctx.moveTo(objectLinkedA.position.x, objectLinkedA.position.y);
+		ctx.lineTo(objectLinkedB.position.x, objectLinkedB.position.y);
+		ctx.strokeStyle = color;
+		ctx.lineWidth = 1 / scale;
+		ctx.stroke();
+	}
 
 	wells.forEach(well => {
 		if (well.show) {
@@ -2425,34 +2424,34 @@ function drawBodies(barycenter) {
 		}
 	});
 
-    if (showWindow) {
+	if (showWindow) {
 		const objectA = bodies[parseInt(objectASelect)];
 		const objectB = bodies[parseInt(objectBSelect)];
 
-        if (objectA && objectA.show) {
-            ctx.beginPath();
-            const radiusA = showSizeCheckbox.checked ? objectA.radius / scale : objectA.radius;
-            const highlightedradiusA = (showSizeCheckbox.checked ? (Math.min(objectA.radius * 2.5, 7)) / scale * 1.7 : Math.min(Math.max(1.8 * radiusA, 2.5 + radiusA), 2.5 + radiusA));
+		if (objectA && objectA.show) {
+			ctx.beginPath();
+			const radiusA = showSizeCheckbox.checked ? objectA.radius / scale : objectA.radius;
+			const highlightedradiusA = (showSizeCheckbox.checked ? (Math.min(objectA.radius * 2.5, 7)) / scale * 1.7 : Math.min(Math.max(1.8 * radiusA, 2.5 + radiusA), 2.5 + radiusA));
 			ctx.globalAlpha = 0.2;
-            ctx.arc(objectA.position.x, objectA.position.y, highlightedradiusA, 0, 2 * pi);
-            ctx.strokeStyle = objectA.color;
-            ctx.lineWidth = showSizeCheckbox.checked ? 1.1 / scale : 1.1;
-            ctx.stroke();
-            ctx.closePath();
-        }
+			ctx.arc(objectA.position.x, objectA.position.y, highlightedradiusA, 0, 2 * pi);
+			ctx.strokeStyle = objectA.color;
+			ctx.lineWidth = showSizeCheckbox.checked ? 1.1 / scale : 1.1;
+			ctx.stroke();
+			ctx.closePath();
+		}
 
-        if (objectB && objectB.show) {
-            ctx.beginPath();
-            const radiusB = showSizeCheckbox.checked ? objectB.radius / scale : objectB.radius;
-            const highlightedradiusB = (showSizeCheckbox.checked ? (Math.min(objectB.radius * 2.5, 7)) / scale * 1.7 : Math.min(Math.max(1.8 * radiusB, 2.5 + radiusB), 2.5 + radiusB));
+		if (objectB && objectB.show) {
+			ctx.beginPath();
+			const radiusB = showSizeCheckbox.checked ? objectB.radius / scale : objectB.radius;
+			const highlightedradiusB = (showSizeCheckbox.checked ? (Math.min(objectB.radius * 2.5, 7)) / scale * 1.7 : Math.min(Math.max(1.8 * radiusB, 2.5 + radiusB), 2.5 + radiusB));
 			ctx.globalAlpha = 0.2;
-            ctx.arc(objectB.position.x, objectB.position.y, highlightedradiusB, 0, 2 * pi);
-            ctx.strokeStyle = objectB.color;
-            ctx.lineWidth = showSizeCheckbox.checked ? 1 / scale : 1.1;
-            ctx.stroke();
-            ctx.closePath();
-        }
-    }
+			ctx.arc(objectB.position.x, objectB.position.y, highlightedradiusB, 0, 2 * pi);
+			ctx.strokeStyle = objectB.color;
+			ctx.lineWidth = showSizeCheckbox.checked ? 1 / scale : 1.1;
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
 
 	if (document.getElementById('showVelocities').checked) {
 		const barycenterPointSize = 1.1 / scale;
@@ -2467,931 +2466,931 @@ function drawBodies(barycenter) {
 }
 
 function drawGravityField() {
-    const vectorLengthSliderG = document.getElementById('vectorLengthSliderG');
-    const vectorLengthValueG = parseFloat(vectorLengthSliderG.value);
+	const vectorLengthSliderG = document.getElementById('vectorLengthSliderG');
+	const vectorLengthValueG = parseFloat(vectorLengthSliderG.value);
 	const vectorFieldDistance =  parseFloat(vectorFieldDistanceDisplay.value);
-    const showGravityField = document.getElementById('showGravityField').checked;
+	const showGravityField = document.getElementById('showGravityField').checked;
 
-    if (!showGravityField) return;
+	if (!showGravityField) return;
 
-    ctx.save();
-    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.save();
+	// ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
+	const canvasWidth = canvas.width;
+	const canvasHeight = canvas.height;
 
-    const visibleWidth = canvasWidth / scale;
-    const visibleHeight = canvasHeight / scale;
-    const visibleCenterX = calculateBarycenter().x;
-    const visibleCenterY = calculateBarycenter().y;
+	const visibleWidth = canvasWidth / scale;
+	const visibleHeight = canvasHeight / scale;
+	const visibleCenterX = calculateBarycenter().x;
+	const visibleCenterY = calculateBarycenter().y;
 
-    const startX = visibleCenterX - (canvasWidth / 2 / scale);
-    const startY = visibleCenterY - (canvasHeight / 2 / scale);
+	const startX = visibleCenterX - (canvasWidth / 2 / scale);
+	const startY = visibleCenterY - (canvasHeight / 2 / scale);
 
-    const numVectorsX = Math.floor(canvasWidth / vectorFieldDistance);
-    const numVectorsY = Math.floor(canvasHeight / vectorFieldDistance);
+	const numVectorsX = Math.floor(canvasWidth / vectorFieldDistance);
+	const numVectorsY = Math.floor(canvasHeight / vectorFieldDistance);
 
-    const maxMass = Math.max(...bodies.map(body => body.mass));
+	const maxMass = Math.max(...bodies.map(body => body.mass));
 
-    for (let i = 0; i < numVectorsX; i++) {
-        for (let j = 0; j < numVectorsY; j++) {
-            const x = startX + i * (visibleWidth / numVectorsX);
-            const y = startY + j * (visibleHeight / numVectorsY);
+	for (let i = 0; i < numVectorsX; i++) {
+		for (let j = 0; j < numVectorsY; j++) {
+			const x = startX + i * (visibleWidth / numVectorsX);
+			const y = startY + j * (visibleHeight / numVectorsY);
 
-            let fx = 0;
-            let fy = 0;
+			let fx = 0;
+			let fy = 0;
 
-            bodies.forEach(body => {
-                const dx = body.position.x - x;
-                const dy = body.position.y - y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+			bodies.forEach(body => {
+				const dx = body.position.x - x;
+				const dy = body.position.y - y;
+				const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance !== 0) {
-                    if (showGravityField) {
-                        const forceG = (0.1 * body.mass) / (distance * distance);
-                        fx += forceG * (dx / distance);
-                        fy += forceG * (dy / distance);
-                    }
-                }
-            });
+				if (distance !== 0) {
+					if (showGravityField) {
+						const forceG = (0.1 * body.mass) / (distance * distance);
+						fx += forceG * (dx / distance);
+						fy += forceG * (dy / distance);
+					}
+				}
+			});
 
-            wells.forEach(well => {
-                const dx = well.position.x - x;
-                const dy = well.position.y - y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+			wells.forEach(well => {
+				const dx = well.position.x - x;
+				const dy = well.position.y - y;
+				const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance !== 0) {
-                    if (showGravityField) {
-                        const forceG = (0.1 * well.mass) / (distance * distance);
-                        fx += forceG * (dx / distance);
-                        fy += forceG * (dy / distance);
-                    }
-                }
-            });
+				if (distance !== 0) {
+					if (showGravityField) {
+						const forceG = (0.1 * well.mass) / (distance * distance);
+						fx += forceG * (dx / distance);
+						fy += forceG * (dy / distance);
+					}
+				}
+			});
 
-            const forceMagnitude = Math.sqrt(fx * fx + fy * fy);
+			const forceMagnitude = Math.sqrt(fx * fx + fy * fy);
 
-            if (forceMagnitude !== 0) {
-                const vectorLength = Math.min(Math.sqrt(forceMagnitude) / maxMass * 20000, 10) / (showSizeCheckbox.checked ? scale : 2) * 1.5 * vectorLengthValueG;
+			if (forceMagnitude !== 0) {
+				const vectorLength = Math.min(Math.sqrt(forceMagnitude) / maxMass * 20000, 10) / (showSizeCheckbox.checked ? scale : 2) * 1.5 * vectorLengthValueG;
 
-                ctx.beginPath();
-                ctx.moveTo(x * scale - visibleCenterX * scale + canvasWidth / 2, y * scale - visibleCenterY * scale + canvasHeight / 2);
-                ctx.lineTo(
-                    (x + (fx / forceMagnitude) * vectorLength) * scale - visibleCenterX * scale + canvasWidth / 2,
-                    (y + (fy / forceMagnitude) * vectorLength) * scale - visibleCenterY * scale + canvasHeight / 2
-                );
+				ctx.beginPath();
+				ctx.moveTo(x * scale - visibleCenterX * scale + canvasWidth / 2, y * scale - visibleCenterY * scale + canvasHeight / 2);
+				ctx.lineTo(
+					(x + (fx / forceMagnitude) * vectorLength) * scale - visibleCenterX * scale + canvasWidth / 2,
+					(y + (fy / forceMagnitude) * vectorLength) * scale - visibleCenterY * scale + canvasHeight / 2
+				);
 				
 				const theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
 
 				const gridColor = theme === 'light' ? 'rgba(140, 0, 0, 1)' : 'rgba(255, 100, 90, 1)';
 
 				ctx.strokeStyle = gridColor;
-                ctx.lineWidth = 0.5;
-                ctx.stroke();
-                ctx.closePath();
-            }
-        }
-    }
+				ctx.lineWidth = 0.5;
+				ctx.stroke();
+				ctx.closePath();
+			}
+		}
+	}
 
-    ctx.restore();
+	ctx.restore();
 }
 
 function drawMagneticField() {
-    const vectorLengthSliderk = document.getElementById('vectorLengthSliderk');
-    const vectorLengthValuek = parseFloat(vectorLengthSliderk.value);
-    const showMagneticField = document.getElementById('showMagneticField').checked;
+	const vectorLengthSliderk = document.getElementById('vectorLengthSliderk');
+	const vectorLengthValuek = parseFloat(vectorLengthSliderk.value);
+	const showMagneticField = document.getElementById('showMagneticField').checked;
 	const vectorFieldDistance =  parseFloat(vectorFieldDistanceDisplay.value);
 
-    if (!showMagneticField) return;
+	if (!showMagneticField) return;
 
-    ctx.save();
-    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.save();
+	// ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
+	const canvasWidth = canvas.width;
+	const canvasHeight = canvas.height;
 
-    const visibleWidth = canvasWidth / scale;
-    const visibleHeight = canvasHeight / scale;
-    const visibleCenterX = calculateBarycenter().x;
-    const visibleCenterY = calculateBarycenter().y;
+	const visibleWidth = canvasWidth / scale;
+	const visibleHeight = canvasHeight / scale;
+	const visibleCenterX = calculateBarycenter().x;
+	const visibleCenterY = calculateBarycenter().y;
 
-    const startX = visibleCenterX - (canvasWidth / 2 / scale);
-    const startY = visibleCenterY - (canvasHeight / 2 / scale);
+	const startX = visibleCenterX - (canvasWidth / 2 / scale);
+	const startY = visibleCenterY - (canvasHeight / 2 / scale);
 
-    const numVectorsX = Math.floor(canvasWidth / vectorFieldDistance);
-    const numVectorsY = Math.floor(canvasHeight / vectorFieldDistance);
+	const numVectorsX = Math.floor(canvasWidth / vectorFieldDistance);
+	const numVectorsY = Math.floor(canvasHeight / vectorFieldDistance);
 
 	const maxCharge = bodies.reduce((max, body) => Math.max(max, Math.abs(body.charge)), 0) || 1;
 
-    for (let i = 0; i < numVectorsX; i++) {
-        for (let j = 0; j < numVectorsY; j++) {
-            const x = startX + i * (visibleWidth / numVectorsX);
-            const y = startY + j * (visibleHeight / numVectorsY);
+	for (let i = 0; i < numVectorsX; i++) {
+		for (let j = 0; j < numVectorsY; j++) {
+			const x = startX + i * (visibleWidth / numVectorsX);
+			const y = startY + j * (visibleHeight / numVectorsY);
 
-            let fx = 0;
-            let fy = 0;
+			let fx = 0;
+			let fy = 0;
 
-            bodies.forEach(body => {
-                const dx = body.position.x - x;
-                const dy = body.position.y - y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+			bodies.forEach(body => {
+				const dx = body.position.x - x;
+				const dy = body.position.y - y;
+				const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance !== 0) {
-                    if (showMagneticField) {
-                        const forceEM = (10 * body.charge) / (distance * distance);
-                        fx += forceEM * (-dx / distance);
-                        fy += forceEM * (-dy / distance);
-                    }
-                }
-            });
+				if (distance !== 0) {
+					if (showMagneticField) {
+						const forceEM = (10 * body.charge) / (distance * distance);
+						fx += forceEM * (-dx / distance);
+						fy += forceEM * (-dy / distance);
+					}
+				}
+			});
 
-            wells.forEach(well => {
-                const dx = well.position.x - x;
-                const dy = well.position.y - y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+			wells.forEach(well => {
+				const dx = well.position.x - x;
+				const dy = well.position.y - y;
+				const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance !== 0) {
-                    if (showMagneticField) {
-                        const forceEM = (10 * well.charge) / (distance * distance);
-                        fx += forceEM * (-dx / distance);
-                        fy += forceEM * (-dy / distance);
-                    }
-                }
-            });
+				if (distance !== 0) {
+					if (showMagneticField) {
+						const forceEM = (10 * well.charge) / (distance * distance);
+						fx += forceEM * (-dx / distance);
+						fy += forceEM * (-dy / distance);
+					}
+				}
+			});
 
-            const forceMagnitude = Math.sqrt(fx * fx + fy * fy);
+			const forceMagnitude = Math.sqrt(fx * fx + fy * fy);
 
-            if (forceMagnitude !== 0) {
-                const vectorLength = Math.min(Math.sqrt(forceMagnitude / maxCharge) * 2000, 10) / (showSizeCheckbox.checked ? scale : 2) * vectorLengthValuek;
+			if (forceMagnitude !== 0) {
+				const vectorLength = Math.min(Math.sqrt(forceMagnitude / maxCharge) * 2000, 10) / (showSizeCheckbox.checked ? scale : 2) * vectorLengthValuek;
 				
-                ctx.beginPath();
-                ctx.moveTo(x * scale - visibleCenterX * scale + canvasWidth / 2, y * scale - visibleCenterY * scale + canvasHeight / 2);
-                ctx.lineTo(
-                    (x + (fx / forceMagnitude) * vectorLength) * scale - visibleCenterX * scale + canvasWidth / 2,
-                    (y + (fy / forceMagnitude) * vectorLength) * scale - visibleCenterY * scale + canvasHeight / 2
-                );
+				ctx.beginPath();
+				ctx.moveTo(x * scale - visibleCenterX * scale + canvasWidth / 2, y * scale - visibleCenterY * scale + canvasHeight / 2);
+				ctx.lineTo(
+					(x + (fx / forceMagnitude) * vectorLength) * scale - visibleCenterX * scale + canvasWidth / 2,
+					(y + (fy / forceMagnitude) * vectorLength) * scale - visibleCenterY * scale + canvasHeight / 2
+				);
 				
 				const theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
 
 				const gridColor = theme === 'light' ? 'rgba(0, 50, 95, 1)' : 'rgba(115, 255, 205, 0.7)';
 
 				ctx.strokeStyle = gridColor;
-                ctx.lineWidth = 0.5;
-                ctx.stroke();
-                ctx.closePath();
-            }
-        }
-    }
+				ctx.lineWidth = 0.5;
+				ctx.stroke();
+				ctx.closePath();
+			}
+		}
+	}
 
-    ctx.restore();
+	ctx.restore();
 }
 
 function drawContoursOld() {
-    const showPotentialContoursOld = document.getElementById('showPotentialContoursOld').checked;
-    const gravityEnabled = document.getElementById('gravityToggle').checked;
-    const magneticEnabled = document.getElementById('magneticToggle').checked;
-    
-    if (!showPotentialContoursOld || (!gravityEnabled && !magneticEnabled)) return;
+	const showPotentialContoursOld = document.getElementById('showPotentialContoursOld').checked;
+	const gravityEnabled = document.getElementById('gravityToggle').checked;
+	const magneticEnabled = document.getElementById('magneticToggle').checked;
+	
+	if (!showPotentialContoursOld || (!gravityEnabled && !magneticEnabled)) return;
 
-    ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.scale(scale, scale);
-    
-    const barycenter = calculateBarycenter();
-    ctx.translate(-barycenter.x, -barycenter.y);
-    
+	ctx.save();
+	ctx.translate(canvas.width / 2, canvas.height / 2);
+	ctx.scale(scale, scale);
+	
+	const barycenter = calculateBarycenter();
+	ctx.translate(-barycenter.x, -barycenter.y);
+	
 	const multiplier = isoplethDistanceDisplay.value;
 	
-    const gridSize = Math.round(68 * Math.sqrt(multiplier));
-    const gridStepX = (canvas.width / scale) / gridSize;
-    const gridStepY = (canvas.height / scale) / gridSize;
-    
-    let minPotential = Number.MAX_VALUE;
-    let maxPotential = -Number.MAX_VALUE;
+	const gridSize = Math.round(68 * Math.sqrt(multiplier));
+	const gridStepX = (canvas.width / scale) / gridSize;
+	const gridStepY = (canvas.height / scale) / gridSize;
+	
+	let minPotential = Number.MAX_VALUE;
+	let maxPotential = -Number.MAX_VALUE;
 
-    const potentialValues = Array.from({ length: gridSize * 2 + 1 }, () => new Array(gridSize * 2 + 1));
-    
-    // Precompute potential values and find min/max
-    for (let i = -gridSize; i <= gridSize; i++) {
-        for (let j = -gridSize; j <= gridSize; j++) {
-            const x = barycenter.x + i * gridStepX;
-            const y = barycenter.y + j * gridStepY;
-            let potential = 0;
-            
-            bodies.forEach(body => {
-                const dx = x - body.position.x;
-                const dy = y - body.position.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance > 0) {
-                    if (gravityEnabled) potential += -body.mass / distance;
-                    if (magneticEnabled) potential += body.charge / distance;
-                }
-            });
-            
-            wells.forEach(well => {
-                const dx = x - well.position.x;
-                const dy = y - well.position.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance > 0) {
-                    if (gravityEnabled) potential += -well.mass / distance;
-                    if (magneticEnabled) potential += well.charge / distance;
-                }
-            });
-            
-            potentialValues[i + gridSize][j + gridSize] = potential;
-            if (potential < minPotential) minPotential = potential;
-            if (potential > maxPotential) maxPotential = potential;
-        }
-    }
-    
-    // Determine contour levels
-    const numLevels = Math.round(multiplier ** 2 * 27.2 * scale) - 1;
-    const contourLevels = Array.from({ length: numLevels + 1 }, (_, i) => minPotential + i * (maxPotential - minPotential) / numLevels);
-    
-    const drawnLines = new Set(); // Track drawn lines to avoid duplicates
-    
-    // Draw contours using linear interpolation
-    contourLevels.forEach(level => {
-        ctx.beginPath();
-        
-        for (let i = 1; i < gridSize * 2; i++) {
-            for (let j = 1; j < gridSize * 2; j++) {
-                const p1 = potentialValues[i - 1][j - 1];
-                const p2 = potentialValues[i][j - 1];
-                const p3 = potentialValues[i - 1][j];
-                const p4 = potentialValues[i][j];
-                
-                // Draw the first diagonal (from top-left to bottom-right)
-                if ((p1 < level && p4 > level) || (p1 > level && p4 < level)) {
-                    const x1 = barycenter.x + (i - 1 - gridSize) * gridStepX;
-                    const y1 = barycenter.y + (j - 1 - gridSize) * gridStepY;
-                    const x2 = barycenter.x + (i - gridSize) * gridStepX;
-                    const y2 = barycenter.y + (j - gridSize) * gridStepY;
-                    
-                    const lineKey = `${x1},${y1},${x2},${y2}`;
-                    if (!drawnLines.has(lineKey)) {
-                        drawnLines.add(lineKey);
-                        ctx.moveTo(x1, y1);
-                        ctx.lineTo(x2, y2);
-                    }
-                }
-                
-                // Draw the second diagonal (from top-right to bottom-left)
-                if ((p2 < level && p3 > level) || (p2 > level && p3 < level)) {
-                    const x1 = barycenter.x + (i - 1 - gridSize) * gridStepX;
-                    const y1 = barycenter.y + (j - 1 - gridSize) * gridStepY;
-                    const x2 = barycenter.x + (i - gridSize) * gridStepX;
-                    const y2 = barycenter.y + (j - gridSize) * gridStepY;
-                    
-                    const lineKey = `${x2},${y1},${x1},${y2}`;
-                    if (!drawnLines.has(lineKey)) {
-                        drawnLines.add(lineKey);
-                        ctx.moveTo(x2, y1);
-                        ctx.lineTo(x1, y2);
-                    }
-                }
-            }
-        }
+	const potentialValues = Array.from({ length: gridSize * 2 + 1 }, () => new Array(gridSize * 2 + 1));
+	
+	// Precompute potential values and find min/max
+	for (let i = -gridSize; i <= gridSize; i++) {
+		for (let j = -gridSize; j <= gridSize; j++) {
+			const x = barycenter.x + i * gridStepX;
+			const y = barycenter.y + j * gridStepY;
+			let potential = 0;
+			
+			bodies.forEach(body => {
+				const dx = x - body.position.x;
+				const dy = y - body.position.y;
+				const distance = Math.sqrt(dx * dx + dy * dy);
+				if (distance > 0) {
+					if (gravityEnabled) potential += -body.mass / distance;
+					if (magneticEnabled) potential += body.charge / distance;
+				}
+			});
+			
+			wells.forEach(well => {
+				const dx = x - well.position.x;
+				const dy = y - well.position.y;
+				const distance = Math.sqrt(dx * dx + dy * dy);
+				if (distance > 0) {
+					if (gravityEnabled) potential += -well.mass / distance;
+					if (magneticEnabled) potential += well.charge / distance;
+				}
+			});
+			
+			potentialValues[i + gridSize][j + gridSize] = potential;
+			if (potential < minPotential) minPotential = potential;
+			if (potential > maxPotential) maxPotential = potential;
+		}
+	}
+	
+	// Determine contour levels
+	const numLevels = Math.round(multiplier ** 2 * 27.2 * scale) - 1;
+	const contourLevels = Array.from({ length: numLevels + 1 }, (_, i) => minPotential + i * (maxPotential - minPotential) / numLevels);
+	
+	const drawnLines = new Set(); // Track drawn lines to avoid duplicates
+	
+	// Draw contours using linear interpolation
+	contourLevels.forEach(level => {
+		ctx.beginPath();
+		
+		for (let i = 1; i < gridSize * 2; i++) {
+			for (let j = 1; j < gridSize * 2; j++) {
+				const p1 = potentialValues[i - 1][j - 1];
+				const p2 = potentialValues[i][j - 1];
+				const p3 = potentialValues[i - 1][j];
+				const p4 = potentialValues[i][j];
+				
+				// Draw the first diagonal (from top-left to bottom-right)
+				if ((p1 < level && p4 > level) || (p1 > level && p4 < level)) {
+					const x1 = barycenter.x + (i - 1 - gridSize) * gridStepX;
+					const y1 = barycenter.y + (j - 1 - gridSize) * gridStepY;
+					const x2 = barycenter.x + (i - gridSize) * gridStepX;
+					const y2 = barycenter.y + (j - gridSize) * gridStepY;
+					
+					const lineKey = `${x1},${y1},${x2},${y2}`;
+					if (!drawnLines.has(lineKey)) {
+						drawnLines.add(lineKey);
+						ctx.moveTo(x1, y1);
+						ctx.lineTo(x2, y2);
+					}
+				}
+				
+				// Draw the second diagonal (from top-right to bottom-left)
+				if ((p2 < level && p3 > level) || (p2 > level && p3 < level)) {
+					const x1 = barycenter.x + (i - 1 - gridSize) * gridStepX;
+					const y1 = barycenter.y + (j - 1 - gridSize) * gridStepY;
+					const x2 = barycenter.x + (i - gridSize) * gridStepX;
+					const y2 = barycenter.y + (j - gridSize) * gridStepY;
+					
+					const lineKey = `${x2},${y1},${x1},${y2}`;
+					if (!drawnLines.has(lineKey)) {
+						drawnLines.add(lineKey);
+						ctx.moveTo(x2, y1);
+						ctx.lineTo(x1, y2);
+					}
+				}
+			}
+		}
 		
 		const theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
 
 		const gridColor = theme === 'light' ? 'rgba(50, 50, 0, 0.8)' : 'rgba(200, 200, 100, 0.45)';
 
-        ctx.strokeStyle = gridColor;
-        ctx.lineWidth = 1 / scale;
-        ctx.stroke();
-    });
+		ctx.strokeStyle = gridColor;
+		ctx.lineWidth = 1 / scale;
+		ctx.stroke();
+	});
 
-    ctx.restore();
+	ctx.restore();
 }
 
 function drawContours() {
-    const showPotentialContours = document.getElementById('showPotentialContours').checked;
-    const gravityEnabled = document.getElementById('gravityToggle').checked;
-    const magneticEnabled = document.getElementById('magneticToggle').checked;
+	const showPotentialContours = document.getElementById('showPotentialContours').checked;
+	const gravityEnabled = document.getElementById('gravityToggle').checked;
+	const magneticEnabled = document.getElementById('magneticToggle').checked;
 
-    if (!showPotentialContours || (!gravityEnabled && !magneticEnabled)) return;
+	if (!showPotentialContours || (!gravityEnabled && !magneticEnabled)) return;
 
-    ctx.save();
+	ctx.save();
 
-    const barycenter = calculateBarycenter();
+	const barycenter = calculateBarycenter();
 
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
+	const canvasWidth = canvas.width;
+	const canvasHeight = canvas.height;
 
-    const visibleCenterX = barycenter.x;
-    const visibleCenterY = barycenter.y;
+	const visibleCenterX = barycenter.x;
+	const visibleCenterY = barycenter.y;
 
-    const multiplier = isoplethDistanceDisplay.value;
-    const gridSize = Math.round(68 * Math.sqrt(multiplier));
-    const gridStepX = (canvasWidth / scale) / gridSize;
-    const gridStepY = (canvasHeight / scale) / gridSize;
+	const multiplier = isoplethDistanceDisplay.value;
+	const gridSize = Math.round(68 * Math.sqrt(multiplier));
+	const gridStepX = (canvasWidth / scale) / gridSize;
+	const gridStepY = (canvasHeight / scale) / gridSize;
 
-    let minPotential = Number.MAX_VALUE;
-    let maxPotential = -Number.MAX_VALUE;
-    const potentialValues = Array.from({ length: gridSize * 2 + 1 }, () => new Array(gridSize * 2 + 1));
+	let minPotential = Number.MAX_VALUE;
+	let maxPotential = -Number.MAX_VALUE;
+	const potentialValues = Array.from({ length: gridSize * 2 + 1 }, () => new Array(gridSize * 2 + 1));
 
-    for (let i = -gridSize; i <= gridSize; i++) {
-        for (let j = -gridSize; j <= gridSize; j++) {
-            const x = barycenter.x + i * gridStepX;
-            const y = barycenter.y + j * gridStepY;
-            let potential = 0;
+	for (let i = -gridSize; i <= gridSize; i++) {
+		for (let j = -gridSize; j <= gridSize; j++) {
+			const x = barycenter.x + i * gridStepX;
+			const y = barycenter.y + j * gridStepY;
+			let potential = 0;
 
-            bodies.forEach(body => {
-                const dx = x - body.position.x;
-                const dy = y - body.position.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+			bodies.forEach(body => {
+				const dx = x - body.position.x;
+				const dy = y - body.position.y;
+				const distance = Math.sqrt(dx * dx + dy * dy);
 				const radius = 0.8 * (showSizeCheckbox.checked ? Math.min(body.radius * 2.5, 7) / scale : body.radius);
-                if (distance > radius) {
-                    if (gravityEnabled) potential += -body.mass / distance;
-                    if (magneticEnabled) potential += body.charge / distance;
-                }
-            });
+				if (distance > radius) {
+					if (gravityEnabled) potential += -body.mass / distance;
+					if (magneticEnabled) potential += body.charge / distance;
+				}
+			});
 
-            wells.forEach(well => {
-                const dx = x - well.position.x;
-                const dy = y - well.position.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance > 0) {
-                    if (gravityEnabled) potential += -well.mass / distance;
-                    if (magneticEnabled) potential += well.charge / distance;
-                }
-            });
+			wells.forEach(well => {
+				const dx = x - well.position.x;
+				const dy = y - well.position.y;
+				const distance = Math.sqrt(dx * dx + dy * dy);
+				if (distance > 0) {
+					if (gravityEnabled) potential += -well.mass / distance;
+					if (magneticEnabled) potential += well.charge / distance;
+				}
+			});
 			
-            potentialValues[i + gridSize][j + gridSize] = potential;
-            if (potential < minPotential) minPotential = potential;
-            if (potential > maxPotential) maxPotential = potential;
-        }
-    }
+			potentialValues[i + gridSize][j + gridSize] = potential;
+			if (potential < minPotential) minPotential = potential;
+			if (potential > maxPotential) maxPotential = potential;
+		}
+	}
 
-    const numLevels = Math.round(80 * multiplier * scrollZoom / scale); // Math.round(Math.min(multiplier ** 2 * 27.2 * scrollZoom, multiplier ** 2 * 30)) - 1;
-    const contourLevels = Array.from({ length: numLevels + 1 }, (_, i) => minPotential + i * (maxPotential - minPotential) / numLevels);
+	const numLevels = Math.round(80 * multiplier * scrollZoom / scale); // Math.round(Math.min(multiplier ** 2 * 27.2 * scrollZoom, multiplier ** 2 * 30)) - 1;
+	const contourLevels = Array.from({ length: numLevels + 1 }, (_, i) => minPotential + i * (maxPotential - minPotential) / numLevels);
 
-    const drawnLines = new Set();
+	const drawnLines = new Set();
 
-    function interpolate(p1, p2, level, v1, v2) {
-        const t = (level - v1) / (v2 - v1);
-        return p1 + t * (p2 - p1);
-    }
+	function interpolate(p1, p2, level, v1, v2) {
+		const t = (level - v1) / (v2 - v1);
+		return p1 + t * (p2 - p1);
+	}
 	
-    ctx.translate(-barycenter.x - canvasWidth / 2, -barycenter.y - canvasHeight/ 2);
-    ctx.scale(scale, scale);
+	ctx.translate(-barycenter.x - canvasWidth / 2, -barycenter.y - canvasHeight/ 2);
+	ctx.scale(scale, scale);
 
-    contourLevels.forEach(level => {
-        ctx.beginPath();
-        for (let i = 0; i < gridSize * 2; i++) {
-            for (let j = 0; j < gridSize * 2; j++) {
-                const p1 = potentialValues[i][j];
-                const p2 = potentialValues[i + 1][j];
-                const p3 = potentialValues[i][j + 1];
-                const p4 = potentialValues[i + 1][j + 1];
-                let caseIndex = 0;
-                if (p1 > level) caseIndex |= 1;
-                if (p2 > level) caseIndex |= 2;
-                if (p3 > level) caseIndex |= 4;
-                if (p4 > level) caseIndex |= 8;
+	contourLevels.forEach(level => {
+		ctx.beginPath();
+		for (let i = 0; i < gridSize * 2; i++) {
+			for (let j = 0; j < gridSize * 2; j++) {
+				const p1 = potentialValues[i][j];
+				const p2 = potentialValues[i + 1][j];
+				const p3 = potentialValues[i][j + 1];
+				const p4 = potentialValues[i + 1][j + 1];
+				let caseIndex = 0;
+				if (p1 > level) caseIndex |= 1;
+				if (p2 > level) caseIndex |= 2;
+				if (p3 > level) caseIndex |= 4;
+				if (p4 > level) caseIndex |= 8;
 
-                if (caseIndex === 0 || caseIndex === 15) continue;
+				if (caseIndex === 0 || caseIndex === 15) continue;
 
-                let x1, y1, x2, y2;
-                const xLeft = i * gridStepX;
-                const yTop = j * gridStepY;
-                const xRight = xLeft + gridStepX;
-                const yBottom = yTop + gridStepY;
+				let x1, y1, x2, y2;
+				const xLeft = i * gridStepX;
+				const yTop = j * gridStepY;
+				const xRight = xLeft + gridStepX;
+				const yBottom = yTop + gridStepY;
 
-                switch (caseIndex) {
-                    case 1:
-                    case 14:
-                        x1 = xLeft;
-                        y1 = interpolate(yTop, yBottom, level, p1, p3);
-                        x2 = interpolate(xLeft, xRight, level, p1, p2);
-                        y2 = yTop;
-                        break;
-                    case 2:
-                    case 13:
-                        x1 = interpolate(xLeft, xRight, level, p1, p2);
-                        y1 = yTop;
-                        x2 = xRight;
-                        y2 = interpolate(yTop, yBottom, level, p2, p4);
-                        break;
-                    case 3:
-                    case 12:
-                        x1 = xLeft;
-                        y1 = interpolate(yTop, yBottom, level, p1, p3);
-                        x2 = xRight;
-                        y2 = interpolate(yTop, yBottom, level, p2, p4);
-                        break;
-                    case 4:
-                    case 11:
-                        x1 = xLeft;
-                        y1 = interpolate(yTop, yBottom, level, p1, p3);
-                        x2 = interpolate(xLeft, xRight, level, p3, p4);
-                        y2 = yBottom;
-                        break;
-                    case 6:
-                    case 9:
-                        x1 = interpolate(xLeft, xRight, level, p1, p2);
-                        y1 = yTop;
-                        x2 = interpolate(xLeft, xRight, level, p3, p4);
-                        y2 = yBottom;
-                        break;
-                    case 7:
-                    case 8:
-                        x1 = interpolate(xLeft, xRight, level, p3, p4);
-                        y1 = yBottom;
-                        x2 = xRight;
-                        y2 = interpolate(yTop, yBottom, level, p2, p4);
-                        break;
-                }
+				switch (caseIndex) {
+					case 1:
+					case 14:
+						x1 = xLeft;
+						y1 = interpolate(yTop, yBottom, level, p1, p3);
+						x2 = interpolate(xLeft, xRight, level, p1, p2);
+						y2 = yTop;
+						break;
+					case 2:
+					case 13:
+						x1 = interpolate(xLeft, xRight, level, p1, p2);
+						y1 = yTop;
+						x2 = xRight;
+						y2 = interpolate(yTop, yBottom, level, p2, p4);
+						break;
+					case 3:
+					case 12:
+						x1 = xLeft;
+						y1 = interpolate(yTop, yBottom, level, p1, p3);
+						x2 = xRight;
+						y2 = interpolate(yTop, yBottom, level, p2, p4);
+						break;
+					case 4:
+					case 11:
+						x1 = xLeft;
+						y1 = interpolate(yTop, yBottom, level, p1, p3);
+						x2 = interpolate(xLeft, xRight, level, p3, p4);
+						y2 = yBottom;
+						break;
+					case 6:
+					case 9:
+						x1 = interpolate(xLeft, xRight, level, p1, p2);
+						y1 = yTop;
+						x2 = interpolate(xLeft, xRight, level, p3, p4);
+						y2 = yBottom;
+						break;
+					case 7:
+					case 8:
+						x1 = interpolate(xLeft, xRight, level, p3, p4);
+						y1 = yBottom;
+						x2 = xRight;
+						y2 = interpolate(yTop, yBottom, level, p2, p4);
+						break;
+				}
 
-                const lineKey = `${x1},${y1},${x2},${y2}`;
-                if (!drawnLines.has(lineKey)) {
-                    drawnLines.add(lineKey);
+				const lineKey = `${x1},${y1},${x2},${y2}`;
+				if (!drawnLines.has(lineKey)) {
+					drawnLines.add(lineKey);
 					ctx.moveTo(x1 + visibleCenterX / scale, y1 + visibleCenterY / scale);
 					ctx.lineTo(x2 + visibleCenterX / scale, y2 + visibleCenterY / scale);
-                }
-            }
-        }
+				}
+			}
+		}
 		
 		const theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
 
 		const gridColor = theme === 'light' ? 'rgba(50, 50, 0, 0.8)' : 'rgba(200, 200, 100, 0.45)';
 
-        ctx.strokeStyle = gridColor;
-        ctx.lineWidth = 1 / scale;
-        ctx.stroke();
-    });
+		ctx.strokeStyle = gridColor;
+		ctx.lineWidth = 1 / scale;
+		ctx.stroke();
+	});
 
-    ctx.restore();
+	ctx.restore();
 }
 
 function drawGrid() {
-    const showGrid = document.getElementById('showGrid').checked;
-    if (!showGrid) return;
+	const showGrid = document.getElementById('showGrid').checked;
+	if (!showGrid) return;
 
-    ctx.save();
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
+	ctx.save();
+	const canvasWidth = canvas.width;
+	const canvasHeight = canvas.height;
 
-    const visibleWidth = canvasWidth / scale;
-    const visibleHeight = canvasHeight / scale;
-    const visibleCenterX = calculateBarycenter().x;
-    const visibleCenterY = calculateBarycenter().y;
+	const visibleWidth = canvasWidth / scale;
+	const visibleHeight = canvasHeight / scale;
+	const visibleCenterX = calculateBarycenter().x;
+	const visibleCenterY = calculateBarycenter().y;
 
-    const startX = visibleCenterX - (canvasWidth / 2 / scale);
-    const startY = visibleCenterY - (canvasHeight / 2 / scale);
+	const startX = visibleCenterX - (canvasWidth / 2 / scale);
+	const startY = visibleCenterY - (canvasHeight / 2 / scale);
 
-    const baseGridSize = 75; 
-    let gridSize = baseGridSize;
+	const baseGridSize = 75; 
+	let gridSize = baseGridSize;
 
-    while (gridSize * scale < 60) { 
-        gridSize *= 2;
-    }
-    while (gridSize * scale > 150) {
-        gridSize /= 2;
-    }
+	while (gridSize * scale < 60) { 
+		gridSize *= 2;
+	}
+	while (gridSize * scale > 150) {
+		gridSize /= 2;
+	}
 	
-    const theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
+	const theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
 
-    // Couleurs de la grille et des axes en fonction du thème
-    const gridColor = theme === 'light' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(200, 200, 200, 0.15)';
-    const axisColor = theme === 'light' ? 'rgba(0, 0, 0, 1)' : 'rgba(200, 200, 200, 0.5)';
+	// Couleurs de la grille et des axes en fonction du thème
+	const gridColor = theme === 'light' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(200, 200, 200, 0.15)';
+	const axisColor = theme === 'light' ? 'rgba(0, 0, 0, 1)' : 'rgba(200, 200, 200, 0.5)';
 
-    ctx.strokeStyle = gridColor;
-    ctx.lineWidth = Math.max(0.5, 10/(Math.exp(scale) + 100));
+	ctx.strokeStyle = gridColor;
+	ctx.lineWidth = Math.max(0.5, 10/(Math.exp(scale) + 100));
 
-    for (let x = Math.floor(startX / gridSize) * gridSize; x < startX + visibleWidth; x += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo((x - startX) * scale, 0);
-        ctx.lineTo((x - startX) * scale, canvasHeight);
-        ctx.stroke();
-        ctx.closePath();
-    }
+	for (let x = Math.floor(startX / gridSize) * gridSize; x < startX + visibleWidth; x += gridSize) {
+		ctx.beginPath();
+		ctx.moveTo((x - startX) * scale, 0);
+		ctx.lineTo((x - startX) * scale, canvasHeight);
+		ctx.stroke();
+		ctx.closePath();
+	}
 
-    for (let y = Math.floor(startY / gridSize) * gridSize; y < startY + visibleHeight; y += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(0, (y - startY) * scale);
-        ctx.lineTo(canvasWidth, (y - startY) * scale);
-        ctx.stroke();
-        ctx.closePath();
-    }
+	for (let y = Math.floor(startY / gridSize) * gridSize; y < startY + visibleHeight; y += gridSize) {
+		ctx.beginPath();
+		ctx.moveTo(0, (y - startY) * scale);
+		ctx.lineTo(canvasWidth, (y - startY) * scale);
+		ctx.stroke();
+		ctx.closePath();
+	}
 	
-    const canvasX0 = (0 - visibleCenterX) * scale + canvasWidth / 2;
-    const canvasY0 = (0 - visibleCenterY) * scale + canvasHeight / 2;
+	const canvasX0 = (0 - visibleCenterX) * scale + canvasWidth / 2;
+	const canvasY0 = (0 - visibleCenterY) * scale + canvasHeight / 2;
 
-    ctx.strokeStyle = axisColor;
-    ctx.beginPath();
-    ctx.moveTo(0, canvasY0); 
-    ctx.lineTo(canvasWidth, canvasY0);
-    ctx.stroke();
-    ctx.closePath();
+	ctx.strokeStyle = axisColor;
+	ctx.beginPath();
+	ctx.moveTo(0, canvasY0); 
+	ctx.lineTo(canvasWidth, canvasY0);
+	ctx.stroke();
+	ctx.closePath();
 
-    ctx.beginPath();
-    ctx.moveTo(canvasX0, 0);
-    ctx.lineTo(canvasX0, canvasHeight);
-    ctx.stroke();
-    ctx.closePath();
+	ctx.beginPath();
+	ctx.moveTo(canvasX0, 0);
+	ctx.lineTo(canvasX0, canvasHeight);
+	ctx.stroke();
+	ctx.closePath();
 
-    ctx.restore();
+	ctx.restore();
 }
 
 function dragElement(elmnt) {
-    const header = document.getElementById("infoWindowHeader");
-    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+	const header = document.getElementById("infoWindowHeader");
+	let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
-    if (header) {
-        header.onmousedown = dragMouseDown;
-        header.ontouchstart = dragTouchStart;
-    }
+	if (header) {
+		header.onmousedown = dragMouseDown;
+		header.ontouchstart = dragTouchStart;
+	}
 
-    function dragMouseDown(e) {
-        e.preventDefault();
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        document.onmousemove = elementDrag;
-    }
+	function dragMouseDown(e) {
+		e.preventDefault();
+		pos3 = e.clientX;
+		pos4 = e.clientY;
+		document.onmouseup = closeDragElement;
+		document.onmousemove = elementDrag;
+	}
 
-    function dragTouchStart(e) {
-        e.preventDefault();
-        pos3 = e.touches[0].clientX;
-        pos4 = e.touches[0].clientY;
-        document.ontouchend = closeDragElement;
-        document.ontouchmove = elementTouchDrag;
-    }
+	function dragTouchStart(e) {
+		e.preventDefault();
+		pos3 = e.touches[0].clientX;
+		pos4 = e.touches[0].clientY;
+		document.ontouchend = closeDragElement;
+		document.ontouchmove = elementTouchDrag;
+	}
 
-    function elementDrag(e) {
-        e.preventDefault();
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-    }
+	function elementDrag(e) {
+		e.preventDefault();
+		pos1 = pos3 - e.clientX;
+		pos2 = pos4 - e.clientY;
+		pos3 = e.clientX;
+		pos4 = e.clientY;
+		elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+		elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+	}
 
-    function elementTouchDrag(e) {
-        e.preventDefault();
-        pos1 = pos3 - e.touches[0].clientX;
-        pos2 = pos4 - e.touches[0].clientY;
-        pos3 = e.touches[0].clientX;
-        pos4 = e.touches[0].clientY;
-        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-    }
+	function elementTouchDrag(e) {
+		e.preventDefault();
+		pos1 = pos3 - e.touches[0].clientX;
+		pos2 = pos4 - e.touches[0].clientY;
+		pos3 = e.touches[0].clientX;
+		pos4 = e.touches[0].clientY;
+		elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+		elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+	}
 
-    function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-        document.ontouchend = null;
-        document.ontouchmove = null;
-    }
+	function closeDragElement() {
+		document.onmouseup = null;
+		document.onmousemove = null;
+		document.ontouchend = null;
+		document.ontouchmove = null;
+	}
 }
 
 function getDistance(touch1, touch2) {
-    const dx = touch2.pageX - touch1.pageX;
-    const dy = touch2.pageY - touch1.pageY;
-    return Math.sqrt(dx * dx + dy * dy);
+	const dx = touch2.pageX - touch1.pageX;
+	const dy = touch2.pageY - touch1.pageY;
+	return Math.sqrt(dx * dx + dy * dy);
 }
 
 function getDistanceFromBarycenter(object) {
-    const barycenter = calculateBarycenter();
-    const dx = object.position.x - barycenter.x;
-    const dy = object.position.y - barycenter.y;
-    return Math.sqrt(dx * dx + dy * dy);
+	const barycenter = calculateBarycenter();
+	const dx = object.position.x - barycenter.x;
+	const dy = object.position.y - barycenter.y;
+	return Math.sqrt(dx * dx + dy * dy);
 }
 
 function getDistanceBetweenObjects(objectA, objectB) {
-    const dx = objectB.position.x - objectA.position.x;
-    const dy = objectB.position.y - objectA.position.y;
-    return Math.sqrt(dx * dx + dy * dy);
+	const dx = objectB.position.x - objectA.position.x;
+	const dy = objectB.position.y - objectA.position.y;
+	return Math.sqrt(dx * dx + dy * dy);
 }
 
 function getRadialSpeed(object) {
-    return Math.sqrt(object.velocity.x * object.velocity.x + object.velocity.y * object.velocity.y);
+	return Math.sqrt(object.velocity.x * object.velocity.x + object.velocity.y * object.velocity.y);
 }
 
 function getRadialAcceleration(object) {
-    return Math.sqrt(object.acceleration.x * object.acceleration.x + object.acceleration.y * object.acceleration.y);
+	return Math.sqrt(object.acceleration.x * object.acceleration.x + object.acceleration.y * object.acceleration.y);
 }
 
 function getTotalRadialForce(object) {
-    return getRadialAcceleration(object) * object.mass;
+	return getRadialAcceleration(object) * object.mass;
 }
 
 function getRelativeRadialSpeed(objectA, objectB) {
-    return Math.sqrt(Math.pow(objectB.velocity.x - objectA.velocity.x, 2) + Math.pow(objectB.velocity.y - objectA.velocity.y, 2));
+	return Math.sqrt(Math.pow(objectB.velocity.x - objectA.velocity.x, 2) + Math.pow(objectB.velocity.y - objectA.velocity.y, 2));
 }
 
 function getRelativeRadialAcceleration(objectA, objectB) {
-    return Math.sqrt(Math.pow(objectB.acceleration.x - objectA.acceleration.x, 2) + Math.pow(objectB.acceleration.y - objectA.acceleration.y, 2));
+	return Math.sqrt(Math.pow(objectB.acceleration.x - objectA.acceleration.x, 2) + Math.pow(objectB.acceleration.y - objectA.acceleration.y, 2));
 }
 
 function getAttractionForce(objectA, objectB) {
-    const distance = getDistanceBetweenObjects(objectA, objectB);
+	const distance = getDistanceBetweenObjects(objectA, objectB);
 	let totalForce = 0
-    if (distance > 0) {
+	if (distance > 0) {
 		if (gravityEnabled) {
 			totalForce += - (G * objectA.mass * objectB.mass) / (distance * distance)
 		}
 		if (magneticEnabled) {
 			totalForce += (K * objectA.charge * objectB.charge) / (distance * distance)
 		}
-        return totalForce;
-    }
-    return 0;
+		return totalForce;
+	}
+	return 0;
 }
 
 function getAngularMomentum(objectA, objectB) {
-    const rx = objectB.position.x - objectA.position.x;
-    const ry = objectB.position.y - objectA.position.y;
+	const rx = objectB.position.x - objectA.position.x;
+	const ry = objectB.position.y - objectA.position.y;
 	
-    const vx = objectB.velocity.x - objectA.velocity.x;
-    const vy = objectB.velocity.y - objectA.velocity.y;
-    const angularMomentum = Math.abs(rx * vy - ry * vx);
+	const vx = objectB.velocity.x - objectA.velocity.x;
+	const vy = objectB.velocity.y - objectA.velocity.y;
+	const angularMomentum = Math.abs(rx * vy - ry * vx);
 	
 	return angularMomentum;
 }
 
 function getKineticEnergy(objectA, objectB) {
-    const kineticEnergy = 0.5 * (getRelativeRadialSpeed(objectA, objectB)) ** 2;
+	const kineticEnergy = 0.5 * (getRelativeRadialSpeed(objectA, objectB)) ** 2;
 	
 	return kineticEnergy;
 }
 
 function getPotentialEnergy(objectA, objectB) {
-    const totalMass = objectA.mass + objectB.mass;
-    const potentialEnergy = -G * totalMass / getDistanceBetweenObjects(objectA, objectB);
+	const totalMass = objectA.mass + objectB.mass;
+	const potentialEnergy = -G * totalMass / getDistanceBetweenObjects(objectA, objectB);
 	
 	return potentialEnergy;
 }
 
 function getSpecificOrbitalEnergy(objectA, objectB) {
-    const specificOrbitalEnergy = getKineticEnergy(objectA, objectB) + getPotentialEnergy(objectA, objectB);
+	const specificOrbitalEnergy = getKineticEnergy(objectA, objectB) + getPotentialEnergy(objectA, objectB);
 	
 	return specificOrbitalEnergy;
 }
 
 function getSemiMajorAxis(objectA, objectB) {
-    const totalMass = objectA.mass + objectB.mass;
-    const semiMajorAxis = -G * totalMass / (2 * getSpecificOrbitalEnergy(objectA, objectB));
+	const totalMass = objectA.mass + objectB.mass;
+	const semiMajorAxis = -G * totalMass / (2 * getSpecificOrbitalEnergy(objectA, objectB));
 	
 	return semiMajorAxis;
 }
 
 function getEccentricity(objectA, objectB) {
-    const totalMass = objectA.mass + objectB.mass;
-    const eccentricity = Math.sqrt(1 + (2 * getSpecificOrbitalEnergy(objectA, objectB) * Math.pow(getAngularMomentum(objectA, objectB), 2)) / (G * G * totalMass * totalMass));
+	const totalMass = objectA.mass + objectB.mass;
+	const eccentricity = Math.sqrt(1 + (2 * getSpecificOrbitalEnergy(objectA, objectB) * Math.pow(getAngularMomentum(objectA, objectB), 2)) / (G * G * totalMass * totalMass));
 	
 	return eccentricity;
 }
 
 function getOrbitalPeriod(objectA, objectB) {
-    const semiMajorAxis = getSemiMajorAxis(objectA, objectB);
-    const totalMass = objectA.mass + objectB.mass;
-    const orbitalPeriod = 2 * pi * Math.sqrt(Math.pow(semiMajorAxis, 3) / (G * totalMass));
-    return orbitalPeriod;
+	const semiMajorAxis = getSemiMajorAxis(objectA, objectB);
+	const totalMass = objectA.mass + objectB.mass;
+	const orbitalPeriod = 2 * pi * Math.sqrt(Math.pow(semiMajorAxis, 3) / (G * totalMass));
+	return orbitalPeriod;
 }
 
 function getMeanOrbitalSpeed(objectA, objectB) {
-    const semiMajorAxis = getSemiMajorAxis(objectA, objectB);
-    const totalMass = objectA.mass + objectB.mass;
-    const meanOrbitalSpeed = Math.sqrt(G * totalMass / semiMajorAxis);
-    return meanOrbitalSpeed;
+	const semiMajorAxis = getSemiMajorAxis(objectA, objectB);
+	const totalMass = objectA.mass + objectB.mass;
+	const meanOrbitalSpeed = Math.sqrt(G * totalMass / semiMajorAxis);
+	return meanOrbitalSpeed;
 }
 
 function getOrbitalParameter(objectA, objectB) {
-    const angularMomentum = getAngularMomentum(objectA, objectB);
-    const totalMass = objectA.mass + objectB.mass;
-    const orbitalParameter = (angularMomentum * angularMomentum) / (G * totalMass);
-    return orbitalParameter;
+	const angularMomentum = getAngularMomentum(objectA, objectB);
+	const totalMass = objectA.mass + objectB.mass;
+	const orbitalParameter = (angularMomentum * angularMomentum) / (G * totalMass);
+	return orbitalParameter;
 }
 
 function getAphelion(objectA, objectB) {
-    const semiMajorAxis = getSemiMajorAxis(objectA, objectB);
-    const eccentricity = getEccentricity(objectA, objectB);
-    return semiMajorAxis * (1 + eccentricity);
+	const semiMajorAxis = getSemiMajorAxis(objectA, objectB);
+	const eccentricity = getEccentricity(objectA, objectB);
+	return semiMajorAxis * (1 + eccentricity);
 }
 
 function getPerihelion(objectA, objectB) {
-    const semiMajorAxis = getSemiMajorAxis(objectA, objectB);
-    const eccentricity = getEccentricity(objectA, objectB);
-    return semiMajorAxis * (1 - eccentricity);
+	const semiMajorAxis = getSemiMajorAxis(objectA, objectB);
+	const eccentricity = getEccentricity(objectA, objectB);
+	return semiMajorAxis * (1 - eccentricity);
 }
 
 function getTrueAnomaly(objectA, objectB) {
-    const distance = getDistanceBetweenObjects(objectA, objectB);
-    const orbitalParameter = getOrbitalParameter(objectA, objectB);
-    const eccentricity = getEccentricity(objectA, objectB);
+	const distance = getDistanceBetweenObjects(objectA, objectB);
+	const orbitalParameter = getOrbitalParameter(objectA, objectB);
+	const eccentricity = getEccentricity(objectA, objectB);
 
-    const cosTrueAnomaly = (orbitalParameter / distance - 1) / eccentricity;
-    return Math.acos(cosTrueAnomaly);
+	const cosTrueAnomaly = (orbitalParameter / distance - 1) / eccentricity;
+	return Math.acos(cosTrueAnomaly);
 }
 
 function getLongitudeOfAscendingNode(objectA, objectB) {
-    const dx = objectB.position.x - objectA.position.x;
-    const dy = objectB.position.y - objectA.position.y;
-    return Math.atan2(dy, dx);
+	const dx = objectB.position.x - objectA.position.x;
+	const dy = objectB.position.y - objectA.position.y;
+	return Math.atan2(dy, dx);
 }
 
 function getMeanAnomaly(objectA, objectB, time) {
-    const orbitalPeriod = getOrbitalPeriod(objectA, objectB);
-    const eccentricity = getEccentricity(objectA, objectB);
-    const meanMotion = 2 * pi / orbitalPeriod;
+	const orbitalPeriod = getOrbitalPeriod(objectA, objectB);
+	const eccentricity = getEccentricity(objectA, objectB);
+	const meanMotion = 2 * pi / orbitalPeriod;
 
-    const meanAnomaly = meanMotion * time;
-    return meanAnomaly;
+	const meanAnomaly = meanMotion * time;
+	return meanAnomaly;
 }
 
 function solveKeplerEquation(objectA, objectB, time) {
-    const eccentricity = getEccentricity(objectA, objectB);
-    const meanAnomaly = getMeanAnomaly(objectA, objectB, time);
+	const eccentricity = getEccentricity(objectA, objectB);
+	const meanAnomaly = getMeanAnomaly(objectA, objectB, time);
 
-    let E = meanAnomaly;
-    let delta = 1e-6;
-    let iterations = 0;
+	let E = meanAnomaly;
+	let delta = 1e-6;
+	let iterations = 0;
 
-    while (iterations < 100) {
-        let f = E - eccentricity * Math.sin(E) - meanAnomaly;
-        let fPrime = 1 - eccentricity * Math.cos(E);
-        let ratio = f / fPrime;
+	while (iterations < 100) {
+		let f = E - eccentricity * Math.sin(E) - meanAnomaly;
+		let fPrime = 1 - eccentricity * Math.cos(E);
+		let ratio = f / fPrime;
 
-        if (Math.abs(ratio) < delta) break;
-        E = E - ratio;
-        iterations++;
-    }
+		if (Math.abs(ratio) < delta) break;
+		E = E - ratio;
+		iterations++;
+	}
 
-    return E;
+	return E;
 }
 
 function updateObjectInfo(objectA, objectB) {
-    document.getElementById('massA').textContent = formatScientific(objectA.mass, 2) + ' kg';
-    document.getElementById('chargeA').textContent = formatScientific(objectA.charge, 1) + ' C';
-    document.getElementById('radiusA').textContent = formatScientific(objectA.radius, 1) + ' m';
-    document.getElementById('surface1').textContent = formatScientific(pi * Math.pow(objectA.radius, 2), 2) + ' m²';
-    document.getElementById('positionA').textContent = `(${formatScientific(objectA.position.x, 2)}, ${formatScientific(objectA.position.y, 2)})`;
-    document.getElementById('distanceBary1').textContent = formatScientific(getDistanceFromBarycenter(objectA), 2) + ' m';
-    document.getElementById('speedRadial1').textContent = formatScientific(getRadialSpeed(objectA), 4) + ' m/s';
-    document.getElementById('accelerationRadial1').textContent = formatScientific(getRadialAcceleration(objectA), 4) + ' m/s²';
-    document.getElementById('forceTotalRadial1').textContent = formatScientific(getTotalRadialForce(objectA), 4) + ' kg m/s²';
+	document.getElementById('massA').textContent = formatScientific(objectA.mass, 2) + ' kg';
+	document.getElementById('chargeA').textContent = formatScientific(objectA.charge, 1) + ' C';
+	document.getElementById('radiusA').textContent = formatScientific(objectA.radius, 1) + ' m';
+	document.getElementById('surface1').textContent = formatScientific(pi * Math.pow(objectA.radius, 2), 2) + ' m²';
+	document.getElementById('positionA').textContent = `(${formatScientific(objectA.position.x, 2)}, ${formatScientific(objectA.position.y, 2)})`;
+	document.getElementById('distanceBary1').textContent = formatScientific(getDistanceFromBarycenter(objectA), 2) + ' m';
+	document.getElementById('speedRadial1').textContent = formatScientific(getRadialSpeed(objectA), 4) + ' m/s';
+	document.getElementById('accelerationRadial1').textContent = formatScientific(getRadialAcceleration(objectA), 4) + ' m/s²';
+	document.getElementById('forceTotalRadial1').textContent = formatScientific(getTotalRadialForce(objectA), 4) + ' kg m/s²';
 
-    document.getElementById('massB').textContent = formatScientific(objectB.mass, 2) + ' kg';
-    document.getElementById('chargeB').textContent = formatScientific(objectB.charge, 1) + ' C';
-    document.getElementById('radiusB').textContent = formatScientific(objectB.radius, 1) + ' m';
-    document.getElementById('surface2').textContent = formatScientific(pi * Math.pow(objectB.radius, 2), 2) + ' m²';
-    document.getElementById('positionB').textContent = `(${formatScientific(objectB.position.x, 2)}, ${formatScientific(objectB.position.y, 2)})`;
-    document.getElementById('distanceBary2').textContent = formatScientific(getDistanceFromBarycenter(objectB), 2) + ' m';
-    document.getElementById('speedRadial2').textContent = formatScientific(getRadialSpeed(objectB), 4) + ' m/s';
-    document.getElementById('accelerationRadial2').textContent = formatScientific(getRadialAcceleration(objectB), 4) + ' m/s²';
-    document.getElementById('forceTotalRadial2').textContent = formatScientific(getTotalRadialForce(objectB), 4) + ' kg m/s²';
+	document.getElementById('massB').textContent = formatScientific(objectB.mass, 2) + ' kg';
+	document.getElementById('chargeB').textContent = formatScientific(objectB.charge, 1) + ' C';
+	document.getElementById('radiusB').textContent = formatScientific(objectB.radius, 1) + ' m';
+	document.getElementById('surface2').textContent = formatScientific(pi * Math.pow(objectB.radius, 2), 2) + ' m²';
+	document.getElementById('positionB').textContent = `(${formatScientific(objectB.position.x, 2)}, ${formatScientific(objectB.position.y, 2)})`;
+	document.getElementById('distanceBary2').textContent = formatScientific(getDistanceFromBarycenter(objectB), 2) + ' m';
+	document.getElementById('speedRadial2').textContent = formatScientific(getRadialSpeed(objectB), 4) + ' m/s';
+	document.getElementById('accelerationRadial2').textContent = formatScientific(getRadialAcceleration(objectB), 4) + ' m/s²';
+	document.getElementById('forceTotalRadial2').textContent = formatScientific(getTotalRadialForce(objectB), 4) + ' kg m/s²';
 
-    document.getElementById('distanceBetween').textContent = formatScientific(getDistanceBetweenObjects(objectA, objectB), 4) + ' m';
-    document.getElementById('relativeSpeedRadial').textContent = formatScientific(Math.abs(getRadialSpeed(objectA) - getRadialSpeed(objectB)), 4) + ' m/s';
-    document.getElementById('relativeAccelerationRadial').textContent = formatScientific(Math.abs(getRadialAcceleration(objectA) - getRadialAcceleration(objectB)), 4) + ' m/s²';
+	document.getElementById('distanceBetween').textContent = formatScientific(getDistanceBetweenObjects(objectA, objectB), 4) + ' m';
+	document.getElementById('relativeSpeedRadial').textContent = formatScientific(Math.abs(getRadialSpeed(objectA) - getRadialSpeed(objectB)), 4) + ' m/s';
+	document.getElementById('relativeAccelerationRadial').textContent = formatScientific(Math.abs(getRadialAcceleration(objectA) - getRadialAcceleration(objectB)), 4) + ' m/s²';
 }
 
 function formatScientific(number, digits) {
-    if (number === 0) {
-        return number.toFixed(digits).replace('.', ',');
-    }
-    
-    if (Math.abs(number) >= Math.pow(10, digits) || Math.abs(number) < Math.pow(10, -digits)) {
-        const exp = number.toExponential(digits);
-        const parts = exp.split('e');
-        const coefficient = parts[0].replace('.', ',');
-        const exponent = parseInt(parts[1], 10);
+	if (number === 0) {
+		return number.toFixed(digits).replace('.', ',');
+	}
+	
+	if (Math.abs(number) >= Math.pow(10, digits) || Math.abs(number) < Math.pow(10, -digits)) {
+		const exp = number.toExponential(digits);
+		const parts = exp.split('e');
+		const coefficient = parts[0].replace('.', ',');
+		const exponent = parseInt(parts[1], 10);
 
-        const exponentSign = exponent < 0 ? '⁻' : '';
-        const exponentAbs = Math.abs(exponent).toString();
-        const exponentUnicode = exponentSign + exponentAbs.replace(/0/g, '⁰').replace(/1/g, '¹').replace(/2/g, '²')
-                                                           .replace(/3/g, '³').replace(/4/g, '⁴').replace(/5/g, '⁵')
-                                                           .replace(/6/g, '⁶').replace(/7/g, '⁷').replace(/8/g, '⁸')
-                                                           .replace(/9/g, '⁹');
+		const exponentSign = exponent < 0 ? '⁻' : '';
+		const exponentAbs = Math.abs(exponent).toString();
+		const exponentUnicode = exponentSign + exponentAbs.replace(/0/g, '⁰').replace(/1/g, '¹').replace(/2/g, '²')
+														   .replace(/3/g, '³').replace(/4/g, '⁴').replace(/5/g, '⁵')
+														   .replace(/6/g, '⁶').replace(/7/g, '⁷').replace(/8/g, '⁸')
+														   .replace(/9/g, '⁹');
 
-        return `${coefficient}×10${exponentUnicode}`;
-    }
+		return `${coefficient}×10${exponentUnicode}`;
+	}
 	else {
-        return number.toFixed(digits).replace('.', ',');
-    }
+		return number.toFixed(digits).replace('.', ',');
+	}
 }
 
 function populateParameterDropdowns() {
-    const params = {
+	const params = {
 		objectA: [
-            { label: 'Mass A', value: 'massA' },
-            { label: 'Charge A', value: 'chargeA' },
-            { label: 'Radius A', value: 'radiusA' },
-            { label: 'Radial Speed A', value: 'speedRadial1' },
-            { label: 'Radial Acceleration A', value: 'accelerationRadial1' }
-        ],
-        objectB: [
-            { label: 'Mass B', value: 'massB' },
-            { label: 'Charge B', value: 'chargeB' },
-            { label: 'Radius B', value: 'radiusB' },
-            { label: 'Radial Speed B', value: 'speedRadial2' },
-            { label: 'Radial Acceleration B', value: 'accelerationRadial2' }
-        ],
-        relative: [
-            { label: 'Time', value: 'timeElapsed' },
-            { label: 'Distance Between A and B', value: 'distanceBetween' },
-            { label: 'Relative Radial Speed', value: 'relativeSpeedRadial' },
-            { label: 'Relative Radial Acceleration', value: 'relativeAccelerationRadial' }
-        ],
-        orbital: [
-            { label: 'Angular Momentum', value: 'orbitalAngularMomentum' },
-            { label: 'Kinetic Energy', value: 'orbitalKineticEnergy' },
-            { label: 'Specific Orbital Energy', value: 'orbitalSpecificOrbitalEnergy' },
-            { label: 'Semi Major Axis', value: 'orbitalSemiMajorAxis' },
-            { label: 'Eccentricity', value: 'orbitalEccentricity' },
-            { label: 'Orbital Period', value: 'orbitalPeriod' },
-            { label: 'Mean Orbital Speed', value: 'meanOrbitalSpeed' },
-            { label: 'Orbital Parameter', value: 'orbitalParameter' },
-            { label: 'Aphelion', value: 'aphelion' },
-            { label: 'Perihelion', value: 'perihelion' },
-            { label: 'True Anomaly', value: 'trueAnomaly' },
-            { label: 'Longitude of Ascending Node', value: 'longitudeOfAscendingNode' },
-            { label: 'Mean Anomaly', value: 'meanAnomaly' },
-            { label: 'Kepler Equation Solver', value: 'keplerEquation' }
-        ]
-    };
+			{ label: 'Mass A', value: 'massA' },
+			{ label: 'Charge A', value: 'chargeA' },
+			{ label: 'Radius A', value: 'radiusA' },
+			{ label: 'Radial Speed A', value: 'speedRadial1' },
+			{ label: 'Radial Acceleration A', value: 'accelerationRadial1' }
+		],
+		objectB: [
+			{ label: 'Mass B', value: 'massB' },
+			{ label: 'Charge B', value: 'chargeB' },
+			{ label: 'Radius B', value: 'radiusB' },
+			{ label: 'Radial Speed B', value: 'speedRadial2' },
+			{ label: 'Radial Acceleration B', value: 'accelerationRadial2' }
+		],
+		relative: [
+			{ label: 'Time', value: 'timeElapsed' },
+			{ label: 'Distance Between A and B', value: 'distanceBetween' },
+			{ label: 'Relative Radial Speed', value: 'relativeSpeedRadial' },
+			{ label: 'Relative Radial Acceleration', value: 'relativeAccelerationRadial' }
+		],
+		orbital: [
+			{ label: 'Angular Momentum', value: 'orbitalAngularMomentum' },
+			{ label: 'Kinetic Energy', value: 'orbitalKineticEnergy' },
+			{ label: 'Specific Orbital Energy', value: 'orbitalSpecificOrbitalEnergy' },
+			{ label: 'Semi Major Axis', value: 'orbitalSemiMajorAxis' },
+			{ label: 'Eccentricity', value: 'orbitalEccentricity' },
+			{ label: 'Orbital Period', value: 'orbitalPeriod' },
+			{ label: 'Mean Orbital Speed', value: 'meanOrbitalSpeed' },
+			{ label: 'Orbital Parameter', value: 'orbitalParameter' },
+			{ label: 'Aphelion', value: 'aphelion' },
+			{ label: 'Perihelion', value: 'perihelion' },
+			{ label: 'True Anomaly', value: 'trueAnomaly' },
+			{ label: 'Longitude of Ascending Node', value: 'longitudeOfAscendingNode' },
+			{ label: 'Mean Anomaly', value: 'meanAnomaly' },
+			{ label: 'Kepler Equation Solver', value: 'keplerEquation' }
+		]
+	};
 	
-    const paramXSelect = document.getElementById('paramXSelect');
-    const paramYSelect = document.getElementById('paramYSelect');
+	const paramXSelect = document.getElementById('paramXSelect');
+	const paramYSelect = document.getElementById('paramYSelect');
 
-    function addOptionsToSelect(select, label, options, letter) {
-        const optGroup = document.createElement('optgroup');
-        optGroup.label = label;
-        // optGroup.id = label + 'choiceLabel';
-        options.forEach(option => {
-            const opt = document.createElement('option');
-            opt.value = option.value;
-            opt.text = option.label;
-            opt.id = option.value + letter + 'choiceLabel';
-            optGroup.appendChild(opt);
-        });
-        select.appendChild(optGroup);
-    }
+	function addOptionsToSelect(select, label, options, letter) {
+		const optGroup = document.createElement('optgroup');
+		optGroup.label = label;
+		// optGroup.id = label + 'choiceLabel';
+		options.forEach(option => {
+			const opt = document.createElement('option');
+			opt.value = option.value;
+			opt.text = option.label;
+			opt.id = option.value + letter + 'choiceLabel';
+			optGroup.appendChild(opt);
+		});
+		select.appendChild(optGroup);
+	}
 
-    paramXSelect.innerHTML = '';
-    paramYSelect.innerHTML = '';
+	paramXSelect.innerHTML = '';
+	paramYSelect.innerHTML = '';
 
-    addOptionsToSelect(paramXSelect, 'Relative Parameters', params.relative, 'X');
-    addOptionsToSelect(paramXSelect, 'Object A Parameters', params.objectA, 'X');
-    addOptionsToSelect(paramXSelect, 'Object B Parameters', params.objectB, 'X');
-    addOptionsToSelect(paramXSelect, 'Orbital Parameters', params.orbital, 'X');
+	addOptionsToSelect(paramXSelect, 'Relative Parameters', params.relative, 'X');
+	addOptionsToSelect(paramXSelect, 'Object A Parameters', params.objectA, 'X');
+	addOptionsToSelect(paramXSelect, 'Object B Parameters', params.objectB, 'X');
+	addOptionsToSelect(paramXSelect, 'Orbital Parameters', params.orbital, 'X');
 
-    addOptionsToSelect(paramYSelect, 'Relative Parameters', params.relative, 'Y');
-    addOptionsToSelect(paramYSelect, 'Object A Parameters', params.objectA, 'Y');
-    addOptionsToSelect(paramYSelect, 'Object B Parameters', params.objectB, 'Y');
-    addOptionsToSelect(paramYSelect, 'Orbital Parameters', params.orbital, 'Y');
+	addOptionsToSelect(paramYSelect, 'Relative Parameters', params.relative, 'Y');
+	addOptionsToSelect(paramYSelect, 'Object A Parameters', params.objectA, 'Y');
+	addOptionsToSelect(paramYSelect, 'Object B Parameters', params.objectB, 'Y');
+	addOptionsToSelect(paramYSelect, 'Orbital Parameters', params.orbital, 'Y');
 }
 
 function initChart() {
-    const ctx = document.getElementById('parameterChart');
-    chart = new Chart(ctx, {
-        type: 'scatter',
-        data: {
-            datasets: [{
-                label: 'Evolution of Parameters',
-                data: [],
-                backgroundColor: `rgba(${Math.random() * 100}, ${Math.random() * 100 + 155}, ${Math.random() * 100 + 155})`
-            }]
-        },
-        options: {
-            animation: false,
-            scales: {
-                x: {
-                    type: 'linear',
-                    title: {
-                        display: true,
-                        text: 'X',
-                        color: 'rgba(255, 255, 255, 0.5)'
-                    },
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.2)'
-                    },
-                    ticks: {
-                        color: 'rgba(255, 255, 255, 0.5)'
-                    }
-                },
-                y: {
-                    type: 'linear',
-                    title: {
-                        display: true,
-                        text: 'Y',
-                        color: 'rgba(255, 255, 255, 0.5)'
-                    },
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.2)'
-                    },
-                    ticks: {
-                        color: 'rgba(255, 255, 255, 0.5)'
-                    }
-                }
-            }
-        }
-    });
-    chartInitialized = true;
+	const ctx = document.getElementById('parameterChart');
+	chart = new Chart(ctx, {
+		type: 'scatter',
+		data: {
+			datasets: [{
+				label: 'Evolution of Parameters',
+				data: [],
+				backgroundColor: `rgba(${Math.random() * 100}, ${Math.random() * 100 + 155}, ${Math.random() * 100 + 155})`
+			}]
+		},
+		options: {
+			animation: false,
+			scales: {
+				x: {
+					type: 'linear',
+					title: {
+						display: true,
+						text: 'X',
+						color: 'rgba(255, 255, 255, 0.5)'
+					},
+					grid: {
+						color: 'rgba(255, 255, 255, 0.2)'
+					},
+					ticks: {
+						color: 'rgba(255, 255, 255, 0.5)'
+					}
+				},
+				y: {
+					type: 'linear',
+					title: {
+						display: true,
+						text: 'Y',
+						color: 'rgba(255, 255, 255, 0.5)'
+					},
+					grid: {
+						color: 'rgba(255, 255, 255, 0.2)'
+					},
+					ticks: {
+						color: 'rgba(255, 255, 255, 0.5)'
+					}
+				}
+			}
+		}
+	});
+	chartInitialized = true;
 	if (devModenabled && chartInitialized) {
 		console.log('Chart initialized');
 	}
@@ -3404,25 +3403,25 @@ function updateChart(xValue, yValue) {
 			chart.data.datasets[0].data.push({ x: Math.round(xValue * precision) / precision, y: Math.round(yValue * precision) / precision });
 			chart.update();
 		}
-    }
+	}
 }
 
 function getSelectedParameterValue(parameter, objectA, objectB) {
-    switch (parameter) {
-        case 'massA': return objectA.mass;
-        case 'chargeA': return objectA.charge;
-        case 'radiusA': return objectA.radius;
-        case 'speedRadial1': return getRadialSpeed(objectA);
-        case 'accelerationRadial1': return getRadialAcceleration(objectA);
-        case 'massB': return objectB.mass;
-        case 'chargeB': return objectB.charge;
-        case 'radiusB': return objectB.radius;
-        case 'speedRadial2': return getRadialSpeed(objectB);
-        case 'accelerationRadial2': return getRadialAcceleration(objectB);
-        case 'distanceBetween': return getDistanceBetweenObjects(objectA, objectB);
-        case 'relativeSpeedRadial': return Math.abs(getRadialSpeed(objectA) - getRadialSpeed(objectB));
-        case 'relativeAccelerationRadial': return Math.abs(getRadialAcceleration(objectA) - getRadialAcceleration(objectB));
-        case 'timeElapsed': return timeElapsed;
+	switch (parameter) {
+		case 'massA': return objectA.mass;
+		case 'chargeA': return objectA.charge;
+		case 'radiusA': return objectA.radius;
+		case 'speedRadial1': return getRadialSpeed(objectA);
+		case 'accelerationRadial1': return getRadialAcceleration(objectA);
+		case 'massB': return objectB.mass;
+		case 'chargeB': return objectB.charge;
+		case 'radiusB': return objectB.radius;
+		case 'speedRadial2': return getRadialSpeed(objectB);
+		case 'accelerationRadial2': return getRadialAcceleration(objectB);
+		case 'distanceBetween': return getDistanceBetweenObjects(objectA, objectB);
+		case 'relativeSpeedRadial': return Math.abs(getRadialSpeed(objectA) - getRadialSpeed(objectB));
+		case 'relativeAccelerationRadial': return Math.abs(getRadialAcceleration(objectA) - getRadialAcceleration(objectB));
+		case 'timeElapsed': return timeElapsed;
 		case 'orbitalAngularMomentum': return getAngularMomentum(objectA, objectB);
 		case 'orbitalKineticEnergy': return getKineticEnergy(objectA, objectB);
 		case 'orbitalSpecificOrbitalEnergy': return getSpecificOrbitalEnergy(objectA, objectB);
@@ -3438,44 +3437,44 @@ function getSelectedParameterValue(parameter, objectA, objectB) {
 		case 'meanAnomaly': return getMeanAnomaly(objectA, objectB);
 		case 'keplerEquation': return solveKeplerEquation(objectA, objectB);
 		
-        default: return 0;
-    }
+		default: return 0;
+	}
 }
 
 function updateGraphWithParameters(objectA, objectB, currentTime) {
-    const paramXSelect = document.getElementById('paramXSelect');
-    const paramYSelect = document.getElementById('paramYSelect');
+	const paramXSelect = document.getElementById('paramXSelect');
+	const paramYSelect = document.getElementById('paramYSelect');
 
-    const xParameter = paramXSelect.value;
-    const yParameter = paramYSelect.value;
+	const xParameter = paramXSelect.value;
+	const yParameter = paramYSelect.value;
 
-    const xValue = getSelectedParameterValue(xParameter, objectA, objectB);
-    const yValue = getSelectedParameterValue(yParameter, objectA, objectB);
+	const xValue = getSelectedParameterValue(xParameter, objectA, objectB);
+	const yValue = getSelectedParameterValue(yParameter, objectA, objectB);
 
-    const xLabel = paramXSelect.options[paramXSelect.selectedIndex].text;
-    const yLabel = paramYSelect.options[paramYSelect.selectedIndex].text;
+	const xLabel = paramXSelect.options[paramXSelect.selectedIndex].text;
+	const yLabel = paramYSelect.options[paramYSelect.selectedIndex].text;
 
-    chart.options.scales.x.title.text = xLabel;
-    chart.options.scales.y.title.text = yLabel;
+	chart.options.scales.x.title.text = xLabel;
+	chart.options.scales.y.title.text = yLabel;
 
-    chart.update();
+	chart.update();
 
-    if (xValue !== null && yValue !== null) {
+	if (xValue !== null && yValue !== null) {
 		const doconst = Math.ceil(Math.min(cpuUsage ** 2 / 1e4, 7))
-        if (frameCount % doconst === 0) {
-            updateChart(xValue, yValue, currentTime);
-        }
-    }
+		if (frameCount % doconst === 0) {
+			updateChart(xValue, yValue, currentTime);
+		}
+	}
 }
 
 function clearChart() {
-    if (chartInitialized) {
-        chart.data.datasets[0].data = [];
-        chart.update();
+	if (chartInitialized) {
+		chart.data.datasets[0].data = [];
+		chart.update();
 		if (devModenabled) {
 			console.log('Chart cleared');
 		}
-    }
+	}
 }
 
 /* Démarrage de la simulation avec l'appel des fonctions */

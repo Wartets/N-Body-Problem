@@ -1,14 +1,14 @@
 function translate() {
-    const languageSelect = document.getElementById('languageSelect');
+	const languageSelect = document.getElementById('languageSelect');
 
-    function applyTranslations(language) {
-        let trans = { ...translations[language] };
+	function applyTranslations(language) {
+		let trans = { ...translations[language] };
 
-        Object.keys(translations['en']).forEach(key => {
-            if (!trans[key] || trans[key].trim() === "") {
-                trans[key] = "Not yet translated";
-            }
-        });
+		Object.keys(translations['en']).forEach(key => {
+			if (!trans[key] || trans[key].trim() === "") {
+				trans[key] = "Not yet translated";
+			}
+		});
 		
 		if (devModenabled) {
 			console.log('Translations:', language);
@@ -21,68 +21,68 @@ function translate() {
 		selectA = trans.selectObjectA;
 		selectB = trans.selectObjectB;
 		
-        document.getElementById('dtLabel').textContent = trans.dt;
-        document.getElementById('showSizeLabel').textContent = trans.adaptiveSize;
-        document.getElementById('simulationSettings').textContent = trans.simulationSettingsValue;
-        document.getElementById('displaySettings').textContent = trans.displaySettingsValue;
-        document.getElementById('objectSettings').textContent = trans.objectSettingsValue;
-        document.getElementById('advancedSimulationSettings').textContent = trans.advancedSimulationSettingsValue;
-        document.getElementById('byObjectSettings').textContent = trans.byObjectSettingsValue;
-        document.getElementById('byWellSettings').textContent = trans.byWellSettingsValue;
+		document.getElementById('dtLabel').textContent = trans.dt;
+		document.getElementById('showSizeLabel').textContent = trans.adaptiveSize;
+		document.getElementById('simulationSettings').textContent = trans.simulationSettingsValue;
+		document.getElementById('displaySettings').textContent = trans.displaySettingsValue;
+		document.getElementById('objectSettings').textContent = trans.objectSettingsValue;
+		document.getElementById('advancedSimulationSettings').textContent = trans.advancedSimulationSettingsValue;
+		document.getElementById('byObjectSettings').textContent = trans.byObjectSettingsValue;
+		document.getElementById('byWellSettings').textContent = trans.byWellSettingsValue;
 		
-        document.getElementById('ConstValLabel').textContent = trans.adaptiveValue;
-        document.getElementById('mergeToggleLabel').textContent = trans.enableMerging;
-        document.getElementById('collisionToggleLabel').textContent = trans.enableCollisions;
-        document.getElementById('gravityToggleLabel').textContent = trans.enableGravity;
-        document.getElementById('magneticToggleLabel').textContent = trans.enableMA;
-        document.getElementById('showVelocitiesLabel').textContent = trans.showVelocities;
-        document.getElementById('frictionToggleLabel').textContent = trans.enableFriction;
-        document.getElementById('showGravityFieldLabel').textContent = trans.idGravityFieldLabel;
-        document.getElementById('showMagneticFieldLabel').textContent = trans.idMagneticFieldLabel;
-        document.getElementById('showPotentialContoursLabel').textContent = trans.idPotentialFieldLabel;
-        document.getElementById('showPotentialContoursLabelOld').textContent = trans.idPotentialFieldLabelOld;
-        document.getElementById('frictionCoefficientLabel').textContent = trans.frictionCoefficient;
-        document.getElementById('focusSelectLabel').textContent = trans.centerView;
-        document.getElementById('showGridLabel').textContent = trans.enableGrid;
-        document.getElementById('zoomingToolLabel').textContent = trans.zoomManual;
-        document.getElementById('trailLimitLabel').textContent = trans.trailLimit;
+		document.getElementById('ConstValLabel').textContent = trans.adaptiveValue;
+		document.getElementById('mergeToggleLabel').textContent = trans.enableMerging;
+		document.getElementById('collisionToggleLabel').textContent = trans.enableCollisions;
+		document.getElementById('gravityToggleLabel').textContent = trans.enableGravity;
+		document.getElementById('magneticToggleLabel').textContent = trans.enableMA;
+		document.getElementById('showVelocitiesLabel').textContent = trans.showVelocities;
+		document.getElementById('frictionToggleLabel').textContent = trans.enableFriction;
+		document.getElementById('showGravityFieldLabel').textContent = trans.idGravityFieldLabel;
+		document.getElementById('showMagneticFieldLabel').textContent = trans.idMagneticFieldLabel;
+		document.getElementById('showPotentialContoursLabel').textContent = trans.idPotentialFieldLabel;
+		document.getElementById('showPotentialContoursLabelOld').textContent = trans.idPotentialFieldLabelOld;
+		document.getElementById('frictionCoefficientLabel').textContent = trans.frictionCoefficient;
+		document.getElementById('focusSelectLabel').textContent = trans.centerView;
+		document.getElementById('showGridLabel').textContent = trans.enableGrid;
+		document.getElementById('zoomingToolLabel').textContent = trans.zoomManual;
+		document.getElementById('trailLimitLabel').textContent = trans.trailLimit;
 		
-        document.getElementById('activateSoundLabel').textContent = trans.doSound;
-        document.getElementById('autoZoomToggleLabel').textContent = trans.doZoom;
+		document.getElementById('activateSoundLabel').textContent = trans.doSound;
+		document.getElementById('autoZoomToggleLabel').textContent = trans.doZoom;
 		
-        document.getElementById('presetSelectLabel').textContent = trans.presetSelectLabelValue;
-        document.getElementById('loadPresetBtn').textContent = trans.loadPreset;
-        document.getElementById('importPresetBtn').textContent = trans.importPreset;
-        document.getElementById('savePresetBtn').textContent = trans.savePreset;
-        document.getElementById('presetName').placeholder = trans.presetNameValue;
+		document.getElementById('presetSelectLabel').textContent = trans.presetSelectLabelValue;
+		document.getElementById('loadPresetBtn').textContent = trans.loadPreset;
+		document.getElementById('importPresetBtn').textContent = trans.importPreset;
+		document.getElementById('savePresetBtn').textContent = trans.savePreset;
+		document.getElementById('presetName').placeholder = trans.presetNameValue;
 		
-        document.getElementById('addBodyBtn').textContent = trans.addObject;
-        document.getElementById('addWellBtn').textContent = trans.addWell;
+		document.getElementById('addBodyBtn').textContent = trans.addObject;
+		document.getElementById('addWellBtn').textContent = trans.addWell;
 		
-        document.getElementById('HelpModalTitle').textContent = trans.HelpModalTitleValue;
-        document.getElementById('HelpModalIntro').textContent = trans.HelpModalIntroValue;
+		document.getElementById('HelpModalTitle').textContent = trans.HelpModalTitleValue;
+		document.getElementById('HelpModalIntro').textContent = trans.HelpModalIntroValue;
 	
-        document.getElementById('HelpModalGitPageTitle').textContent = trans.HelpModalGitPageTitleValue;
-        document.getElementById('HelpModalGitPageText').textContent = trans.HelpModalGitPageTextValue;
-        document.getElementById('HelpModalGitPageLink').textContent = trans.HelpModalGitPageLinkValue;
+		document.getElementById('HelpModalGitPageTitle').textContent = trans.HelpModalGitPageTitleValue;
+		document.getElementById('HelpModalGitPageText').textContent = trans.HelpModalGitPageTextValue;
+		document.getElementById('HelpModalGitPageLink').textContent = trans.HelpModalGitPageLinkValue;
 		
-        document.getElementById('HelpModalDocTitle').textContent = trans.HelpModalDocTitleValue;
-        document.getElementById('HelpModalDocText').textContent = trans.HelpModalDocTextValue;
-        document.getElementById('HelpModalDocLink').textContent = trans.HelpModalDocLinkValue;
+		document.getElementById('HelpModalDocTitle').textContent = trans.HelpModalDocTitleValue;
+		document.getElementById('HelpModalDocText').textContent = trans.HelpModalDocTextValue;
+		document.getElementById('HelpModalDocLink').textContent = trans.HelpModalDocLinkValue;
 		
-        document.getElementById('HelpModalBugTitle').textContent = trans.HelpModalBugTitleValue;
-        document.getElementById('HelpModalBugText').textContent = trans.HelpModalBugTextValue;
-        document.getElementById('HelpModalBugLink').textContent = trans.HelpModalBugLinkValue;
+		document.getElementById('HelpModalBugTitle').textContent = trans.HelpModalBugTitleValue;
+		document.getElementById('HelpModalBugText').textContent = trans.HelpModalBugTextValue;
+		document.getElementById('HelpModalBugLink').textContent = trans.HelpModalBugLinkValue;
 		
-        document.getElementById('HelpModalAutorTitle').textContent = trans.HelpModalAutorTitleValue;
-        document.getElementById('HelpModalAutorText').textContent = trans.HelpModalAutorTextValue;
-        document.getElementById('HelpModalAutorLink').textContent = trans.HelpModalAutorLinkValue;
+		document.getElementById('HelpModalAutorTitle').textContent = trans.HelpModalAutorTitleValue;
+		document.getElementById('HelpModalAutorText').textContent = trans.HelpModalAutorTextValue;
+		document.getElementById('HelpModalAutorLink').textContent = trans.HelpModalAutorLinkValue;
 		
-        document.getElementById('barycenterLabel').textContent = trans.barycenterLabelValue;
-        document.getElementById('barycenterLabelcharge').textContent = trans.barycenterLabelchargeValue;
-        document.getElementById('barycenterLabelgeo').textContent = trans.barycenterLabelgeoValue;
-        document.getElementById('barycenterLabelrad').textContent = trans.barycenterLabelradValue;
-        document.getElementById('barycenterLabelwell').textContent = trans.barycenterLabelwellValue;
+		document.getElementById('barycenterLabel').textContent = trans.barycenterLabelValue;
+		document.getElementById('barycenterLabelcharge').textContent = trans.barycenterLabelchargeValue;
+		document.getElementById('barycenterLabelgeo').textContent = trans.barycenterLabelgeoValue;
+		document.getElementById('barycenterLabelrad').textContent = trans.barycenterLabelradValue;
+		document.getElementById('barycenterLabelwell').textContent = trans.barycenterLabelwellValue;
 		
 		for (let i = 0; i < bodies.length; i++) {
 			document.getElementById(`MassEntree${i + 1}`).textContent = trans.MassValue;
@@ -101,181 +101,181 @@ function translate() {
 			document.getElementById(`PosYEntreeWell${i + 1}`).textContent = trans.PosYValue;
 		}
 		
-        document.getElementById('objectASelectLabel').textContent = trans.objectASelectEntree;
-        document.getElementById('objectBSelectLabel').textContent = trans.objectBSelectEntree;
-        document.getElementById('infoWindowTitle').textContent = trans.infoWindowTitleEntree;
+		document.getElementById('objectASelectLabel').textContent = trans.objectASelectEntree;
+		document.getElementById('objectBSelectLabel').textContent = trans.objectBSelectEntree;
+		document.getElementById('infoWindowTitle').textContent = trans.infoWindowTitleEntree;
 		
-        document.getElementById('massAtext').textContent = trans.massAtextEntree;
-        document.getElementById('chargeAtext').textContent = trans.chargeAtextEntree;
-        document.getElementById('radiusAtext').textContent = trans.radiusAtextEntree;
-        document.getElementById('surfaceAtext').textContent = trans.surfaceAtextEntree;
-        document.getElementById('posAtext').textContent = trans.posAtextEntree;
-        document.getElementById('distAtext').textContent = trans.distAtextEntree;
-        document.getElementById('speedAtext').textContent = trans.speedAtextEntree;
-        document.getElementById('accAtext').textContent = trans.accAtextEntree;
-        document.getElementById('forceAtext').textContent = trans.forceAtextEntree;
+		document.getElementById('massAtext').textContent = trans.massAtextEntree;
+		document.getElementById('chargeAtext').textContent = trans.chargeAtextEntree;
+		document.getElementById('radiusAtext').textContent = trans.radiusAtextEntree;
+		document.getElementById('surfaceAtext').textContent = trans.surfaceAtextEntree;
+		document.getElementById('posAtext').textContent = trans.posAtextEntree;
+		document.getElementById('distAtext').textContent = trans.distAtextEntree;
+		document.getElementById('speedAtext').textContent = trans.speedAtextEntree;
+		document.getElementById('accAtext').textContent = trans.accAtextEntree;
+		document.getElementById('forceAtext').textContent = trans.forceAtextEntree;
 		
-        document.getElementById('massBtext').textContent = trans.massAtextEntree;
-        document.getElementById('chargeBtext').textContent = trans.chargeAtextEntree;
-        document.getElementById('radiusBtext').textContent = trans.radiusAtextEntree;
-        document.getElementById('surfaceBtext').textContent = trans.surfaceAtextEntree;
-        document.getElementById('posBtext').textContent = trans.posAtextEntree;
-        document.getElementById('distBtext').textContent = trans.distAtextEntree;
-        document.getElementById('speedBtext').textContent = trans.speedAtextEntree;
-        document.getElementById('accBtext').textContent = trans.accAtextEntree;
-        document.getElementById('forceBtext').textContent = trans.forceAtextEntree;
+		document.getElementById('massBtext').textContent = trans.massAtextEntree;
+		document.getElementById('chargeBtext').textContent = trans.chargeAtextEntree;
+		document.getElementById('radiusBtext').textContent = trans.radiusAtextEntree;
+		document.getElementById('surfaceBtext').textContent = trans.surfaceAtextEntree;
+		document.getElementById('posBtext').textContent = trans.posAtextEntree;
+		document.getElementById('distBtext').textContent = trans.distAtextEntree;
+		document.getElementById('speedBtext').textContent = trans.speedAtextEntree;
+		document.getElementById('accBtext').textContent = trans.accAtextEntree;
+		document.getElementById('forceBtext').textContent = trans.forceAtextEntree;
 		
-        document.getElementById('distABtext').textContent = trans.distABtextEntree;
-        document.getElementById('speedABtext').textContent = trans.speedABtextEntree;
-        document.getElementById('accABtext').textContent = trans.accABtextEntree;
+		document.getElementById('distABtext').textContent = trans.distABtextEntree;
+		document.getElementById('speedABtext').textContent = trans.speedABtextEntree;
+		document.getElementById('accABtext').textContent = trans.accABtextEntree;
 		
-        document.getElementById('massAXchoiceLabel').textContent = trans.massAchoiceEntree;
-        document.getElementById('chargeAXchoiceLabel').textContent = trans.chargeAchoiceEntree;
-        document.getElementById('radiusAXchoiceLabel').textContent = trans.radiusAchoiceEntree;
-        document.getElementById('speedRadial1XchoiceLabel').textContent = trans.speedRadial1choiceEntree;
-        document.getElementById('accelerationRadial1XchoiceLabel').textContent = trans.accelerationRadial1choiceEntree;
+		document.getElementById('massAXchoiceLabel').textContent = trans.massAchoiceEntree;
+		document.getElementById('chargeAXchoiceLabel').textContent = trans.chargeAchoiceEntree;
+		document.getElementById('radiusAXchoiceLabel').textContent = trans.radiusAchoiceEntree;
+		document.getElementById('speedRadial1XchoiceLabel').textContent = trans.speedRadial1choiceEntree;
+		document.getElementById('accelerationRadial1XchoiceLabel').textContent = trans.accelerationRadial1choiceEntree;
 		
-        document.getElementById('massBXchoiceLabel').textContent = trans.massBchoiceEntree;
-        document.getElementById('chargeBXchoiceLabel').textContent = trans.chargeBchoiceEntree;
-        document.getElementById('radiusBXchoiceLabel').textContent = trans.radiusBchoiceEntree;
-        document.getElementById('speedRadial2XchoiceLabel').textContent = trans.speedRadial2choiceEntree;
-        document.getElementById('accelerationRadial2XchoiceLabel').textContent = trans.accelerationRadial2choiceEntree;
+		document.getElementById('massBXchoiceLabel').textContent = trans.massBchoiceEntree;
+		document.getElementById('chargeBXchoiceLabel').textContent = trans.chargeBchoiceEntree;
+		document.getElementById('radiusBXchoiceLabel').textContent = trans.radiusBchoiceEntree;
+		document.getElementById('speedRadial2XchoiceLabel').textContent = trans.speedRadial2choiceEntree;
+		document.getElementById('accelerationRadial2XchoiceLabel').textContent = trans.accelerationRadial2choiceEntree;
 		
-        document.getElementById('timeElapsedXchoiceLabel').textContent = trans.timeElapsedchoiceEntree;
-        document.getElementById('distanceBetweenXchoiceLabel').textContent = trans.distanceBetweenchoiceEntree;
-        document.getElementById('relativeSpeedRadialXchoiceLabel').textContent = trans.relativeSpeedRadialchoiceEntree;
-        document.getElementById('relativeAccelerationRadialXchoiceLabel').textContent = trans.relativeAccelerationRadialchoiceEntree;
+		document.getElementById('timeElapsedXchoiceLabel').textContent = trans.timeElapsedchoiceEntree;
+		document.getElementById('distanceBetweenXchoiceLabel').textContent = trans.distanceBetweenchoiceEntree;
+		document.getElementById('relativeSpeedRadialXchoiceLabel').textContent = trans.relativeSpeedRadialchoiceEntree;
+		document.getElementById('relativeAccelerationRadialXchoiceLabel').textContent = trans.relativeAccelerationRadialchoiceEntree;
 		
-        document.getElementById('massAYchoiceLabel').textContent = trans.massAchoiceEntree;
-        document.getElementById('chargeAYchoiceLabel').textContent = trans.chargeAchoiceEntree;
-        document.getElementById('radiusAYchoiceLabel').textContent = trans.radiusAchoiceEntree;
-        document.getElementById('speedRadial1YchoiceLabel').textContent = trans.speedRadial1choiceEntree;
-        document.getElementById('accelerationRadial1YchoiceLabel').textContent = trans.accelerationRadial1choiceEntree;
+		document.getElementById('massAYchoiceLabel').textContent = trans.massAchoiceEntree;
+		document.getElementById('chargeAYchoiceLabel').textContent = trans.chargeAchoiceEntree;
+		document.getElementById('radiusAYchoiceLabel').textContent = trans.radiusAchoiceEntree;
+		document.getElementById('speedRadial1YchoiceLabel').textContent = trans.speedRadial1choiceEntree;
+		document.getElementById('accelerationRadial1YchoiceLabel').textContent = trans.accelerationRadial1choiceEntree;
 		
-        document.getElementById('massBYchoiceLabel').textContent = trans.massBchoiceEntree;
-        document.getElementById('chargeBYchoiceLabel').textContent = trans.chargeBchoiceEntree;
-        document.getElementById('radiusBYchoiceLabel').textContent = trans.radiusBchoiceEntree;
-        document.getElementById('speedRadial2YchoiceLabel').textContent = trans.speedRadial2choiceEntree;
-        document.getElementById('accelerationRadial2YchoiceLabel').textContent = trans.accelerationRadial2choiceEntree;
+		document.getElementById('massBYchoiceLabel').textContent = trans.massBchoiceEntree;
+		document.getElementById('chargeBYchoiceLabel').textContent = trans.chargeBchoiceEntree;
+		document.getElementById('radiusBYchoiceLabel').textContent = trans.radiusBchoiceEntree;
+		document.getElementById('speedRadial2YchoiceLabel').textContent = trans.speedRadial2choiceEntree;
+		document.getElementById('accelerationRadial2YchoiceLabel').textContent = trans.accelerationRadial2choiceEntree;
 		
-        document.getElementById('timeElapsedYchoiceLabel').textContent = trans.timeElapsedchoiceEntree;
-        document.getElementById('distanceBetweenYchoiceLabel').textContent = trans.distanceBetweenchoiceEntree;
-        document.getElementById('relativeSpeedRadialYchoiceLabel').textContent = trans.relativeSpeedRadialchoiceEntree;
-        document.getElementById('relativeAccelerationRadialYchoiceLabel').textContent = trans.relativeAccelerationRadialchoiceEntree;
+		document.getElementById('timeElapsedYchoiceLabel').textContent = trans.timeElapsedchoiceEntree;
+		document.getElementById('distanceBetweenYchoiceLabel').textContent = trans.distanceBetweenchoiceEntree;
+		document.getElementById('relativeSpeedRadialYchoiceLabel').textContent = trans.relativeSpeedRadialchoiceEntree;
+		document.getElementById('relativeAccelerationRadialYchoiceLabel').textContent = trans.relativeAccelerationRadialchoiceEntree;
 		
-        document.getElementById('orbitalAngularMomentumXchoiceLabel').textContent = trans.orbitalAngularMomentumEntree;
-        document.getElementById('orbitalKineticEnergyXchoiceLabel').textContent = trans.orbitalKineticEnergyEntree;
-        document.getElementById('orbitalSpecificOrbitalEnergyXchoiceLabel').textContent = trans.orbitalSpecificOrbitalEnergyEntree;
-        document.getElementById('orbitalSemiMajorAxisXchoiceLabel').textContent = trans.orbitalSemiMajorAxisEntree;
-        document.getElementById('orbitalEccentricityXchoiceLabel').textContent = trans.orbitalEccentricityEntree;
-        document.getElementById('orbitalPeriodXchoiceLabel').textContent = trans.orbitalPeriodEntree;
-        document.getElementById('meanOrbitalSpeedXchoiceLabel').textContent = trans.meanOrbitalSpeedEntree;
-        document.getElementById('orbitalParameterXchoiceLabel').textContent = trans.orbitalParameterEntree;
-        document.getElementById('aphelionXchoiceLabel').textContent = trans.aphelionEntree;
-        document.getElementById('perihelionXchoiceLabel').textContent = trans.perihelionEntree;
-        document.getElementById('trueAnomalyXchoiceLabel').textContent = trans.trueAnomalyEntree;
-        document.getElementById('longitudeOfAscendingNodeXchoiceLabel').textContent = trans.longitudeOfAscendingNodeEntree;
-        document.getElementById('meanAnomalyXchoiceLabel').textContent = trans.meanAnomalyEntree;
-        document.getElementById('keplerEquationXchoiceLabel').textContent = trans.keplerEquationEntree;
+		document.getElementById('orbitalAngularMomentumXchoiceLabel').textContent = trans.orbitalAngularMomentumEntree;
+		document.getElementById('orbitalKineticEnergyXchoiceLabel').textContent = trans.orbitalKineticEnergyEntree;
+		document.getElementById('orbitalSpecificOrbitalEnergyXchoiceLabel').textContent = trans.orbitalSpecificOrbitalEnergyEntree;
+		document.getElementById('orbitalSemiMajorAxisXchoiceLabel').textContent = trans.orbitalSemiMajorAxisEntree;
+		document.getElementById('orbitalEccentricityXchoiceLabel').textContent = trans.orbitalEccentricityEntree;
+		document.getElementById('orbitalPeriodXchoiceLabel').textContent = trans.orbitalPeriodEntree;
+		document.getElementById('meanOrbitalSpeedXchoiceLabel').textContent = trans.meanOrbitalSpeedEntree;
+		document.getElementById('orbitalParameterXchoiceLabel').textContent = trans.orbitalParameterEntree;
+		document.getElementById('aphelionXchoiceLabel').textContent = trans.aphelionEntree;
+		document.getElementById('perihelionXchoiceLabel').textContent = trans.perihelionEntree;
+		document.getElementById('trueAnomalyXchoiceLabel').textContent = trans.trueAnomalyEntree;
+		document.getElementById('longitudeOfAscendingNodeXchoiceLabel').textContent = trans.longitudeOfAscendingNodeEntree;
+		document.getElementById('meanAnomalyXchoiceLabel').textContent = trans.meanAnomalyEntree;
+		document.getElementById('keplerEquationXchoiceLabel').textContent = trans.keplerEquationEntree;
 		
-        document.getElementById('orbitalAngularMomentumYchoiceLabel').textContent = trans.orbitalAngularMomentumEntree;
-        document.getElementById('orbitalKineticEnergyYchoiceLabel').textContent = trans.orbitalKineticEnergyEntree;
-        document.getElementById('orbitalSpecificOrbitalEnergyYchoiceLabel').textContent = trans.orbitalSpecificOrbitalEnergyEntree;
-        document.getElementById('orbitalSemiMajorAxisYchoiceLabel').textContent = trans.orbitalSemiMajorAxisEntree;
-        document.getElementById('orbitalEccentricityYchoiceLabel').textContent = trans.orbitalEccentricityEntree;
-        document.getElementById('orbitalPeriodYchoiceLabel').textContent = trans.orbitalPeriodEntree;
-        document.getElementById('meanOrbitalSpeedYchoiceLabel').textContent = trans.meanOrbitalSpeedEntree;
-        document.getElementById('orbitalParameterYchoiceLabel').textContent = trans.orbitalParameterEntree;
-        document.getElementById('aphelionYchoiceLabel').textContent = trans.aphelionEntree;
-        document.getElementById('perihelionYchoiceLabel').textContent = trans.perihelionEntree;
-        document.getElementById('trueAnomalyYchoiceLabel').textContent = trans.trueAnomalyEntree;
-        document.getElementById('longitudeOfAscendingNodeYchoiceLabel').textContent = trans.longitudeOfAscendingNodeEntree;
-        document.getElementById('meanAnomalyYchoiceLabel').textContent = trans.meanAnomalyEntree;
-        document.getElementById('keplerEquationYchoiceLabel').textContent = trans.keplerEquationEntree;
+		document.getElementById('orbitalAngularMomentumYchoiceLabel').textContent = trans.orbitalAngularMomentumEntree;
+		document.getElementById('orbitalKineticEnergyYchoiceLabel').textContent = trans.orbitalKineticEnergyEntree;
+		document.getElementById('orbitalSpecificOrbitalEnergyYchoiceLabel').textContent = trans.orbitalSpecificOrbitalEnergyEntree;
+		document.getElementById('orbitalSemiMajorAxisYchoiceLabel').textContent = trans.orbitalSemiMajorAxisEntree;
+		document.getElementById('orbitalEccentricityYchoiceLabel').textContent = trans.orbitalEccentricityEntree;
+		document.getElementById('orbitalPeriodYchoiceLabel').textContent = trans.orbitalPeriodEntree;
+		document.getElementById('meanOrbitalSpeedYchoiceLabel').textContent = trans.meanOrbitalSpeedEntree;
+		document.getElementById('orbitalParameterYchoiceLabel').textContent = trans.orbitalParameterEntree;
+		document.getElementById('aphelionYchoiceLabel').textContent = trans.aphelionEntree;
+		document.getElementById('perihelionYchoiceLabel').textContent = trans.perihelionEntree;
+		document.getElementById('trueAnomalyYchoiceLabel').textContent = trans.trueAnomalyEntree;
+		document.getElementById('longitudeOfAscendingNodeYchoiceLabel').textContent = trans.longitudeOfAscendingNodeEntree;
+		document.getElementById('meanAnomalyYchoiceLabel').textContent = trans.meanAnomalyEntree;
+		document.getElementById('keplerEquationYchoiceLabel').textContent = trans.keplerEquationEntree;
 
-        // document.getElementById('objectAchoiceLabel').textContent = trans.objectAchoiceEntree;
-        // document.getElementById('objectBchoiceLabel').textContent = trans.objectBchoiceEntree;
-        // document.getElementById('relativechoiceLabel').textContent = trans.relativechoiceEntree;
-        // document.getElementById('orbitalchoiceLabel').textContent = trans.orbitalchoiceEntree;
+		// document.getElementById('objectAchoiceLabel').textContent = trans.objectAchoiceEntree;
+		// document.getElementById('objectBchoiceLabel').textContent = trans.objectBchoiceEntree;
+		// document.getElementById('relativechoiceLabel').textContent = trans.relativechoiceEntree;
+		// document.getElementById('orbitalchoiceLabel').textContent = trans.orbitalchoiceEntree;
 		
-        document.getElementById('simulationModLabel').textContent = trans.simulationModLabelEntree;
-        document.getElementById('ConstValLabel').textContent = trans.ConstValLabelEntree;
-        document.getElementById('GValueLabel').textContent = trans.GValueLabelEntree;
-        document.getElementById('epsi0ValueLabel').textContent = trans.epsi0ValueLabelEntree;
-        document.getElementById('cValueLabel').textContent = trans.cValueLabelEntree;
-        document.getElementById('piValueLabel').textContent = trans.piValueLabelEntree;
-        document.getElementById('vectorLengthLabelG').textContent = trans.vectorLengthLabelGEntree;
-        document.getElementById('vectorLengthLabelk').textContent = trans.vectorLengthLabelkEntree;
-        document.getElementById('vectorFieldDistanceLabel').textContent = trans.vectorFieldDistanceLabelEntree;
-        document.getElementById('devModLabel').textContent = trans.devModLabelEntree;
+		document.getElementById('simulationModLabel').textContent = trans.simulationModLabelEntree;
+		document.getElementById('ConstValLabel').textContent = trans.ConstValLabelEntree;
+		document.getElementById('GValueLabel').textContent = trans.GValueLabelEntree;
+		document.getElementById('epsi0ValueLabel').textContent = trans.epsi0ValueLabelEntree;
+		document.getElementById('cValueLabel').textContent = trans.cValueLabelEntree;
+		document.getElementById('piValueLabel').textContent = trans.piValueLabelEntree;
+		document.getElementById('vectorLengthLabelG').textContent = trans.vectorLengthLabelGEntree;
+		document.getElementById('vectorLengthLabelk').textContent = trans.vectorLengthLabelkEntree;
+		document.getElementById('vectorFieldDistanceLabel').textContent = trans.vectorFieldDistanceLabelEntree;
+		document.getElementById('devModLabel').textContent = trans.devModLabelEntree;
 		
-        document.getElementById('centerView').textContent = trans.centerViewEntree;
-        document.getElementById('duplicateObject').textContent = trans.duplicateObjectEntree;
-        document.getElementById('resetForces').textContent = trans.resetForcesEntree;
-        document.getElementById('resetAllForces').textContent = trans.resetAllForcesEntree;
-        document.getElementById('deleteObject').textContent = trans.deleteObjectEntree;
-        document.getElementById('deleteAll').textContent = trans.deleteAllEntree;
-        document.getElementById('unlink').textContent = trans.unlinkEntree;
-    }
+		document.getElementById('centerView').textContent = trans.centerViewEntree;
+		document.getElementById('duplicateObject').textContent = trans.duplicateObjectEntree;
+		document.getElementById('resetForces').textContent = trans.resetForcesEntree;
+		document.getElementById('resetAllForces').textContent = trans.resetAllForcesEntree;
+		document.getElementById('deleteObject').textContent = trans.deleteObjectEntree;
+		document.getElementById('deleteAll').textContent = trans.deleteAllEntree;
+		document.getElementById('unlink').textContent = trans.unlinkEntree;
+	}
 
-    languageSelect.addEventListener('change', () => {
-        applyTranslations(languageSelect.value);
-    });
+	languageSelect.addEventListener('change', () => {
+		applyTranslations(languageSelect.value);
+	});
 
-    applyTranslations(languageSelect.value || 'en');
+	applyTranslations(languageSelect.value || 'en');
 }
 
 const translations = {
-    "fr": {
+	"fr": {
 		"selectObjectA": "Sélectionner l'objet A :",
 		"selectObjectB": "Sélectionner l'objet B :",
 		"unlinkEntree": "Délier les objets",
 		"show": "Afficher",
 		"hide": "Masquer",
-        "centerViewEntree": "Center la Vue",
+		"centerViewEntree": "Center la Vue",
 		"duplicateObjectEntree": "Dupliquer",
 		"resetForcesEntree": "Réinitialiser la vitesse",
 		"resetAllForcesEntree": "Réinitialiser toutes les vitesses",
 		"deleteObjectEntree": "Effacer",
 		"deleteAllEntree": "Effacer tous les Objets & Puits",
-        "resetView": "Réinitialiser la vue",
-        "fullscreen": "Plein écran",
-        "startPause": "Lancer la simulation",
-        "time": "Temps : 0.00 s",
+		"resetView": "Réinitialiser la vue",
+		"fullscreen": "Plein écran",
+		"startPause": "Lancer la simulation",
+		"time": "Temps : 0.00 s",
 		"timeLabel": "Temps :",
-        "dt": "dt (Intervalle de temps) :",
+		"dt": "dt (Intervalle de temps) :",
 		"simulationSettingsValue": "Réglages de simulation",
 		"displaySettingsValue": "Réglages d'affichages",
 		"objectSettingsValue": "Réglages des objets",
 		"advancedSimulationSettingsValue": "Réglages avancés",
 		"byObjectSettingsValue": "Objets",
 		"byWellSettingsValue": "Puits",
-        "adaptiveSize": "Tailles réelles I / constantes O",
+		"adaptiveSize": "Tailles réelles I / constantes O",
 		"adaptiveValue": "Valeurs des constantes réelles",
-        "enableCollisions": "Activer les collisions",
+		"enableCollisions": "Activer les collisions",
 		"enableMerging": "Activer la fusion d'objet",
 		"doSound": "Activer le son",
 		"doZoom": "Zoom automatique",
 		"enableGrid": "Afficher la grille",
-        "enableGravity": "Activer la gravité",
-        "enableMA": "Activer la force électromagnétique",
-        "showVelocities": "Afficher les vecteurs de vitesse",
-        "enableFriction": "Activer les frottements",
-        "frictionCoefficient": "Coefficient de frottement :",
+		"enableGravity": "Activer la gravité",
+		"enableMA": "Activer la force électromagnétique",
+		"showVelocities": "Afficher les vecteurs de vitesse",
+		"enableFriction": "Activer les frottements",
+		"frictionCoefficient": "Coefficient de frottement :",
 		"idGravityFieldLabel": "Afficher le champ de gravité",
 		"idMagneticFieldLabel": "Afficher le champ électromagnétique",
 		"idPotentialFieldLabel": "Afficher l'isoplèthe de potentiel",
 		"idPotentialFieldLabelOld": "Afficher l'isoplèthe de potentiel (Ancien)",
-        "centerView": "Centre de la vue :",
-        "zoomManual": "Zoom manuel :",
-        "trailLimit": "Nombre de points du trail (puiss. 10)",
-        "loadPreset": "Charger un preset :",
+		"centerView": "Centre de la vue :",
+		"zoomManual": "Zoom manuel :",
+		"trailLimit": "Nombre de points du trail (puiss. 10)",
+		"loadPreset": "Charger un preset :",
 		"importPreset": "",
 		"importPreset": "Importer un preset",
-        "savePreset": "Sauvegarder le preset",
+		"savePreset": "Sauvegarder le preset",
 		"presetSelectLabelValue": "Charger un preset :",
-        "presetNameValue": "Nom du preset (vide pour nom par défaut)",
-        "addObject": "Ajouter un objet",
+		"presetNameValue": "Nom du preset (vide pour nom par défaut)",
+		"addObject": "Ajouter un objet",
 		"addWell": "Ajouter un puit",
 		"MassValue": "Masse :",
 		"radiusValue": "Rayon :",
@@ -359,57 +359,57 @@ const translations = {
 		"barycenterLabelgeoValue": "Barycentre Géométrique",
 		"barycenterLabelradValue": "Barycentre Surfacique",
 		"barycenterLabelwellValue": "Barycentre des Puits",
-    },
-    "en": {
+	},
+	"en": {
 		"selectObjectA": "Select object A:",
 		"selectObjectB": "Select object B:",
 		"unlinkEntree": "Unlink objects",
 		"show": "Show",
 		"hide": "Hide",
-        "centerViewEntree": "Center View",
+		"centerViewEntree": "Center View",
 		"duplicateObjectEntree": "Duplicate",
 		"resetForcesEntree": "Reset Velocity",
 		"resetAllForcesEntree": "Reset all Velocities",
 		"deleteObjectEntree": "Delete",
 		"deleteAllEntree": "Delete all Objects & Wells",
-        "resetView": "Reset View",
-        "fullscreen": "Fullscreen",
-        "startPause": "Start Simulation",
-        "time": "Time: 0.00 s",
+		"resetView": "Reset View",
+		"fullscreen": "Fullscreen",
+		"startPause": "Start Simulation",
+		"time": "Time: 0.00 s",
 		"timeLabel": "Time:",
-        "dt": "dt (Time Interval):",
+		"dt": "dt (Time Interval):",
 		"simulationSettingsValue": "Simulation settings",
 		"displaySettingsValue": "Display settings",
 		"objectSettingsValue": "Object settings",
 		"advancedSimulationSettingsValue": "Advanced settings",
 		"byObjectSettingsValue": "Objects",
 		"byWellSettingsValue": "Wells",
-        "adaptiveSize": "Actual sizes I / constant O",
+		"adaptiveSize": "Actual sizes I / constant O",
 		"adaptiveValue": "Actual const. I / normalized O",
-        "enableCollisions": "Enable Collisions",
+		"enableCollisions": "Enable Collisions",
 		"enableMerging": "Enable object merging",
 		"doSound": "Activate sound",
 		"doZoom": "Auto-Zoom",
 		"enableGrid": "Show Grid",
-        "enableGravity": "Enable Gravity",
-        "enableMA": "Activate Electromagnetic force",
-        "showVelocities": "Show Velocity Vectors",
-        "enableFriction": "Enable Friction",
-        "frictionCoefficient": "Friction Coefficient:",
+		"enableGravity": "Enable Gravity",
+		"enableMA": "Activate Electromagnetic force",
+		"showVelocities": "Show Velocity Vectors",
+		"enableFriction": "Enable Friction",
+		"frictionCoefficient": "Friction Coefficient:",
 		"idGravityFieldLabel": "Display gravity field",
 		"idMagneticFieldLabel": "Display electromagnetic field",
 		"idPotentialFieldLabel": "Display potential isopleth",
 		"idPotentialFieldLabelOld": "Display potential isopleth (Old)",
-        "centerView": "Center View:",
-        "zoomManual": "Manual Zoom:",
-        "trailLimit": "Trail Points (power of 10)",
-        "loadPreset": "Load Preset",
+		"centerView": "Center View:",
+		"zoomManual": "Manual Zoom:",
+		"trailLimit": "Trail Points (power of 10)",
+		"loadPreset": "Load Preset",
 		"importPreset": "",
 		"importPreset": "Import Preset",
-        "savePreset": "Save Preset",
+		"savePreset": "Save Preset",
 		"presetSelectLabelValue": "Load a Preset:",
-        "presetNameValue": "Preset Name (empty for default)",
-        "addObject": "Add Object",
+		"presetNameValue": "Preset Name (empty for default)",
+		"addObject": "Add Object",
 		"addWell": "Add Well",
 		"MassValue": "Mass:",
 		"radiusValue": "Radius:",
@@ -490,56 +490,56 @@ const translations = {
 		"barycenterLabelgeoValue": "Geometric Barycenter",
 		"barycenterLabelradValue": "Surface Barycenter",
 		"barycenterLabelwellValue": "Well Barycenter",
-    },
-    "es": {
+	},
+	"es": {
 		"selectObjectA": "Seleccionar objeto A:",
 		"selectObjectB": "Seleccionar objeto B:",
 		"unlinkEntree": "Desvincular objetos",
 		"show": "Mostrar",
 		"hide": "Ocultar",
-        "centerViewEntree": "Vista central",
+		"centerViewEntree": "Vista central",
 		"duplicateObjectEntree": "Duplicar",
 		"resetForcesEntree": "Restablecer velocidad",
 		"resetAllForcesEntree": "Restablecer todas las velocidades",
 		"deleteObjectEntree": "Borrar",
 		"deleteAllEntree": "Borrar todos los Objetos y Pozos",
-        "resetView": "Reiniciar vista",
-        "fullscreen": "Pantalla completa",
-        "startPause": "Iniciar simulación",
-        "time": "Tiempo: 0.00 s",
+		"resetView": "Reiniciar vista",
+		"fullscreen": "Pantalla completa",
+		"startPause": "Iniciar simulación",
+		"time": "Tiempo: 0.00 s",
 		"timeLabel": "Tiempo:",
-        "dt": "dt (Intervalo de tiempo):",
+		"dt": "dt (Intervalo de tiempo):",
 		"simulationSettingsValue": "Ajustes de simulación",
 		"displaySettingsValue": "Ajustes de visualización",
 		"objectSettingsValue": "Ajustes del objeto",
 		"advancedSimulationSettingsValue": "Configuración avanzada",
 		"byObjectSettingsValue": "Objetos",
 		"byWellSettingsValue": "Pozos",
-        "adaptiveSize": "Tamaños reales I / constante",
+		"adaptiveSize": "Tamaños reales I / constante",
 		"adaptiveValue": "Const. reales I / normalizadas O",
 		"enableMerging": "Activar la fusión de objetos",
 		"doSound": "Activar sonido",
 		"doZoom": "Auto-Zoom",
 		"enableGrid": "Mostrar rejilla",
-        "enableCollisions": "Activar colisiones",
-        "enableGravity": "Activar gravedad",
-        "enableMA": "Activar la fuerza electromagnética",
-        "showVelocities": "Mostrar vectores de velocidad",
-        "enableFriction": "Activar fricción",
-        "frictionCoefficient": "Coeficiente de fricción:",
+		"enableCollisions": "Activar colisiones",
+		"enableGravity": "Activar gravedad",
+		"enableMA": "Activar la fuerza electromagnética",
+		"showVelocities": "Mostrar vectores de velocidad",
+		"enableFriction": "Activar fricción",
+		"frictionCoefficient": "Coeficiente de fricción:",
 		"idGravityFieldLabel": "Visualizar el campo gravitatorio",
 		"idMagneticFieldLabel": "Visualizar el campo electromagnético",
 		"idPotentialFieldLabel": "Visualizar la isopleta Potencial",
 		"idPotentialFieldLabelOld": "Visualizar la isopleta Potencial (old)",
-        "centerView": "Centrar vista en:",
-        "zoomManual": "Zoom manual:",
-        "trailLimit": "Puntos del trazado (potencia de 10)",
-        "loadPreset": "Cargar preset:",
+		"centerView": "Centrar vista en:",
+		"zoomManual": "Zoom manual:",
+		"trailLimit": "Puntos del trazado (potencia de 10)",
+		"loadPreset": "Cargar preset:",
 		"importPreset": "Añadir un pozo",
-        "savePreset": "Salvaguardar preset",
+		"savePreset": "Salvaguardar preset",
 		"presetSelectLabelValue": "",
-        "presetNameValue": "Nombre del preset (vacío para predeterminado)",
-        "addObject": "Añadir objeto",
+		"presetNameValue": "Nombre del preset (vacío para predeterminado)",
+		"addObject": "Añadir objeto",
 		"addWell": "",
 		"MassValue": "Masa:",
 		"radiusValue": "Radio:",
@@ -620,56 +620,56 @@ const translations = {
 		"barycenterLabelgeoValue": "Baricentro geométrico",
 		"barycenterLabelradValue": "Baricentro de superficie",
 		"barycenterLabelwellValue": "Baricentro de pozo",
-    },
+	},
 	"de": {
 		"selectObjectA": "Objekt A auswählen:",
 		"selectObjectB": "Objekt B auswählen:",
 		"unlinkEntree": "Objekte entkoppeln",
 		"show": "Anzeigen",
 		"hide": "Ausblenden",
-        "centerViewEntree": "Ansicht zentrieren",
+		"centerViewEntree": "Ansicht zentrieren",
 		"duplicateObjectEntree": "Duplizieren",
 		"resetForcesEntree": "Geschwindigkeit zurücksetzen",
 		"resetAllForcesEntree": "Alle Geschwindigkeiten zurücksetzen",
 		"deleteObjectEntree": "Löschen",
 		"deleteAllEntree": "Alle Objekte und Brunnen löschen",
-        "resetView": "Ansicht zurücksetzen",
-        "fullscreen": "Vollbild",
-        "startPause": "Simulation starten",
-        "time": "Zeit: 0.00 s",
+		"resetView": "Ansicht zurücksetzen",
+		"fullscreen": "Vollbild",
+		"startPause": "Simulation starten",
+		"time": "Zeit: 0.00 s",
 		"timeLabel": "Zeit:",
-        "dt": "dt (Zeitintervall):",
+		"dt": "dt (Zeitintervall):",
 		"simulationSettingsValue": "Einstellungen für die Simulation",
 		"displaySettingsValue": "Einstellungen für die Anzeige",
 		"objectSettingsValue": "Einstellungen für Objekte",
 		"advancedSimulationSettingsValue": "Erweiterte Einstellungen",
 		"byObjectSettingsValue": "Gegenstände",
 		"byWellSettingsValue": "Brunnen",
-        "adaptiveSize": "Reale Größen I / Konstante Größen O",
+		"adaptiveSize": "Reale Größen I / Konstante Größen O",
 		"adaptiveValue": "Konstanten real I / normalisiert O",
-        "enableCollisions": "Kollisionen aktivieren",
+		"enableCollisions": "Kollisionen aktivieren",
 		"enableMerging": "Aktivieren der Objektzusammenführung",
 		"doSound": "Ton aktivieren",
 		"doZoom": "Auto-Zoom",
 		"enableGrid": "Raster anzeigen",
-        "enableGravity": "Schwerkraft aktivieren",
-        "enableMA": "Elektromagnetische Kraft aktivieren",
-        "showVelocities": "Geschwindigkeitsvektoren anzeigen",
-        "enableFriction": "Reibung aktivieren",
-        "frictionCoefficient": "Reibungskoeffizient:",
+		"enableGravity": "Schwerkraft aktivieren",
+		"enableMA": "Elektromagnetische Kraft aktivieren",
+		"showVelocities": "Geschwindigkeitsvektoren anzeigen",
+		"enableFriction": "Reibung aktivieren",
+		"frictionCoefficient": "Reibungskoeffizient:",
 		"idGravityFieldLabel": "Das Gravitationsfeld anzeigen",
 		"idMagneticFieldLabel": "Elektromagnetisches Feld anzeigen",
 		"idPotentialFieldLabel": "Potenzial-Isopletheus anzeigen",
 		"idPotentialFieldLabelOld": "Potenzial-Isopletheus anzeigen (old)",
-        "centerView": "Ansicht zentrieren:",
-        "zoomManual": "Manuelles Zoomen:",
-        "trailLimit": "Spurpunkte (Zehnerpotenzen)",
-        "loadPreset": "Voreinstellung laden:",
+		"centerView": "Ansicht zentrieren:",
+		"zoomManual": "Manuelles Zoomen:",
+		"trailLimit": "Spurpunkte (Zehnerpotenzen)",
+		"loadPreset": "Voreinstellung laden:",
 		"importPreset": "",
-        "savePreset": "Voreinstellung speichern",
+		"savePreset": "Voreinstellung speichern",
 		"presetSelectLabelValue": "",
-        "presetNameValue": "Name der Voreinstellung (leer für Standard)",
-        "addObject": "Objekt hinzufügen",
+		"presetNameValue": "Name der Voreinstellung (leer für Standard)",
+		"addObject": "Objekt hinzufügen",
 		"addWell": "Einen Brunnen hinzufügen",
 		"MassValue": "Masse:",
 		"radiusValue": "Radius:",
@@ -750,14 +750,14 @@ const translations = {
 		"barycenterLabelgeoValue": "Geometrisches Baryzentrum",
 		"barycenterLabelradValue": "Oberflächen-Baryzentrum",
 		"barycenterLabelwellValue": "Bohrloch-Baryzentrum",
-    },
+	},
 	"it": {
 		"selectObjectA": "Selezionare l'oggetto A:",
 		"selectObjectB": "Selezionare l'oggetto B:",
 		"unlinkEntree": "Scollegamento degli oggetti",
 		"show": "Mostrare",
 		"hide": "Nascondi",
-        "centerViewEntree": "Vista centrale",
+		"centerViewEntree": "Vista centrale",
 		"duplicateObjectEntree": "Duplicare",
 		"resetForcesEntree": "Azzeramento della velocità",
 		"resetAllForcesEntree": "Azzeramento di tutte le velocità",
@@ -886,7 +886,7 @@ const translations = {
 		"unlinkEntree": "",
 		"show": "",
 		"hide": "",
-        "centerViewEntree": "",
+		"centerViewEntree": "",
 		"duplicateObjectEntree": "",
 		"resetForcesEntree": "",
 		"resetAllForcesEntree": "",
@@ -1015,7 +1015,7 @@ const translations = {
 		"unlinkEntree": "",
 		"show": "",
 		"hide": "",
-        "centerViewEntree": "",
+		"centerViewEntree": "",
 		"duplicateObjectEntree": "",
 		"resetForcesEntree": "",
 		"resetAllForcesEntree": "",
@@ -1144,7 +1144,7 @@ const translations = {
 		"unlinkEntree": "",
 		"show": "",
 		"hide": "",
-        "centerViewEntree": "",
+		"centerViewEntree": "",
 		"duplicateObjectEntree": "",
 		"resetForcesEntree": "",
 		"resetAllForcesEntree": "",
@@ -1273,7 +1273,7 @@ const translations = {
 		"unlinkEntree": "",
 		"show": "",
 		"hide": "",
-        "centerViewEntree": "",
+		"centerViewEntree": "",
 		"duplicateObjectEntree": "",
 		"resetForcesEntree": "",
 		"resetAllForcesEntree": "",
@@ -1402,7 +1402,7 @@ const translations = {
 		"unlinkEntree": "",
 		"show": "",
 		"hide": "",
-        "centerViewEntree": "",
+		"centerViewEntree": "",
 		"duplicateObjectEntree": "",
 		"resetForcesEntree": "",
 		"resetAllForcesEntree": "",
@@ -1531,7 +1531,7 @@ const translations = {
 		"unlinkEntree": "",
 		"show": "",
 		"hide": "",
-        "centerViewEntree": "",
+		"centerViewEntree": "",
 		"duplicateObjectEntree": "",
 		"resetForcesEntree": "",
 		"resetAllForcesEntree": "",
@@ -1660,7 +1660,7 @@ const translations = {
 		"unlinkEntree": "unlinkEntree",
 		"show": "show",
 		"hide": "hide",
-        "centerViewEntree": "centerViewEntree",
+		"centerViewEntree": "centerViewEntree",
 		"duplicateObjectEntree": "duplicateObjectEntree",
 		"resetForcesEntree": "resetForcesEntree",
 		"resetAllForcesEntree": "resetAllForcesEntree",

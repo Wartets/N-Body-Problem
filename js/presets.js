@@ -1,20 +1,20 @@
 function hexToRgb(hex) {
-    const bigint = parseInt(hex.slice(1), 16);
-    const r = (bigint >> 16) & 255;
-    const g = (bigint >> 8) & 255;
-    const b = (bigint & 255);
-    return { r, g, b };
+	const bigint = parseInt(hex.slice(1), 16);
+	const r = (bigint >> 16) & 255;
+	const g = (bigint >> 8) & 255;
+	const b = (bigint & 255);
+	return { r, g, b };
 }
 
 function rgbToHex(r, g, b) {
-    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+	return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
 
 
 const initialBodies = [
-    { name: "Object 1", mass: 250, charge: 4, radius: 2.5, position: { x: -100, y: -100 }, velocity: { x: 0, y: 1 }, color: "red", show: true },
-    { name: "Object 2", mass: 300, charge: 3, radius: 2.5, position: { x: 100, y: 100 }, velocity: { x: -1, y: 0 }, color: "green", show: true },
-    { name: "Object 3", mass: 100, charge: -2, radius: 2.5, position: { x: 100, y: -100 }, velocity: { x: -1, y: 1 }, color: "blue", show: true }
+	{ name: "Object 1", mass: 250, charge: 4, radius: 2.5, position: { x: -100, y: -100 }, velocity: { x: 0, y: 1 }, color: "red", show: true },
+	{ name: "Object 2", mass: 300, charge: 3, radius: 2.5, position: { x: 100, y: 100 }, velocity: { x: -1, y: 0 }, color: "green", show: true },
+	{ name: "Object 3", mass: 100, charge: -2, radius: 2.5, position: { x: 100, y: -100 }, velocity: { x: -1, y: 1 }, color: "blue", show: true }
 ];
 
 const presets = {
@@ -139,65 +139,65 @@ const presets = {
 };
 
 function createRandomPreset(presetName, numBodies, frameWidth, frameHeight) {
-    const randomPosition = (min, max) => Math.random() * (max - min) + min;
+	const randomPosition = (min, max) => Math.random() * (max - min) + min;
 
-    const bodies = [];
-    for (let i = 0; i < numBodies; i++) {
-        bodies.push({
-            name: `Object ${i + 1}`,
-            mass: randomPosition(50, 500),
-            charge: randomPosition(-5, 5),
-            radius: randomPosition(1, 4),
-            position: { 
-                x: randomPosition(-frameWidth / 2, frameWidth / 2), 
-                y: randomPosition(-frameHeight / 2, frameHeight / 2)
-            },
-            velocity: { 
-                x: randomPosition(-5, 5),
-                y: randomPosition(-5, 5)
-            },
-            color: `rgb(${Math.floor(randomPosition(0, 255))}, ${Math.floor(randomPosition(0, 255))}, ${Math.floor(randomPosition(0, 255))})`,
-            show: true
-        });
-    }
+	const bodies = [];
+	for (let i = 0; i < numBodies; i++) {
+		bodies.push({
+			name: `Object ${i + 1}`,
+			mass: randomPosition(50, 500),
+			charge: randomPosition(-5, 5),
+			radius: randomPosition(1, 4),
+			position: { 
+				x: randomPosition(-frameWidth / 2, frameWidth / 2), 
+				y: randomPosition(-frameHeight / 2, frameHeight / 2)
+			},
+			velocity: { 
+				x: randomPosition(-5, 5),
+				y: randomPosition(-5, 5)
+			},
+			color: `rgb(${Math.floor(randomPosition(0, 255))}, ${Math.floor(randomPosition(0, 255))}, ${Math.floor(randomPosition(0, 255))})`,
+			show: true
+		});
+	}
 
-    presets[presetName] = {
-        dt: 0.25,
-        bodies: bodies,
+	presets[presetName] = {
+		dt: 0.25,
+		bodies: bodies,
 		wells: []
-    };
+	};
 }
 
 function createLinePreset(presetName, numBodies) {
-    const randomPosition = (min, max) => Math.random() * (max - min) + min;
+	const randomPosition = (min, max) => Math.random() * (max - min) + min;
 	
 	const theta = Math.random() * Math.PI * 2
-    const fx = (4 + Math.random())
+	const fx = (4 + Math.random())
 	const fy = (4 + 3 * Math.random())
 	
 	const bodies = [];
-    for (let i = 0; i < numBodies; i++) {
-        bodies.push({
-            name: `Object ${i + 1}`,
-            mass: 9.5 + Math.random(),
-            charge: (-1)**i,
-            radius: 0.5 + Math.random() * 1.75,
-            position: { 
-                x: i * (10.5 + Math.random()), 
-                y: Math.sin(i * 10) / 2
-            },
-            velocity: { 
-                x: fx * Math.cos(theta) + fy * Math.sin(theta),
-                y: - fx * Math.sin(theta) + fy * Math.cos(theta)
-            },
-            color: `rgb(${Math.floor(randomPosition(0, 255))}, ${Math.floor(randomPosition(0, 255))}, ${Math.floor(randomPosition(0, 255))})`,
-            show: true
-        });
-    }
+	for (let i = 0; i < numBodies; i++) {
+		bodies.push({
+			name: `Object ${i + 1}`,
+			mass: 9.5 + Math.random(),
+			charge: (-1)**i,
+			radius: 0.5 + Math.random() * 1.75,
+			position: { 
+				x: i * (10.5 + Math.random()), 
+				y: Math.sin(i * 10) / 2
+			},
+			velocity: { 
+				x: fx * Math.cos(theta) + fy * Math.sin(theta),
+				y: - fx * Math.sin(theta) + fy * Math.cos(theta)
+			},
+			color: `rgb(${Math.floor(randomPosition(0, 255))}, ${Math.floor(randomPosition(0, 255))}, ${Math.floor(randomPosition(0, 255))})`,
+			show: true
+		});
+	}
 
-    presets[presetName] = {
-        dt: 0.25,
-        bodies: bodies,
+	presets[presetName] = {
+		dt: 0.25,
+		bodies: bodies,
 		wells: []
-    };
+	};
 }
