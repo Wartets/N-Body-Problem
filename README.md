@@ -21,11 +21,24 @@ For more information on how to access and use the simulation, please visit the [
 
 ## Example
 
-Here’s some examples of the simulation in action: (images from v1.1.2)
+Here’s some examples of the simulation in action: 
 
-![exemple1](https://github.com/user-attachments/assets/38d73689-0c6e-4a35-b179-b8fc7167450f "Random preset")
+images from v1.1.2:
+
+![exemple1](https://github.com/user-attachments/assets/38d73689-0c6e-4a35-b179-b8fc7167450f "Random object preset with a grid")
 ![exemple2](https://github.com/user-attachments/assets/38148f72-d339-4707-8f96-4de98b7edf0d "Body line with electomagnetic field")
 ![exemple3](https://github.com/user-attachments/assets/27f9cce2-276e-43c7-ad93-7df6f2709d25 "Rosace with analysis interface")
+
+images from v1.4.0:
+
+![context-menu](https://github.com/user-attachments/assets/383838ac-9b3c-4b43-b655-db90c8e410fc "Right-click to open context menu")
+![potentialwell-2](https://github.com/user-attachments/assets/b77f5a45-101e-4265-851f-4df16ece86f1 "Simulation with two potential wells and two objects on a semi-stable trajectory where the track has been left for a long time.")
+![quadri-system-lightmode](https://github.com/user-attachments/assets/5669bc41-0525-4e8d-a7bf-04b2502a6568 "Four-body orbiting system with light mode")
+![string](https://github.com/user-attachments/assets/672f215e-9c84-4dde-9232-77993bdc5bf2 "Basic preset but with two objects linked by a spring")
+![potentialwell-isopleth](https://github.com/user-attachments/assets/6e9c0516-30bf-4db9-a2e2-b54d6a755a36 "Well of potential, full of objects and the isopleth activated")
+![hydrogen-like-field](https://github.com/user-attachments/assets/83a79ac4-cd53-41d1-9af5-08780f3ce421 "High-precision electromagnetic force field on a preset of hydrogen-like objects")
+![object-cluster](https://github.com/user-attachments/assets/65eb6598-b02e-43c9-8e60-63bdcfe67833 "Object cluster created from a random preset, by activating collisions and resetting velocities at the start of simulation.")
+
 
 ## Compatibility
 
