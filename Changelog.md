@@ -161,3 +161,55 @@
 - Removed the simulate() function, which was never used for anything other than adding lag
 - Removal of the Coulomb constant ($K$), which was no longer useful as it was expressed with other constants defined in the simulation.
 - Removal of collision test and electromagnetic force presets
+
+## v1.4.0 - 06/10/2024
+
+### Added
+
+- It's now possible to connect two objects with a string, which prevents them from being more than a given distance apart
+- When you right-click on an object or well, a menu appears offering various actions:
+  - Show/Hide object/well
+  - Center view on object/well
+  - Duplicate the object/well, with the clone next to it
+  - Reset Velocity of object or all objects
+  - Delete object/well
+  - Delete all wells and objects
+  - Select objects A and B to connect them with a spring
+  - Unlink objects A and B
+- Constants may or may not normalize, depending on the presets and force options selected
+- It is now possible to use a negative 'dt' without any problem for the simulation
+- The actual elapsed time is now displayed
+- New objects didn't have names before, now they do
+- Added restrictions to avoid bugs in the choice of 'focusObject'
+- The default context menu can no longer be opened
+- Added a clear mode to the site
+- Added info texts for 'scrollzoom' and 'scale'
+- It is now possible to display the isopleth of the simulation potential, and the display accuracy can be controlled in the advanced settings
+- Added the possibility of displaying the old potential isopleth (this version represents the isopleth not with continuous curves but with crosses)
+- Automatic zoom correction
+- Time Out for mouse display on canvas
+
+### Changed
+
+- Left-clicking used to pause the simulation, this is no longer the case
+- The wells are now located below the objects on the canvas
+- Images/buttons have been changed to add clarity of use
+- The colours of the images/buttons have been adjusted to maintain a stylistic line
+- Skipped frames are now indicated by ping in ms
+- 'Usage' text reduced to 'Use'
+- Coordinates are now given in scientific format
+- Friction no longer calculated, now it is again
+- Script and file reorganization
+- Better chart reset button in infoWindow
+- 'displayFPS' becomes 'displayText'
+- Updated translations :
+  - v1.6 English translation
+  - v1.6 French translation
+  - v1.6 German translation
+  - v1.6 Spanish translation
+  - v1.4 Italian translation
+
+### Removed
+
+- Points were calculated and plotted for nothing, they have been removed
+- Removal of unnecessary alpha-related lines when tracing Wells
