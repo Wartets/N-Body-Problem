@@ -8,7 +8,9 @@ This project simulates the motion of multiple bodies (N-bodies) under the influe
 
 - **Dynamic Object Addition**: You can add an unlimited number of objects, constrained only by your computer's processing power.
 - **Field visualization**: You can observe the force fields applied to the simulation, changing according to the objects.
+- **Potential visualization**: You can observe the potential live from the simulation using isopleths.
 - **Potential wells**: place in the simulation where the potential associated with a force field has a significant minimum, forcing objects to ‘fall back’ towards the wells.
+- **Linking objects**: Use the Context Menu (right-click menu) to link two objects with a spring.
 - **Analysis window**: select two objects from the simulation and compare their parameters. An accompanying graph shows the evolution of different parameters for each object throughout the simulation.
 - **Multi-language Support**: Available in English, French, Spanish, and German, Italian, Latin (also some amusing translations) with additional languages planned for future releases.
 - **Special Thanks**: Appreciation to Arthur Loubeau for contributing the Spanish translation and to Christian Abou for the Italian translation.
@@ -32,6 +34,10 @@ The simulation has been tested on:
 - **Chromium**: Version 122.0.6250.0 (Dev Build, 64-bit) (very good)
 - **Safari**: iOS 16.4.1 (20E252) (okay)
 - **Firefox Beta**: Version 131.0 45403 (Dev Build on iOS 16.4.1) (well)
+- **TOR Browser**: Version 3.5.1 (iOS 16.4.1) (bad)
+- **Zoomable**: Version 3.0 Pro (iOS 16.4.1) (very good)
+- **Opera**: Version 84.1.4452.81169 (64-bit) (very good)
+- **Opera GX**: Version 113.0.5230.135 (64-bit) (very good)
 
 ## Changelog
 
