@@ -80,7 +80,7 @@ const impactSound = new Audio('sound/impact-sound.mp3');
 const mergeSound = new Audio('sound/merge-sound.mp3');
 const impactDelay = 10;
 const mergeDelay = 1;
-const springConstant = 0.8; // rigidité de la corde
+const springConstant = 8; // rigidité de la corde
 const bodies = initialBodies.map(body => ({
 	...body,
 	acceleration: { x: 0, y: 0 },
@@ -1587,16 +1587,6 @@ function updatePositions(dt) {
 	const trailMaxPoints = Math.pow(10, trailLimitInput.value);
 
 	for (const body of bodies) {
-		body.velocity.x += body.acceleration.x * dt;
-		body.velocity.y += body.acceleration.y * dt;
-		
-		applyFriction();
-
-		body.position.x += body.velocity.x * dt;
-		body.position.y += body.velocity.y * dt;
-		
-		body.trail.push({ x: body.position.x, y: body.position.y });
-		body.points.push({ x: body.position.x, y: body.position.y });
 
 		if (objectLinkedA !== null && objectLinkedB !== null) {
 			const currentDistance = getDistanceBetweenObjects(objectLinkedA, objectLinkedB);
@@ -1616,6 +1606,18 @@ function updatePositions(dt) {
 				objectLinkedB.acceleration.y -= forceY / objectLinkedB.mass;
 			}
 		}
+		
+		applyFriction();
+		
+		body.velocity.x += body.acceleration.x * dt;
+		body.velocity.y += body.acceleration.y * dt;
+		
+
+		body.position.x += body.velocity.x * dt;
+		body.position.y += body.velocity.y * dt;
+		
+		body.trail.push({ x: body.position.x, y: body.position.y });
+		body.points.push({ x: body.position.x, y: body.position.y });
 
 		trailType = 'lastOne'
 
@@ -2284,7 +2286,7 @@ function animate(currentTime) {
 	
 	requestAnimationFrame(animate);
 }
-	
+
 // DRAW
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -2357,8 +2359,15 @@ function drawBodies(barycenter) {
 		const ratio = Math.min(currentDistance / distanceL, 1);
 		const colorIntensity = Math.floor(255 * ratio * 0.9);
 
-		const color = `rgb(${colorIntensity}, ${255 - colorIntensity}, 0, ${0.1 + 0.8 * ratio ** 2})`;
-
+		let color;
+		
+		if ((currentDistance > 0.95 * distanceL) && (currentDistance < 1.05 * distanceL)) {
+			color = `rgb(255, 50, 50, 0.9)`;
+		}
+		else {
+			color = `rgb(${colorIntensity}, ${255 - colorIntensity}, 0, ${0.1 + 0.8 * ratio ** 2})`;
+		}
+		
 		ctx.beginPath();
 		ctx.moveTo(objectLinkedA.position.x, objectLinkedA.position.y);
 		ctx.lineTo(objectLinkedB.position.x, objectLinkedB.position.y);
