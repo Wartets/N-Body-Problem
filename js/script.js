@@ -1756,12 +1756,12 @@ function calculateBarycenter() {
 				barycenter.y /= number;
 			}
 		}
-		else if (focusObject.startsWith('body-')) {
+		else if (focusObject.startsWith('body-') && bodies.length !== 0) {
 			const selectedBodyIndex = parseInt(focusObject.split('-')[1]);
 			const selectedBody = bodies[selectedBodyIndex];
 			return { x: selectedBody.position.x, y: selectedBody.position.y };
 		}
-		else if (focusObject.startsWith('well-')) {
+		else if (focusObject.startsWith('well-') && wells.length !== 0) {
 			const selectedWellIndex = parseInt(focusObject.split('-')[1]);
 			const selectedWell = wells[selectedWellIndex];
 			return { x: selectedWell.position.x, y: selectedWell.position.y };
