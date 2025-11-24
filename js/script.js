@@ -1128,8 +1128,8 @@ function updateControlValues() {
 			
 			<label for="vy${index + 1}" id="SpeedYEntree${index + 1}">Y Speed:</label>
 			<div class="btn-group mrgn-bttm-lg">
-				<button onclick="adjustValue('vy${index + 1}', 0.5)">/2</button>
 				<button onclick="adjustValue('vy${index + 1}', 0.1)">/10</button>
+				<button onclick="adjustValue('vy${index + 1}', 0.5)">/2</button>
 				<input type="number" id="vy${index + 1}" value="${body.velocity.y.toExponential(3)}" step="0.1">
 				<button onclick="adjustValue('vy${index + 1}', 2)">x2</button>
 				<button onclick="adjustValue('vy${index + 1}', 10)">x10</button>
