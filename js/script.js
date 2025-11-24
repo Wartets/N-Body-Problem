@@ -1408,22 +1408,33 @@ function adjustValue(inputId, factor) {
 
 function playImpactSound(objectA, objectB) {
 	if (soundEnabled) {
+		const relativeSpeed = getRelativeRadialSpeed(objectA, objectB);
+		
+		if (relativeSpeed < 0.07) return;
+
 		const currentTime = Date.now();
+		if (currentTime - lastImpactTime < 50) return;
+
 		const vardt = (currentTime - lastImpactTime) * parseFloat(dtInput.value) * 100;
-		
-		const restitution1 = (pi * Math.pow(objectA.radius, 2)) / Math.sqrt(objectA.mass);
-		const restitution2 = (pi * Math.pow(objectB.radius, 2)) / Math.sqrt(objectB.mass);
-		
-		const restitution = 1 - Math.sqrt(restitution1 * restitution1 + restitution2 * restitution2) / getRelativeRadialSpeed(objectA, objectB);
 		
 		if (vardt > impactDelay) {
 			lastImpactTime = currentTime;
-			const impactSound = new Audio('sound/impact-sound.mp3');
+			
+			const restitution1 = (pi * Math.pow(objectA.radius, 2)) / Math.sqrt(objectA.mass);
+			const restitution2 = (pi * Math.pow(objectB.radius, 2)) / Math.sqrt(objectB.mass);
+			
+			const restitution = 1 - Math.sqrt(restitution1 * restitution1 + restitution2 * restitution2) / relativeSpeed;
+			
+			if (!isFinite(restitution)) return;
+
 			const restitutionf = 1 - 1 / Math.log(restitution * Math.E + Math.E);
 			const volume = Math.max(Math.max(Math.min(1 - restitutionf / 10, 1), 0) * restitution, 0);
-			console.log(volume)
-			impactSound.volume = volume
-			impactSound.play();
+			
+			if (volume > 0.01) {
+				const impactSound = new Audio('sound/impact-sound.mp3');
+				impactSound.volume = volume;
+				impactSound.play().catch(e => {});
+			}
 		}
 	}
 }
@@ -1861,8 +1872,18 @@ function detectProximity() {
 
 			if (distance < combinedRadius) {
 				if (collisionsEnabled) {
+					if (distance === 0) continue;
+
+					const nx = dx / distance;
+					const ny = dy / distance;
+					
+					const approachSpeed = (bodies[i].velocity.x - bodies[j].velocity.x) * nx + (bodies[i].velocity.y - bodies[j].velocity.y) * ny;
+
+					if (approachSpeed > 0.5) {
+						playImpactSound(bodies[i], bodies[j]);
+					}
+
 					resolveCollision(bodies[i], bodies[j]);
-					playImpactSound(bodies[i], bodies[j]);
 				}
 				if (mergingEnabled) {
 					mergeBodies(bodies[i], bodies[j]);
@@ -1878,21 +1899,28 @@ function resolveCollision(body1, body2) {
 	const dy = body2.position.y - body1.position.y;
 	const distance = Math.sqrt(dx * dx + dy * dy);
 
+	if (distance === 0) return;
+
 	const nx = dx / distance;
 	const ny = dy / distance;
 
 	const p = 2 * (body1.velocity.x * nx + body1.velocity.y * ny - body2.velocity.x * nx - body2.velocity.y * ny) / (body1.mass + body2.mass);
-	body1.velocity.x -= p * body2.mass * nx;
-	body1.velocity.y -= p * body2.mass * ny;
-	body2.velocity.x += p * body1.mass * nx;
-	body2.velocity.y += p * body1.mass * ny;
+
+	if (p > 0) {
+		body1.velocity.x -= p * body2.mass * nx;
+		body1.velocity.y -= p * body2.mass * ny;
+		body2.velocity.x += p * body1.mass * nx;
+		body2.velocity.y += p * body1.mass * ny;
+	}
 
 	const combinedRadius = body1.radius + body2.radius;
-	const overlap = combinedRadius - distance;
-	body1.position.x -= overlap / 2 * nx;
-	body1.position.y -= overlap / 2 * ny;
-	body2.position.x += overlap / 2 * nx;
-	body2.position.y += overlap / 2 * ny;
+	if (distance < combinedRadius) {
+		const overlap = combinedRadius - distance;
+		body1.position.x -= overlap / 2 * nx;
+		body1.position.y -= overlap / 2 * ny;
+		body2.position.x += overlap / 2 * nx;
+		body2.position.y += overlap / 2 * ny;
+	}
 }
 
 function mergeBodies(body1, body2) {
